@@ -1,5 +1,8 @@
 # Development handoff — 0.1.1
 
+Published candidate source commit: `8a64cb4e985702150e1d9f2169a80e71239a71d8`.
+Publication and independent download verification passed in run `41146391540`.
+
 0.1.0 reached the menu and Create-a-Sim on the Thor but had white backgrounds,
 missing hair/eyes, and a stalled swipe tutorial. No gameplay/save gate passed.
 0.1.1 adds software PVRTC support, the existing Snapdragon alpha configuration,

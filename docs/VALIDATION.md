@@ -26,6 +26,9 @@ Completed for 0.1.1:
   in :launcher with a distinct task affinity; the engine runs in the main
   process. The report path makes no calls into the engine.
 - Release reconstruction from the pinned 0.1.0 APK produces byte-identical 0.1.1.
+- GitHub publication run [41146391540](https://github.com/Russianranger/s3ce/actions/runs/41146391540)
+  passed reconstruction, APK signature/identity verification, prerelease upload,
+  and a fresh download of the published APK with matching SHA-256.
 
 APK SHA-256:
 `c005793c54cc4220b173d9623032b927185531e41170644568216a0dfde2c42a`.
