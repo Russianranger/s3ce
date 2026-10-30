@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Validate the exact source runtime and simulate every ELF32 relocation.
+
+No game code executes. Run against the user-supplied APK before packaging.
+The optional freshly built shim is checked for NX stack/no text relocations.
+"""
+import argparse
+import collections
+import hashlib
+import json
+import pathlib
+import struct
+import subprocess
+import zipfile
+
+EXPECTED_APK = "d42d0bf4a663abc3b1bb2abd0b350d93b6a2fa687a3b902f111a40c38a94f0d0"
+EXPECTED_ALLOCATORS = {
+    0x37148: bytes.fromhex("00b581b000f018f8"),
+    0x36434: bytes.fromhex("00b581b000f096fe"),
+}
+
+
+def parse_elf(data):
+    assert data[:7] == b"\x7fELF\x01\x01\x01", "Expected little-endian ELF32"
+    header = struct.unpack_from("<16sHHIIIIIHHHHHH", data)
+    assert header[2] == 40 and header[1] == 3, "Expected ARM ET_DYN"
+    phoff, phsize, phcount = header[5], header[9], header[10]
+    assert phsize == 32
+    ph = [struct.unpack_from("<IIIIIIII", data, phoff+i*32) for i in range(phcount)]
+    return header, ph
+
+
+def virtual_bytes(data, programs):
+    size = max(p[2]+p[5] for p in programs if p[0] == 1)
+    image = bytearray(size)
+    for p in programs:
+        if p[0] == 1:
+            image[p[2]:p[2]+p[4]] = data[p[1]:p[1]+p[4]]
+    return image
+
+
+def dynamic_tags(image, programs):
+    p = next(p for p in programs if p[0] == 2)
+    tags = collections.defaultdict(list)
+    for offset in range(p[2], p[2]+p[5], 8):
+        tag, value = struct.unpack_from("<II", image, offset)
+        if not tag:
+            return tags
+        tags[tag].append(value)
+    raise AssertionError("Missing DT_NULL")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("apk", type=pathlib.Path)
+    parser.add_argument("--shim", type=pathlib.Path)
+    parser.add_argument("--ndk", type=pathlib.Path, help="Audit imports against API28 ARM system library stubs")
+    args = parser.parse_args()
+    apk = args.apk.read_bytes()
+    assert hashlib.sha256(apk).hexdigest() == EXPECTED_APK, "Unexpected source APK"
+    with zipfile.ZipFile(args.apk) as archive:
+        data = archive.read("lib/armeabi/libairplay.so")
+    assert len(data) == 410811
+    _, programs = parse_elf(data)
+    image = virtual_bytes(data, programs)
+    tags = dynamic_tags(image, programs)
+    assert tags[22], "Expected original DT_TEXTREL"
+    assert all((p[6] & 3) != 3 for p in programs if p[0] == 1), "Unexpected RWX segment"
+    assert tags[17] == [0x16f0] and tags[18] == [32936]
+    assert tags[23] == [0x9798] and tags[2] == [1040]
+    assert not any(tag in tags for tag in [7, 12, 25, 32]), "Unexpected constructors/RELA"
+    strings_at = tags[5][0]
+    strings_size = tags[10][0]
+    strings = bytes(image[strings_at:strings_at+strings_size])
+    syms_at = tags[6][0]
+    hash_at = tags[4][0]
+    _, symbol_count = struct.unpack_from("<II", image, hash_at)
+    assert symbol_count == 167
+    symbols = [struct.unpack_from("<IIIBBH", image, syms_at+i*16) for i in range(symbol_count)]
+
+    def string(offset):
+        assert 0 <= offset < strings_size
+        return strings[offset:strings.index(0, offset)].decode("ascii")
+
+    assert set(string(offset) for offset in tags[1]) == {
+        "libc.so", "libm.so", "liblog.so", "libstdc++.so", "libz.so", "libdl.so"}
+    imports = set()
+    counters = collections.Counter()
+    base = 0x60000000
+    for offset, size in [(tags[17][0], tags[18][0]), (tags[23][0], tags[2][0])]:
+        assert not size % 8
+        for at in range(offset, offset+size, 8):
+            target, info = struct.unpack_from("<II", image, at)
+            index, kind = info >> 8, info & 0xff
+            assert kind in [2, 21, 22, 23], f"Unsupported relocation {kind}"
+            assert target % 4 == 0 and target+4 <= len(image)
+            assert index < symbol_count
+            counters[kind] += 1
+            old = struct.unpack_from("<I", image, target)[0]
+            if kind == 23:
+                assert index == 0
+                value = (old + base) & 0xffffffff
+            else:
+                name_off, address, _, _, _, section = symbols[index]
+                name = string(name_off)
+                if section == 0:
+                    imports.add(name)
+                    address = 0x70000000 + index * 16  # deterministic stand-in
+                elif section != 0xfff1:
+                    address += base
+                value = (address + old if kind == 2 else address) & 0xffffffff
+            struct.pack_into("<I", image, target, value)
+    assert counters == {23: 4115, 2: 2, 22: 130}, counters
+    for address, expected in EXPECTED_ALLOCATORS.items():
+        assert image[address:address+8] == expected, "Allocator fingerprint mismatch"
+        image[address:address+8] = bytes.fromhex("dff800f0") + struct.pack("<I", 0x71000001)
+    onload = [s[1] for s in symbols if string(s[0]) == "JNI_OnLoad"]
+    assert onload == [0x21115]
+    results = {"source_apk_sha256": EXPECTED_APK,
+               "legacy_elf_sha256": hashlib.sha256(data).hexdigest(),
+               "relocations_simulated": sum(counters.values()),
+               "relocation_types": dict(counters), "imports": sorted(imports),
+               "allocator_guards": "pass", "jni_onload": hex(onload[0])}
+    if args.shim:
+        shim_data = args.shim.read_bytes()
+        _, shim_programs = parse_elf(shim_data)
+        shim_tags = dynamic_tags(virtual_bytes(shim_data, shim_programs), shim_programs)
+        assert 22 not in shim_tags, "Shim contains DT_TEXTREL"
+        assert all((p[6] & 3) != 3 for p in shim_programs if p[0] == 1), "Shim has RWX LOAD"
+        stack = next(p for p in shim_programs if p[0] == 0x6474e551)
+        assert not stack[6] & 1, "Shim requests executable stack"
+        results["shim_sha256"] = hashlib.sha256(shim_data).hexdigest()
+        results["shim_hardening"] = "no text relocations; non-executable stack; no RWX LOAD segments"
+    if args.ndk:
+        assert args.shim, "--ndk requires --shim"
+        toolchain = args.ndk / "toolchains/llvm/prebuilt/linux-x86_64"
+        readelf = toolchain / "bin/llvm-readelf"
+        system = toolchain / "sysroot/usr/lib/arm-linux-androideabi/28"
+        available = set()
+        for library in ["libc.so", "libm.so", "liblog.so", "libstdc++.so", "libz.so", "libdl.so"]:
+            listing = subprocess.check_output([str(readelf), "--dyn-syms", "-W", str(system/library)], text=True)
+            available.update(line.split()[-1].split("@")[0] for line in listing.splitlines()
+                             if " DEFAULT " in line and " UND " not in line)
+        listing = subprocess.check_output([str(readelf), "--symbols", "-W", str(args.shim)], text=True)
+        builtins = {line.split()[-1] for line in listing.splitlines()
+                    if len(line.split()) >= 8 and line.split()[6] != "UND" and line.split()[0].endswith(":")}
+        custom = {"atexit", "__srget", "_Znaj", "_Znwj", "_ZdlPv", "_ZdaPv"}
+        needed_builtins = {name for name in imports if name.startswith("__aeabi_")}
+        assert needed_builtins <= builtins, f"Missing linked EABI helpers: {needed_builtins-builtins}"
+        missing = imports - available - needed_builtins - custom
+        assert not missing, f"Unresolved legacy imports: {sorted(missing)}"
+        results["import_audit"] = {"imports_checked": len(imports), "missing": [],
+                                   "compiler_rt_helpers": len(needed_builtins)}
+    print(json.dumps(results, indent=2))
+
+
+if __name__ == "__main__":
+    main()
