@@ -15,6 +15,15 @@ Completed in the build environment:
 - Launcher compilation against Android 35 and D8 assembly with min API26.
 - Apktool reassembly, ZIP integrity/alignment, APK v2/v3 signatures.
 - Final manifest/app ID/target/permissions checked with Android SDK `aapt`.
+- GitHub publication run [41144292465](https://github.com/Russianranger/s3ce/actions/runs/41144292465)
+  passed assembly, signature/identity checks, prerelease upload, and independent
+  download of the published bytes for SHA-256 verification.
+
+Published APK SHA-256:
+`0605ca913169bc5f17ee2291c6ef20208322676f49e21489ceb8fb2f7ddb0381`.
+
+Signing-certificate SHA-256:
+`3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4`.
 
 Not completed:
 
