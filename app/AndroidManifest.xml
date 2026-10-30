@@ -8,12 +8,15 @@
     <application android:icon="@drawable/icon" android:label="The Sims 3 CE"
         android:allowBackup="false" android:extractNativeLibs="true"
         android:hardwareAccelerated="false" android:theme="@android:style/Theme.Material.NoActionBar">
-        <activity android:name="com.ideaworks3d.thesims3.CompatActivity" android:exported="true">
+        <activity android:name="com.ideaworks3d.thesims3.CompatActivity" android:exported="true"
+            android:process=":launcher" android:launchMode="singleTask"
+            android:taskAffinity="io.github.russianranger.s3ce.reports">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.ideaworks3d.thesims3.GameBootActivity" android:exported="false" />
         <activity android:name="com.ideaworks3d.thesims3.Main" android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:resizeableActivity="false" />

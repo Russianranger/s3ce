@@ -27,11 +27,55 @@ Original runtime SHA-256:
 `d93bc59497d377a9524aa8b3fa090aec0e32048bec4bb5e50b757c2f7234befe`.
 
 Java startup calls `System.loadLibrary("airplay")`, then the static native method
-`com.ideaworks3d.thesims3.CompatActivity.nativeBootstrap(AssetManager, String)`
+`com.ideaworks3d.thesims3.GameBootActivity.nativeBootstrap(AssetManager, String)`
 with the application's assets and files directory. A positive return is the
 original JNI version; a negative return is failure. Bootstrap must finish before
 starting the original game Activity. The original Activity's later library load
 then reuses the already loaded shim.
+
+## Graphics compatibility (0.1.1)
+
+The original game stores 135 textures as PVRTC1, including its title background,
+eyes, hair, and Create-a-Sim room. The first Thor run rendered ordinary textures
+but omitted these compressed textures. All 135 images and their 691 mip levels
+were decoded successfully on the host using the official PowerVR reference
+implementation. No game artwork is included in this source repository.
+
+The game's ARM capability initialization at `0x4a057764` queries
+`glGetString(GL_EXTENSIONS)` and token-matches
+`GL_IMG_texture_compression_pvrtc`. The GL lookup adapter therefore advertises
+that extension when native support is absent and the software upload path is
+available. On those GPUs, PVRTC1 RGB/RGBA 2/4-bpp uploads are decoded to RGBA8888
+and uploaded with normal GLES texture calls, including full-image compressed
+subimage reloads at offset zero. RGB formats get opaque alpha;
+RGBA formats preserve their decoded alpha. GPUs advertising native PVRTC keep
+their original compressed upload path.
+
+Decoding is limited to power-of-two dimensions, at most 4096 per side and 16 MiB
+of decoded pixels per upload. Minimum compressed block sizes and small mip levels
+are validated before decoding. The temporary pixel buffer is released after the
+synchronous upload. Nonzero-offset compressed subimages retain the original
+driver path; the PVRTC1 extension permits full-image replacement only. This
+adapter follows the original game's single-context rendering architecture. The MIT-licensed reference decoder and pinned upstream source
+are documented in [pvrtc/NOTICE.md](pvrtc/NOTICE.md). Its license must also be
+packaged with the APK.
+
+The adapter logs the native renderer, version, extension list, initial texture
+formats, and bounded GL errors. Errors inspected for logging are queued for the
+game's next `glGetError` call. Runtime and S3E mapping addresses are recorded for
+crash correlation. The decoder uses a static C++ runtime; no `libc++_shared.so`
+installation is needed.
+
+Run the CPU tests, optionally with sanitizers:
+
+```sh
+native/test.sh
+S3CE_SANITIZERS=1 native/test.sh
+```
+
+These verify decoder colors, 2/4-bpp, alpha, small mip levels, invalid input and
+output guards, conditional GL fallback, native-driver pass-through, and preserved
+GL error behavior.
 
 ## Behavior
 
@@ -70,6 +114,6 @@ It is intended for direct installation, not Play Store submission.
 The host verifier checks the exact source, simulates all 4,247 relocations,
 verifies both allocator guards, audits all 131 used imports against API28 ARM NDK
 system-library stubs plus the linked shim helpers, and checks the shim's ELF
-protections. These checks do not execute Android or establish gameplay success.
-Hardware validation must cover loading, graphics, audio, input, save/reload,
+protections. The original 0.1.0 loader has reached game menus and Create-a-Sim on the Thor.
+The new graphics correction still requires hardware verification. Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.

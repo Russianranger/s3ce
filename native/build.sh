@@ -4,9 +4,19 @@ set -euo pipefail
 native_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 output="${1:-$native_dir/build/libairplay.so}"
 mkdir -p -- "$(dirname -- "$output")"
+object_dir="$(mktemp -d)"
+trap 'python3 -c '\''import shutil,sys; shutil.rmtree(sys.argv[1])'\'' "$object_dir"' EXIT
 compiler="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi26-clang"
-"$compiler" -shared -fPIC -mthumb -O2 -Wall -Wextra -Werror \
-    -fvisibility=hidden -fstack-protector-strong \
+cxx="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi26-clang++"
+common=(-fPIC -mthumb -O2 -Wall -Wextra -Werror -fvisibility=hidden -fstack-protector-strong)
+"$compiler" "${common[@]}" -c "$native_dir/legacy_loader.c" -o "$object_dir/loader.o"
+"$compiler" "${common[@]}" -c "$native_dir/graphics_diagnostics.c" -o "$object_dir/graphics.o"
+"$cxx" "${common[@]}" -std=c++14 -fno-rtti -fexceptions -c \
+    "$native_dir/pvrtc/PVRTDecompress.cpp" -o "$object_dir/pvrtc.o"
+"$cxx" "${common[@]}" -std=c++14 -fno-rtti -fexceptions -c \
+    "$native_dir/pvrtc/pvrtc_bridge.cpp" -o "$object_dir/bridge.o"
+"$cxx" -shared -static-libstdc++ "${common[@]}" \
     -Wl,-z,relro,-z,now,-z,noexecstack -Wl,-soname,libairplay.so \
-    "$native_dir/legacy_loader.c" -llog -landroid -ldl -o "$output"
+    "$object_dir/loader.o" "$object_dir/graphics.o" "$object_dir/pvrtc.o" "$object_dir/bridge.o" \
+    -llog -landroid -ldl -o "$output"
 echo "$output"

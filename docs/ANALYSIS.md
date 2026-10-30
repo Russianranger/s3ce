@@ -45,3 +45,22 @@ https://developer.android.com/about/versions/15/behavior-changes-all
 
 16 KiB page behavior:
 https://developer.android.com/guide/practices/page-sizes
+
+## 0.1.1 graphics and input findings
+
+The source data contains 135 PVRTC1 images (116 RGBA / 19 RGB), including the
+title/room backdrops and hair/eye textures. All 691 stored mip levels decoded
+with the pinned PowerVR reference decoder. The S3E capability initializer checks
+GL_IMG_texture_compression_pvrtc before enabling this path. The shim implements
+conditional software support rather than declaring unsupported GPU capability.
+See native/pvrtc/NOTICE.md for the upstream source, license, and hashes.
+
+The existing Game/SnapdragonAlphaWorkaround flag is read via s3eConfigGetInt at
+unpacked S3E offset 0x14638c. It controls an existing dummy draw/texture-state
+flush when enabling GL_ALPHA_TEST at offset 0xbce00. The Android-only config
+addition enables that pre-existing behavior.
+
+Original MultiTouch uses a pointer ID as a coordinate-array index and ignores
+ACTION_CANCEL. The original DEX reproduces the sparse-ID failure. The original
+resume handshake can lose an early notification during native/GL teardown;
+the predicate-gated wait is covered by a latch-controlled host regression.

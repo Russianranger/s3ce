@@ -1,0 +1,2 @@
+#define ANDROID_LOG_INFO 4
+#define ANDROID_LOG_ERROR 6

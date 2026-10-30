@@ -37,17 +37,18 @@ def main():
         subprocess.run([str(v) for v in command], check=True, env=env)
     java = a.jdk / 'bin/java'
     run(java, '-jar', a.apktool.resolve(), 'd', '-f', a.input.resolve(), '-o', decoded)
-    spec = importlib.util.spec_from_file_location('s3ce_patches', ROOT / 'patches/apply.py')
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    module.apply(decoded)
+    for patch in ('apply', 'graphics_config'):
+        spec = importlib.util.spec_from_file_location('s3ce_' + patch, ROOT / 'patches' / (patch + '.py'))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.apply(decoded)
     shutil.copyfile(ROOT / 'app/AndroidManifest.xml', decoded / 'AndroidManifest.xml')
     metadata = decoded / 'apktool.yml'
     data = metadata.read_text()
     data = data.replace('minSdkVersion: 3\n', 'minSdkVersion: 26\n')
     data = data.replace('targetSdkVersion: 7\n', 'targetSdkVersion: 28\n')
-    data = data.replace('versionCode: 1\n', 'versionCode: 100\n')
-    data = data.replace('versionName: 1.0\n', 'versionName: 0.1.0-compat\n')
+    data = data.replace('versionCode: 1\n', 'versionCode: 101\n')
+    data = data.replace('versionName: 1.0\n', 'versionName: 0.1.1-graphics-input\n')
     metadata.write_text(data)
     legacy = decoded / 'assets/compat/libairplay-legacy.so'
     legacy.parent.mkdir(parents=True, exist_ok=True)
@@ -55,12 +56,14 @@ def main():
     shutil.rmtree(decoded / 'lib')
     libdir = decoded / 'lib/armeabi-v7a'
     libdir.mkdir(parents=True)
-    toolchain = a.ndk / 'toolchains/llvm/prebuilt/linux-x86_64/bin'
-    run(toolchain / 'armv7a-linux-androideabi26-clang', '-shared', '-fPIC', '-mthumb', '-O2',
-        '-Wall', '-Wextra', '-Werror', '-fvisibility=hidden', '-fstack-protector-strong',
-        '-Wl,-z,noexecstack', '-Wl,-z,relro,-z,now', '-Wl,--no-undefined',
-        '-Wl,-soname,libairplay.so', '-Wl,-z,max-page-size=16384', ROOT / 'native/legacy_loader.c',
-        '-o', libdir / 'libairplay.so', '-llog', '-landroid', '-ldl', '-lm')
+    env['ANDROID_NDK_HOME'] = str(a.ndk)
+    run('bash', ROOT / 'native/build.sh', libdir / 'libairplay.so')
+    notices = ROOT / 'native/THIRD_PARTY_NOTICES.md'
+    if notices.exists():
+        shutil.copyfile(notices, legacy.parent / 'THIRD_PARTY_NOTICES.md')
+    pvrtc_license = ROOT / 'native/pvrtc/LICENSE.md'
+    if pvrtc_license.exists():
+        shutil.copyfile(pvrtc_license, legacy.parent / 'PowerVR-LICENSE.txt')
     versions = sorted((a.sdk / 'build-tools').iterdir(), key=lambda v: tuple(int(n) for n in v.name.split('.')))
     bt = versions[-1]
     android_jar = a.sdk / 'platforms/android-35/android.jar'
@@ -70,7 +73,7 @@ def main():
     classes.mkdir()
     dex.mkdir()
     run(a.jdk / 'bin/javac', '--release', '8', '-classpath', android_jar, '-d', classes,
-        ROOT / 'app/src/com/ideaworks3d/thesims3/CompatActivity.java')
+        *sorted((ROOT / 'app/src').rglob('*.java')))
     run(bt / 'd8', '--min-api', '26', '--lib', android_jar, '--output', dex,
         *sorted(classes.rglob('*.class')))
     raw, aligned = build / 'unsigned.apk', build / 'aligned.apk'
@@ -87,7 +90,7 @@ def main():
             '-alias', signing['alias'], '-dname', 'CN=S3CE Compatibility',
             '-keyalg', 'RSA', '-keysize', '3072', '-validity', '10000')
         a.keystore.chmod(0o600)
-    final = dist / 'S3CE-0.1.0-android13-16-arm32-experimental.apk'
+    final = dist / 'S3CE-0.1.1-graphics-input-arm32.apk'
     run(bt / 'apksigner', 'sign', '--ks', a.keystore, '--ks-key-alias', signing['alias'],
         '--ks-pass', 'env:S3CE_STORE_PASS', '--key-pass', 'env:S3CE_STORE_PASS',
         '--out', final, aligned)

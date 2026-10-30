@@ -2,9 +2,9 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **Gameplay has not yet been verified on a physical device.**
+Java/JNI bridge. **Version 0.1.0 reached menus/Create-a-Sim on the Thor with missing textures and stalled input; the 0.1.1 corrections need device verification.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.0-compat)
+[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.1-graphics-input)
 
 ## Supported candidate configuration
 
@@ -33,21 +33,21 @@ not a claim of successful gameplay on all four versions.
 - Screen wake uses the public window API instead of privileged `userActivity`.
 - Launcher catches Java/native-loader initialization errors and can share a
   diagnostic report. Native crashes may still require logcat.
-- Original game/audio assets are preserved byte-for-byte, uncompressed, as
+- Original game/audio assets remain unchanged except for an Android-only alpha-workaround config addition, uncompressed, as
   required by the original `AssetManager.openFd` audio path.
 
-## Test on Thor
+## Latest update and Thor test
 
-1. Install the APK from the release. Launch **The Sims 3 CE**.
-2. In airplane mode, reach the main menu, start a game, create a Sim, and enter
-   the house. Check touch input and music/sound.
-3. Play for five minutes. Save, leave the app, reopen it, and confirm the saved
-   Sim and progress load correctly.
-4. Switch to the home screen for 15 seconds, then return. Check rendering,
-   touch, and audio resume.
-5. If startup shows an error, tap **Share diagnostics**. If Android closes the
-   app, collect logcat including `S3CECompat`, `Airplay`, `AndroidRuntime`, and
-   the native tombstone. Do not clear app data during save testing.
+Version 0.1.1 adds conditional software PVRTC conversion for the missing title,
+room, hair, and eye textures; the existing Snapdragon alpha workaround; indexed
+and cancel-safe touch dispatch; and a resume notification race fix. A separate
+report process remains reachable through the app icon if the game UI hangs.
+
+Install over 0.1.0, preserving data. Open the app and tap **Start game**. Check
+backgrounds, hair/eyes, and continuous left/right swipes in Create-a-Sim.
+If it stalls, wait 10 seconds, press Home, reopen the app icon, and tap
+**Share diagnostics** before starting the game again. See
+[full test instructions](docs/RELEASE_NOTES.md).
 
 ## Build
 

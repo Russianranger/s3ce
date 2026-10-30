@@ -18,6 +18,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include "graphics_diagnostics.h"
 
 static char diagnostic_path[PATH_MAX];
 static pthread_mutex_t diagnostic_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -91,7 +92,7 @@ static void *allocate_game_code(uint32_t requested) {
     entry->next = code_allocations;
     code_allocations = entry;
     pthread_mutex_unlock(&code_lock);
-    LOGI("Allocated explicit S3E code region: %u bytes", requested);
+    LOGI("Allocated explicit S3E code region: %u bytes at %p", requested, result);
     return result;
 }
 
@@ -108,6 +109,11 @@ static void free_game_code(void *address) {
     free(found);
 }
 
+static void *legacy_dlsym(void *handle, const char *name) {
+    void *actual = dlsym(handle, name);
+    return s3ce_graphics_symbol(handle, name, actual, diagnostic_log);
+}
+
 static int legacy_srget(FILE *stream) { return getc(stream); }
 static int legacy_atexit(void (*handler)(void)) { return atexit(handler); }
 static void *legacy_new(size_t size) { return malloc(size ? size : 1); }
@@ -117,6 +123,7 @@ static void *resolve_import(const char *name, void **handles, size_t handle_coun
 #define MATCH_EABI(symbol) if (!strcmp(name, #symbol)) return (void *)(uintptr_t)&symbol;
     EABI_FUNCTIONS(MATCH_EABI)
 #undef MATCH_EABI
+    if (!strcmp(name, "dlsym")) return (void *)(uintptr_t)&legacy_dlsym;
     if (!strcmp(name, "atexit")) return (void *)(uintptr_t)&legacy_atexit;
     if (!strcmp(name, "__srget")) return (void *)(uintptr_t)&legacy_srget;
     if (!strcmp(name, "_Znaj") || !strcmp(name, "_Znwj"))
@@ -335,7 +342,7 @@ static jint load_legacy(JNIEnv *env, JavaVM *vm, jobject asset_manager) {
     }
     legacy_base = image.base;
     legacy_mapping_size = image.size;
-    LOGI("Loaded ARM32 Airplay runtime, %zu bytes; JNI version %x", image.size, result);
+    LOGI("Loaded ARM32 Airplay runtime at %p, %zu bytes; JNI version %x", image.base, image.size, result);
 
 done:
     AAsset_close(asset);
@@ -351,7 +358,7 @@ done:
  * Call after System.loadLibrary("airplay") and before the original Activity.
  * Loading the original Java classes during RegisterNatives then uses the same
  * application ClassLoader as this entry point. */
-JNIEXPORT jint JNICALL Java_com_ideaworks3d_thesims3_CompatActivity_nativeBootstrap(
+JNIEXPORT jint JNICALL Java_com_ideaworks3d_thesims3_GameBootActivity_nativeBootstrap(
         JNIEnv *env, jclass klass, jobject assets, jstring files_directory) {
     (void)klass;
     JavaVM *vm = NULL;

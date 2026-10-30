@@ -1,4 +1,44 @@
-# Candidate 0.1.0 validation
+# Candidate 0.1.1 validation
+
+User evidence: 0.1.0 reached menus and Create-a-Sim on the Thor, with white
+backgrounds, missing hair/eyes, and an unresponsive swipe tutorial. These are
+not recorded as a gameplay pass.
+
+Completed for 0.1.1:
+
+- Located 135 PVRTC images and decoded all 691 stored mip levels on the host.
+  Recovered room, title, eye, and hair textures were visually inspected.
+- Verified the original capability gate checks the PVRTC extension; the adapter
+  advertises software support only when the native driver lacks it.
+- Native sanitizer tests cover all four PVRTC1 formats, tiny mip levels, buffer
+  bounds, unaligned input, native-driver pass-through, full-image reloads, and
+  GL-error preservation.
+- Actual assembled DEX gesture regression covers complete swipes, sparse IDs,
+  pointer removal, and cancellation. The original DEX reproduces the index/ID
+  failure in the same host instruction-subset harness.
+- Latch-controlled JVM regression reproduces the original lost resume wake and
+  checks early/normal/spurious wake handling. Native callback blocking remains
+  outside this host model.
+- Exact input/method/configuration guards, APK assembly, Java compilation,
+  original asset preservation except the guarded alpha configuration, embedded
+  license, ARM native hardening/import/relocation audits, and APK signatures pass.
+- Application ID and certificate match 0.1.0; versionCode is 101. Launcher runs
+  in :launcher with a distinct task affinity; the engine runs in the main
+  process. The report path makes no calls into the engine.
+- Release reconstruction from the pinned 0.1.0 APK produces byte-identical 0.1.1.
+
+APK SHA-256:
+`c005793c54cc4220b173d9623032b927185531e41170644568216a0dfde2c42a`.
+
+Shim SHA-256:
+`8fce4aa2478654803504d8daee48c9e153c5a12cf6c2ab29460f2bab9b899d84`.
+
+0.1.1 has not been run on an Android device here. Actual texture rendering,
+Create-a-Sim progression, save/reload, audio, and process/task behavior need the
+next Thor test. Android 14–16 runtime coverage is still unverified.
+
+## Historical 0.1.0 checks
+
 
 Completed in the build environment:
 

@@ -164,6 +164,15 @@ PATCHES = [('smali/com/ideaworks3d/airplay/AirplayThread.smali',
   '.end method')]
 
 
+# Input/lifecycle/diagnostic changes keep their reviewed method bodies separate.
+import json
+_PATCH_ROOT = Path(__file__).resolve().parent
+for _relative, _signature, _original_sha, _replacement_file in json.loads(
+        (_PATCH_ROOT / "input_methods.json").read_text(encoding="utf-8")):
+    PATCHES.append((_relative, _signature, _original_sha,
+                    (_PATCH_ROOT / "methods" / _replacement_file).read_text(encoding="utf-8").rstrip("\n")))
+
+
 def apply(decoded: Path) -> list[str]:
     # Validate every original before writing any file. A changed input or partial
     # manual modification must not silently produce an incompatible build.

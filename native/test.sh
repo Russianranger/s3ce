@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+native_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+test_dir="$(mktemp -d)"
+trap 'python3 -c '\''import shutil,sys; shutil.rmtree(sys.argv[1])'\'' "$test_dir"' EXIT
+flags=(-O2 -Wall -Wextra -Werror)
+if [[ "${S3CE_SANITIZERS:-0}" == 1 ]]; then
+    flags+=(-fsanitize=address,undefined -fno-omit-frame-pointer)
+    # LeakSanitizer cannot inspect this managed runtime's process sandbox.
+    export ASAN_OPTIONS="${ASAN_OPTIONS:-detect_leaks=0}"
+fi
+cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \
+    -c "$native_dir/tests/graphics_diagnostics_test.c" -o "$test_dir/graphics.o"
+c++ -std=c++14 "${flags[@]}" "$test_dir/graphics.o" \
+    "$native_dir/pvrtc/PVRTDecompress.cpp" "$native_dir/pvrtc/pvrtc_bridge.cpp" \
+    -ldl -o "$test_dir/graphics_test"
+"$test_dir/graphics_test"
+c++ -std=c++14 "${flags[@]}" "$native_dir/pvrtc/test_bridge.cpp" \
+    "$native_dir/pvrtc/PVRTDecompress.cpp" "$native_dir/pvrtc/pvrtc_bridge.cpp" \
+    -o "$test_dir/decoder_test"
+"$test_dir/decoder_test"

@@ -1,29 +1,36 @@
-# Development handoff
+# Development handoff — 0.1.1
 
-First compatibility candidate is published as `v0.1.0-compat`. Source + payload
-publication commit: `34d4c197e810966e23d1f457e7dc2beddc11a9fa`.
-See VALIDATION.md for the artifact/certificate hashes and successful CI receipt.
+0.1.0 reached the menu and Create-a-Sim on the Thor but had white backgrounds,
+missing hair/eyes, and a stalled swipe tutorial. No gameplay/save gate passed.
+0.1.1 adds software PVRTC support, the existing Snapdragon alpha configuration,
+indexed/cancel-safe touch dispatch, and a resume lost-wake correction.
 
-Do not call this a playable port yet. Next meaningful gate is a Thor test:
-startup, menu, create Sim, enter house, audio/touch, save/reload, suspend/resume.
-Use the launcher's Share diagnostics report for Java/loader failures. Native
-crashes require an Android logcat/tombstone, including fault address and loaded
-map. Since the original ELF is loaded manually, its mapping is anonymous.
-The current loader logs size but not its base address; infer the mapping base
-from the tombstone map or add address logging in the next diagnostic build.
+Next meaningful gate: install over 0.1.0; verify menu/room/hair/eyes; swipe across
+the Sim and advance the tutorial; enter the house; check audio/touch and save/
+reload. Do not claim these have passed until the user provides results.
 
-ARM32 support, 4 KiB pages, and target SDK 28 are deliberate current constraints.
-Do not raise target SDK or claim ARM64/16 KiB support without reworking the S3E
-code-memory layout and proving execution. Preserve the original Java/JNI class
-names even though the manifest application ID is different.
+Diagnostics: app icon opens CompatActivity in :launcher and its own reports
+task; Start game enters GameBootActivity in the main process, bootstraps JNI,
+and opens original Main. A Report button is attached after every game view
+replacement. If game UI blocks, Home -> app icon -> Share diagnostics accesses
+persisted logs independently. Do not auto-start the game from the launcher.
 
-The exact original APK is required to rebuild; scripts reject other inputs.
-The separately saved private `S3CE-private-signing-backup.zip` contains the key
-and signing configuration for future install-over updates. Never add that
-backup, its password, or the keystore to this public repository.
+Native log includes GL renderer/extensions, bounded upload/errors, and mapping
+addresses. Java log includes touch arrivals, returned swap/canvas frame counts,
+UI heartbeat age and stalled thread snapshots. A returned swap is not proof of
+successful frame presentation. Native callbacks remain synchronous.
 
-Temporary APK upload chunks are removed from the current source branch after
-publication; the pinned manifest remains. CI retries fetch the existing release
-when chunks are absent and verify it against the same digest/certificate. A new
-candidate requires its own version, manifest, signing-preserving build, and
-release-workflow update.
+ARM32 support, 4 KiB pages, and target SDK 28 remain deliberate constraints.
+Dedicated S3E code mappings remain RWX. Do not raise target or advertise ARM64/
+16 KiB support without new runtime work and device validation.
+
+The exact original APK is required to rebuild. Keep the signing key from the
+separately saved private S3CE-private-signing-backup.zip for install-over updates;
+never commit it or its configuration/password. App ID and original Java/JNI
+class names must be preserved.
+
+New release publication uses pack_release_delta.py plus assemble_release.py:
+unchanged ZIP data is copied from the hash-pinned published 0.1.0 APK and changed
+bytes are staged as a small literal payload. Reconstruction must match the
+signed new APK hash exactly. Full installable APKs are published to Releases.
+See VALIDATION.md, native/README.md, and patches/README.md for precise test scope.
