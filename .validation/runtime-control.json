@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 23,
-  "frame_sha256": "cdffa64f2a894bd31b771a4e3b125fc6b84be2fc1ffa0ba0ec506f8ed19d54e4",
+  "seq": 24,
+  "frame_sha256": "2f4aea5ab253f4c290d8df2bc6a39414e5b1e863ee3dde9fb972d4c24d592369",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 113,
-    "y": 965
+    "x": 960,
+    "y": 637
   },
-  "note": "Open Pause using ordinary HUD input before preserving this session's final save path."
+  "note": "Select visible Save and Continue in final slot; this session will retain a harness-budget failure rather than claim normal Quit."
 }
