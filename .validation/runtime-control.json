@@ -1,16 +1,14 @@
 {
   "schema": 1,
   "run_id": "41212609908",
-  "seq": 13,
-  "frame_sha256": "87d7a7d46263ee43d8ce87f1597c42c5ba404e36ba575b5eea43bc6c52fc05ed",
+  "seq": 14,
+  "frame_sha256": "557dd38760b35e9ed9eea1443a0f0e4c5ce3e0551b6e75d720c8ecbfcdf2e2be",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1122,
-    "y": 735
+    "type": "finish"
   },
-  "note": "Confirm native Quit using the visible green check."
+  "note": "Collect the complete run evidence after native Quit returned; fatal count requires investigation and is not accepted."
 }
