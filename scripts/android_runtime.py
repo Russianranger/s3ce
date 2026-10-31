@@ -35,22 +35,44 @@ def game_viewport(hierarchy, windows):
     try:
         for node in ET.fromstring(hierarchy).iter('node'):
             name = node.get('class', '')
-            if 'SurfaceView' in name or 'AirplayView' in name:
+            if node.get('package', PACKAGE) == PACKAGE and ('SurfaceView' in name or 'AirplayView' in name):
                 match = BOUNDS.fullmatch(node.get('bounds', ''))
                 if match:
-                    candidates.append(tuple(map(int, match.groups())))
+                    bounds = tuple(map(int, match.groups()))
+                    if valid_native_canvas(bounds):
+                        candidates.append(bounds)
     except ET.ParseError:
         pass
     if candidates:
         return max(candidates, key=lambda b: (b[2] - b[0]) * (b[3] - b[1])), 'SurfaceView hierarchy'
+    frames = []
     for section in re.split(r'(?=\n\s*Window #\d+ Window\{)', windows):
         heading = section.splitlines()[0:2]
         if not any('com.ideaworks3d.thesims3.Main}' in line for line in heading):
             continue
         match = re.search(r'(?:mFrame=|\bframe=)(\[-?\d+,\s*-?\d+\]\[-?\d+,\s*-?\d+\])', section)
         if match:
-            return tuple(map(int, BOUNDS.fullmatch(match[1]).groups())), 'Main window frame'
+            bounds = tuple(map(int, BOUNDS.fullmatch(match[1]).groups()))
+            if valid_native_canvas(bounds):
+                base = 'ty=BASE_APPLICATION' in section
+                frames.append((base, (bounds[2] - bounds[0]) * (bounds[3] - bounds[1]), bounds))
+    if frames:
+        base, _, bounds = max(frames)
+        return bounds, 'Main BASE_APPLICATION frame' if base else 'largest Main native frame'
     return None, None
+
+
+def valid_native_canvas(bounds):
+    left, top, right, bottom = bounds
+    return right > left and bottom > top and abs((right - left) / (bottom - top) - 16 / 9) <= .002
+
+
+def keyboard_is_visible(windows):
+    for section in re.split(r'(?=\n\s*Window #\d+ Window\{)', windows):
+        if any(re.search(r'\bu\d+ InputMethod\}', line) for line in section.splitlines()[:2]):
+            return ('mViewVisibility=0x0' in section and 'mHasSurface=true' in section
+                    and 'isReadyForDisplay()=true' in section)
+    return False
 
 
 class Android:
@@ -103,7 +125,11 @@ class Android:
         (directory / 'hierarchy.xml').write_bytes(hierarchy)
         windows = self.shell('dumpsys', 'window', 'windows', check=False)
         (directory / 'windows.txt').write_text(windows)
-        self.viewport, self.viewport_source = game_viewport(hierarchy, windows)
+        observed_viewport, observed_source = game_viewport(hierarchy, windows)
+        if observed_viewport is not None:
+            self.viewport, self.viewport_source = observed_viewport, observed_source
+        elif self.viewport is not None:
+            self.viewport_source = 'retained last verified native canvas through Android UI'
         (directory / 'activity.txt').write_text(self.shell('dumpsys', 'activity', 'activities', check=False))
         (directory / 'app-files.txt').write_text(self.shell('ls', '-lR', f'/data/data/{PACKAGE}/files', check=False))
         self.latest_native = self.shell('cat', f'/data/data/{PACKAGE}/files/compat-native.log', check=False)
@@ -112,6 +138,7 @@ class Android:
         event = {'name': label, 'time': time.time(), 'screen_size': list(self.screen_size),
                  'scene': self.last_scene(), 'menu_state': self.last_menu_state(),
                  'native_viewport': self.viewport, 'viewport_source': self.viewport_source,
+                 'keyboard_visible': keyboard_is_visible(windows),
                  'game_pid': self.shell('pidof', PACKAGE, check=False).strip(),
                  'observer': observers[-1] if observers else None}
         self.events.append(event)
@@ -158,8 +185,22 @@ class Android:
         self.click_text('Start game')
 
     def tap(self, position, coordinate_size):
+        self.assert_native_canvas()
         x, y = self.coordinates(position, coordinate_size)
         self.shell('input', 'tap', x, y)
+
+    def assert_native_canvas(self):
+        if self.viewport is None or not valid_native_canvas(self.viewport):
+            raise RuntimeError('Native input requires a verified 16:9 game canvas')
+        if not self.shell('pidof', PACKAGE, check=False).strip():
+            raise RuntimeError('Native input requires a live game process')
+
+    def hide_keyboard(self):
+        if keyboard_is_visible(self.shell('dumpsys', 'window', 'windows')):
+            self.shell('input', 'keyevent', 4)
+            self.wait_for('visible keyboard to hide',
+                          lambda: not keyboard_is_visible(self.shell('dumpsys', 'window', 'windows')),
+                          15, interval=1)
 
     def coordinates(self, position, coordinate_size):
         left, top, right, bottom = self.viewport or (0, 0, *self.screen_size)
@@ -167,6 +208,7 @@ class Android:
                 round(top + position[1] * (bottom - top) / coordinate_size[1]))
 
     def swipe(self, values, coordinate_size):
+        self.assert_native_canvas()
         x1, y1, x2, y2, duration = values
         scaled = [*self.coordinates([x1, y1], coordinate_size),
                   *self.coordinates([x2, y2], coordinate_size)]
@@ -199,6 +241,7 @@ class Android:
                 if not row['checked']:
                     previous_count = observation['selected_count']
                     x = self.coordinates([1449, 0], [1920, 1080])[0]
+                    self.assert_native_canvas()
                     self.shell('input', 'tap', x, round(row['center_y']))
                     time.sleep(1)
                     after = inspect('selected-' + target)
@@ -242,6 +285,8 @@ class Android:
                 self.click_text(step['click_text'], timeout=step.get('timeout', 45))
             elif 'select_traits' in step:
                 self.select_traits_visually(name, step['select_traits'], step.get('max_scrolls', 12))
+            elif step.get('hide_keyboard'):
+                self.hide_keyboard()
             elif step.get('relaunch'):
                 self.shell('am', 'force-stop', PACKAGE)
                 self.launch()
@@ -257,6 +302,9 @@ class Android:
                 def scene_ready():
                     if step.get('probe_swipe'):
                         self.swipe(step['probe_swipe'], plan['coordinate_size'])
+                        if step.get('probe_return'):
+                            x1, y1, x2, y2, duration = step['probe_swipe']
+                            self.swipe([x2, y2, x1, y1, duration], plan['coordinate_size'])
                         time.sleep(.3)
                     elif step.get('probe_tap'):
                         self.tap(step['probe_tap'], plan['coordinate_size'])

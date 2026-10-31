@@ -19,10 +19,15 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 9,
-      "probe_tap": [
+      "probe_swipe": [
         20,
-        540
-      ]
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true,
+      "probe_interval": 0.2
     },
     {
       "name": "empty-slot-create-sim",
@@ -42,7 +47,8 @@
         540,
         1000
       ],
-      "probe_interval": 0.2
+      "probe_interval": 0.2,
+      "probe_return": true
     },
     {
       "name": "dismiss-rotation-tutorial",
@@ -62,7 +68,8 @@
         1000
       ],
       "probe_interval": 0.2,
-      "timeout": 180
+      "timeout": 180,
+      "probe_return": true
     },
     {
       "name": "appearance-visible-controls",
@@ -145,7 +152,8 @@
         540,
         1000
       ],
-      "probe_interval": 0.2
+      "probe_interval": 0.2,
+      "probe_return": true
     },
     {
       "name": "appearance-next",
@@ -165,7 +173,8 @@
         1000
       ],
       "probe_interval": 0.2,
-      "timeout": 180
+      "timeout": 180,
+      "probe_return": true
     },
     {
       "name": "choose-first-persona",
@@ -194,7 +203,8 @@
         1000
       ],
       "probe_interval": 0.2,
-      "timeout": 180
+      "timeout": 180,
+      "probe_return": true
     },
     {
       "name": "trait-0",
@@ -243,7 +253,8 @@
         540,
         1000
       ],
-      "probe_interval": 0.2
+      "probe_interval": 0.2,
+      "probe_return": true
     },
     {
       "name": "open-name-dialog",
@@ -258,6 +269,12 @@
       "name": "enter-sim-name",
       "text": "Alex",
       "wait": 2,
+      "capture": true
+    },
+    {
+      "name": "hide-landscape-ime-before-name-ok",
+      "hide_keyboard": true,
+      "wait": 1,
       "capture": true
     },
     {
@@ -284,7 +301,8 @@
         540,
         1000
       ],
-      "probe_interval": 0.2
+      "probe_interval": 0.2,
+      "probe_return": true
     },
     {
       "name": "new-game-confirmation-yes",
@@ -295,12 +313,16 @@
       "wait": 30,
       "capture": true,
       "expect_scene": "SceneGame",
-      "probe_tap": [
-        960,
-        900
-      ],
       "timeout": 240,
-      "probe_interval": 0.2
+      "probe_interval": 0.2,
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
     },
     {
       "name": "skip-gameplay-tutorial-normally",
@@ -329,13 +351,17 @@
       "wait": 8,
       "capture": true,
       "expect_scene": "SceneGame",
-      "probe_tap": [
-        960,
-        900
-      ],
       "probe_interval": 0.2,
       "timeout": 240,
-      "checkpoint": "gameplay"
+      "checkpoint": "gameplay",
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
     },
     {
       "name": "open-gameplay-pause-menu",
@@ -364,13 +390,17 @@
       "wait": 30,
       "capture": true,
       "expect_scene": "SceneMenu",
-      "probe_tap": [
-        20,
-        540
-      ],
       "probe_interval": 0.2,
       "timeout": 240,
-      "checkpoint": "saved-to-menu"
+      "checkpoint": "saved-to-menu",
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
     },
     {
       "name": "restart-from-saved-game",
@@ -379,12 +409,16 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 5,
-      "probe_tap": [
-        20,
-        540
-      ],
       "probe_interval": 0.2,
-      "timeout": 180
+      "timeout": 180,
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
     },
     {
       "name": "reopened-main-menu-start",
@@ -396,12 +430,16 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 9,
-      "probe_tap": [
-        20,
-        540
-      ],
       "probe_interval": 0.2,
-      "timeout": 180
+      "timeout": 180,
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
     },
     {
       "name": "load-existing-saved-female-sim",
@@ -412,13 +450,17 @@
       "wait": 30,
       "capture": true,
       "expect_scene": "SceneGame",
-      "probe_tap": [
-        960,
-        900
-      ],
       "probe_interval": 0.2,
       "timeout": 240,
-      "checkpoint": "resume"
+      "checkpoint": "resume",
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
     },
     {
       "name": "resumed-gameplay-floor-interaction",

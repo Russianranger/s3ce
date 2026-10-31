@@ -54,8 +54,24 @@ three hairstyle changes and Home/reopen in the same PID pass. It reaches Traits,
 but four traits were selected: the last tap replaced Genius with Absent-Minded.
 Actual scrolling did not land at the helper fixture's assumed offset. Correct
 the automated selection before the next run; no app behavior fix is justified.
-Mesa/Xvfb run41169739245 is queued/running with the full save/resume path but the
-same trait-selection error. No gameplay/save/resume acceptance claim yet.
+Run41170153789 repeats that automation failure at a different scroll offset;
+the live game has four checks and remains animated. Mesa/Xvfb run41169739245
+failed to clear logcat before app installation and is not app evidence.
+Source978fa9c uses screenshot OCR for Neat/Absent-Minded/Neurotic after the
+initial Shy/Good-Humor pair. Every tap must show the corresponding check and a
+count increment; completion requires five checks/Next and actual phase16.
+The helper passes20 real recorded frames with12 independent row assertions.
+Run41171698028 then proves five real checks, visible Next and phase16. Its
+artifact13031308914 SHA915c4c5334d37ecfea0ad0ee2ac504abf5ad5c41875126f50d5edd06532e2e7d
+shows Alex entered, but Gboard fullscreen extract UI covers the dialog: the
+automation's OK tap hits the keyboard. It also selects the small APPLICATION
+dialog frame instead of the1920×1080 BASE_APPLICATION canvas. The next harness
+revision hides the visible IME once before OK and selects the actual base canvas.
+Use alternating forward/backward pointer-probe swipes for sparse native observer
+checkpoints; taps can need over240seconds to reach the next power-of-two sample.
+No gameplay/save/resume acceptance claim yet. Native-bridge float diagnostic
+records are unreliable in this emulator; use actual PNGs/integer phase/PID
+observations and the separate original device/source projection proof.
 
 CAS flow: close hint12→13, appearance Next→persona14, choose persona/Next→traits15,
 five traits/Next→name16, nonempty name/confirm→confirmation19, Yes→SceneGame.
