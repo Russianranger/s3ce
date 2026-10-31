@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 6,
-  "frame_sha256": "8cd7f6af0e4c85c2bf79372618161907b1c35b357f22c32fc179cf4c5d85925e",
+  "seq": 7,
+  "frame_sha256": "1e32e74c93b0d27b6d43c86d6220ade33ddd2e2a5c4b787c5c8785ce93fbd3cb",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 113,
-    "y": 965
+    "x": 797,
+    "y": 854
   },
-  "note": "Open Pause after the unobstructed completed seated pose."
+  "note": "Decline visible New Wish overlay before selecting Pause."
 }
