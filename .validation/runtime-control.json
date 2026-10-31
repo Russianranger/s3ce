@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 3,
-  "frame_sha256": "d0397093764951e6de0d52f7d816ea0ff596b7e7b24d12be9a018a2ba6c5d199",
+  "seq": 4,
+  "frame_sha256": "ea4f84768f35cb3dc735af9fb3d29b571570fda3ef5e3c03ec765e39ef4161d9",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1804,
-    "y": 965
+    "x": 279,
+    "y": 220
   },
-  "note": "Repeat the now unobstructed jewel tap with camera control enabled and mode0."
+  "note": "Close the visible Wishes panel after successful jewel selection in camera mode0."
 }
