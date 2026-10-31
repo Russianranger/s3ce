@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 2,
-  "frame_sha256": "b5633a2346106ab4b0dee73eca03fe3da41b00ffcffc64581d9c79335cd33610",
+  "seq": 3,
+  "frame_sha256": "2de453808993473f258b229dfd33a20a24c44ad206851c3e4c05793fecbdb0fc",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1124,
-    "y": 854
+    "x": 95,
+    "y": 330
   },
-  "note": "A timed New Wish interrupted the status test; acknowledge its visible green check."
+  "note": "Tap the unobstructed status-panel arrow beyond old raw X45 bound."
 }
