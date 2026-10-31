@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 9,
-  "frame_sha256": "853c4840078d2c2d26eb3c50cac94a9fe49a9af67e41d3f1d12513297d9e5a0e",
+  "seq": 10,
+  "frame_sha256": "c3879ae6ebda04551ef056479a1bad6eda281d26b4194410aebdf1d9b60a258b",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1448,
-    "y": 999
+    "x": 1804,
+    "y": 965
   },
-  "note": "Repeat the now unobstructed wishes-strip tap at its visible third-slot area."
+  "note": "Check the visible plumbob next to the wishes strip as a neighboring-control regression."
 }
