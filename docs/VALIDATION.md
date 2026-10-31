@@ -37,6 +37,18 @@ are unchanged, versionCode110, targetSDK28. Requires ARM32 app support and4KiB
 pages. The actual runtime was Android11/API30; no new physical Thor/Android13–16
 or ARM64-only/16KiB-page compatibility is established.
 
+## Publication verification
+
+Release [v0.1.10-character-creation](https://github.com/Russianranger/s3ce/releases/tag/v0.1.10-character-creation)
+was published from source `3b2ba52972225f6bf6963fe3c0361775090e5f8d`.
+[Publication run41179968392](https://github.com/Russianranger/s3ce/actions/runs/41179968392)
+passed byte-exact reconstruction, signature/identity checks, prerelease upload
+and independent download/hash verification. A separate public download also
+matched 76,762,457 bytes and SHA256
+`45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb`.
+This publication workflow success is separate from the manually accepted Android
+runtime checkpoints and the preserved CI11 final OCR failure.
+
 ## Historical 0.1.9 checks
 
 Device0.1.8 evidence confirms startup, reopening, hint dismissal, rotation and

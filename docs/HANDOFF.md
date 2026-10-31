@@ -46,6 +46,18 @@ Build in isolated --build-dir/--dist-dir paths. The release transport reconstruc
 the exact tested signed APK from the pinned0.1.0 base and485945 literal bytes;
 no rebuild or re-sign is involved. Keep keys and complete user reports private.
 
+## Publication verification
+
+Release [v0.1.10-character-creation](https://github.com/Russianranger/s3ce/releases/tag/v0.1.10-character-creation)
+was published from source `3b2ba52972225f6bf6963fe3c0361775090e5f8d`.
+[Publication run41179968392](https://github.com/Russianranger/s3ce/actions/runs/41179968392)
+passed byte-exact reconstruction, signature/identity checks, prerelease upload
+and independent download/hash verification. A separate public download also
+matched 76,762,457 bytes and SHA256
+`45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb`.
+This publication workflow success is separate from the manually accepted Android
+runtime checkpoints and the preserved CI11 final OCR failure.
+
 ## Historical 0.1.9 handoff
 
 The Thor now passes the original hint confirmation and rotates/customizes the
