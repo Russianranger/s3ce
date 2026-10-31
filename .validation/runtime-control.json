@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 4,
-  "frame_sha256": "7ad7643c80bb732dfdcccc649d9eb91e5324e9d9ccbb70de204a55a95702d96f",
+  "seq": 5,
+  "frame_sha256": "6472177525f07b735d4d8a70bb0c18189a9cb4009ddeebfd4694c11d2569c983",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 110,
-    "y": 783
+    "x": 500,
+    "y": 270
   },
-  "note": "Select the visible chair/Buy button; it must open Buy rather than Pause."
+  "note": "Dismiss the visible Build Mode introduction to inspect the actual Buy controls."
 }
