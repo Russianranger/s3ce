@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41212609908",
-  "seq": 4,
-  "frame_sha256": "6e299b4ac8ff6c8caa6fe85d391b76d80cb926836e51b04f88953798a404dc29",
+  "seq": 5,
+  "frame_sha256": "0c42f1d8d62ea71287e3e08abc6621eae4c7de21d2aadfa12065d4ea53988b94",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 970,
-    "y": 745
+    "x": 1235,
+    "y": 353
   },
-  "note": "Select the visible dining chair next to the table to test the Sit interaction."
+  "note": "Select the actual rendered Sit action on the dining chair."
 }
