@@ -4,6 +4,22 @@ The user confirms reopening works after 0.1.7. Its report shows large horizontal
 swipes reach JNI with the text gate clear and frames continuing. Create-a-Sim
 still does not respond. No swipe fix is established.
 
+The subsequent0.1.8 report locates the blocker after input delivery: both
+callbacks are registered, moves reach the game, queues drain and gesture3
+recognizes dragging. SceneMenu remains12, the welcome hint. Original ARM
+dispatch execution confirms it ignores direct tap/drag and advances13 only
+on the dialog's logical confirmation action. A source-derived tap target is
+documented in README; actual hardware dismissal remains unverified.
+
+Six additional original ARM tutorial cases pass at low/high code and separate
+data addresses with body heights45/60/90. The original scale/bounds code gives
+dialog width296; actual layout, input transform, circular hit test, button
+release animation, generated action and phase switch accept raw500,370 and
+advance12→13 after401ms. The recorded off-target taps remain in12. Generic
+temporary storage, sprite/audio output and post-commit phase resource creation
+are modeled. The exact live text height and hardware dismissal are unverified.
+The production APK is unchanged; use the existing0.1.8 for this targeted check.
+
 Completed:
 
 - Eleven native ASan/UBSan suites pass, including callback identity/forwarding,

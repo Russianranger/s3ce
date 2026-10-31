@@ -3,9 +3,10 @@
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
 Java/JNI bridge. **The Thor now reaches Create-a-Sim with room/hair textures.
-Reopening now works too. Swipes still fail. Version 0.1.8 records callback
-registration, delivery into the game and drag state to locate that remaining
-failure. It does not contain a verified swipe fix.**
+Reopening now works too. The 0.1.8 report confirms callback delivery and drag
+recognition. The game is waiting for the welcome hint's confirmation control,
+which is invisible in the supplied screenshot. Advancing that hint on the Thor
+is the next device check.**
 
 [Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.8-gesture-trace)
 
@@ -41,21 +42,19 @@ not a claim of successful gameplay on all four versions.
 
 ## Latest update and Thor test
 
-The latest Thor report contains large horizontal touchscreen swipes. Java does
-not block them, and the native handler receives changing coordinates while
-frames continue. The game consumes registered callbacks, so its unused polling
-coordinates remaining zero do not explain the failure.
+The latest Thor report shows both registered callbacks delivering input, the
+game draining its input queues, and successful drag recognition. Its active
+state is the welcome hint (12), before character rotation (13). The original
+code ignores swipes in that hint and advances only after its confirmation
+control emits an action. A tap on the message body does not confirm it.
 
-Original ARM queue, callback, game input-buffer, gesture-state and rotation tests
-accept these events. Version 0.1.8 adds bounded callback entry/return and validated
-game-state observations to find where the actual device differs. Original
-callbacks still receive the same payload, user data and return value through
-the engine's stack gateways. The swipe cause remains unresolved.
-
-Install over the existing app, leave **Original rendering unchecked**, and press
-Start game. At Create-a-Sim, drag from the Sim's torso left/right a few times,
-then use Report → Save report while that run remains open. If necessary, reopen
-the app icon to access reports. See
+Use the current 0.1.8 APK with **Original rendering unchecked**. At the welcome
+hint, try a clean tap near **(500, 370)** on the 1920×1080 screen: approximately
+26% from the left and 34% from the top, beside the hint's upper-left corner.
+This is the source-derived area of its invisible round close/confirm control;
+the exact vertical center depends on text layout. Release and wait one second,
+then drag the Sim left/right. If the hint stays, use Report → Save report while
+that run remains open. See
 [test instructions](docs/RELEASE_NOTES.md) and [native details](native/README.md).
 
 ## Build

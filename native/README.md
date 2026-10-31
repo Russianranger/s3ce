@@ -270,6 +270,7 @@ python3 native/tests/emulate_pointer_queue.py /path/to/source.apk
 python3 native/tests/emulate_pointer_proxies.py /path/to/source.apk \
   /path/to/source.s3e.unpacked --ndk "$ANDROID_NDK_HOME"
 python3 native/tests/emulate_cas_rotation.py /path/to/source.s3e.unpacked
+python3 native/tests/emulate_cas_tutorial.py /path/to/source.s3e.unpacked
 ```
 
 The first script executes original `setViewNative`, `s3eGL_start`, and `callMethod`
@@ -293,6 +294,13 @@ R9/SP/fibre restoration, real duplicate/unregister policies, failure/retry,
 seventeen callbacks and reentrant replacement. The last script executes the
 original CAS rotation arithmetic at preferred and high addresses. Game fixtures
 require the separately unpacked, SHA-pinned source S3E; no game bytes are included.
+The tutorial proof executes the original scaled sprite bounds, message-box
+layout, circular button hit test, release animation, generated action and actual
+SceneMenu phase switch. It distinguishes the phase12 instruction screen from
+phase13 rotation. The original control needs a tap and release followed by its
+400ms animation; dragging the instruction screen does not dismiss it. The proof
+tests preferred and high split allocations and explicitly models sprite/audio,
+temporary-array storage and resource creation after the phase commit.
 
 ## Behavior
 

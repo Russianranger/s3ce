@@ -1,5 +1,18 @@
 # Development handoff — 0.1.8
 
+Latest device evidence: callbacks and drag recognition work. The game remains
+in SceneMenu state12, the CAS welcome hint. State12 accepts logical event11
+mask4/80 and advances13; it ignores tap gesture3 and drag5 directly. Its own
+round close/confirm control must complete a clean click and its release
+animation. The screenshot lacks this control and the surrounding sprite frame.
+Do not keep treating this report as lost native motion or change input scaling.
+Use the existing APK to check a clean tap around physical(500,370), approximately
+26%/34% of the1920×1080 display, then wait one second before dragging. This is a
+source/screenshot-derived target, not a hardware-confirmed result. Button radius
+is35 scene units (about118 physical pixels); exact Y depends on wrapped text.
+The invisible sprite UI remains a separate rendering investigation. Original
+sprite assets contain visible pixels, and input/render scaling agree exactly.
+
 The Thor now reopens successfully. Preserve the working RAM, graphics, stack and
 cache-flush fixes. Swiping at Create-a-Sim remains unresolved.
 

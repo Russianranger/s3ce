@@ -257,3 +257,58 @@ bookkeeping. Code and initialized game data are separate allocations; preferred
 global offsets must be resolved through guarded relocated literal pools rather
 than added to the code base. Only validated objects may supply state snapshots.
 Full reports and signing material remain private.
+
+## 0.1.8 device follow-up: tutorial confirmation
+
+The new report establishes the previously missing boundary. Original pointer
+callbacks for events0/1 register successfully, every recorded native movement
+enters the game's callback, AppEngine queue counts alternate and drain, and the
+SceneMenu gesture state reaches3. Transition flags420=0/430=1 and route=-1 leave
+input enabled. The Sim angle remains zero while menuState is12, not13.
+
+The switch at114568 subtracts3 before indexing its table at114578. State12 maps
+to114c9c; state13 maps to114cbc and then11b644 (the rotation handler already
+executed in regression tests). State12 accepts logical event11 only when its
+payload action intersects0x84, then requests13 through116944. Direct tap gesture3
+and drag5 do not advance it. Independent actual ARM execution covers the phase
+write and the original transition gate, including report-matching flags.
+
+State12 entry116fec configures the instruction widget at Scene+168 with string
+keys86c/86d for the first welcome hint, or84f/851 for edit appearance. The shipped
+English archive confirms86d is the exact visible welcome/swipe instruction.
+This prompt describes the next interaction but waits for a separate confirmation.
+Its button requires DOWN/UP inside a35-unit circle, then a400ms release animation
+before emitting action4. Pointer movement outside the circle cancels the click.
+
+Source input mapping and inverse rendering both use3.375 at1920×1080. Actual ARM
+execution reproduces the report coordinates; extra Java rescaling would break
+this matching pair. Mesh96 has raw X coordinates±296 and positionScale0.5; the
+bounds builder applies that scale, giving layout width296. The hint draw stores
+the confirmation hit center at sceneX823 and sceneY=540-(bodyHeight+100)/2+23.
+Inverse mapping puts X near498; three visible lines suggest Y near370. The35-unit
+radius is about118 screen pixels, so a clean tap near500,370 is the practical
+next hardware check. Exact wrapped body height is not recorded by0.1.8; this
+point is source/screenshot-derived, not a hardware-confirmed center.
+
+The reusable native/tests/emulate_cas_tutorial.py now executes that complete
+button route at low/high code and separately allocated data addresses for
+body heights45/60/90. Actual vertex-buffer scaling/bounds/width, layout, input
+conversion, circular capture/release, animation, action emission and phase
+dispatch all execute original ARM instructions. A clean raw500,370 tap stays
+in12 through400ms and advances13 at401ms in all six cases. The two recorded
+off-target taps do not. Generic temporary storage, sprite/audio output and
+post-commit phase resource creation are modeled.
+
+Sprite119 is a blue round background and glyph122 a black X in the shipped atlas;
+the assets contain visible pixels. The supplied screenshot lacks these and the
+dialog frame while font text and3D rendering remain visible. Asset absence and
+native input loss are ruled out for this report; the missing2D sprite rendering
+still needs investigation. No production input or rendering behavior was changed
+for this follow-up. The existing0.1.8 APK can test dismissal before another build.
+
+Bounded rendering review found that these sprites use normal M3G meshes with
+alpha blending, depth testing/writing disabled and no culling. Their sampler
+uses LINEAR magnification and LINEAR_MIPMAP_NEAREST minification. Whether the
+specific live UI atlas receives or generates all required mip levels remains
+unverified; the base-only upload logs do not prove incompleteness. Do not apply
+a texture-filter workaround without establishing that remaining condition.
