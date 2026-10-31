@@ -1,31 +1,30 @@
-S3CE 0.1.10 — visible UI and verified character creation
+S3CE 0.1.11 — object actions and clean shutdown
 
-Restores the missing character-creation panels, tabs, icons and buttons. A guarded
-native correction prevents high-resolution scaling from clipping UI projection
-depth; XY rendering and touch coordinates stay unchanged. Original game assets
-are restored after the unsuccessful 0.1.9 indexed-quad experiment.
+Fixes visible object-action buttons rejecting taps. The original menu drew its
+rows using Display anchoring while its coarse touch rectangle stayed at Y=0; the
+correction aligns that boundary with the original visible layout. Rendering,
+camera gestures, global touch scaling and action dispatch are preserved.
 
-The exact APK completed an actual Android run with female gender, three hairstyle
-changes, five traits, name Alex, confirmation into the house with full HUD, Save &
-Quit, a full process restart and loading the saved female Sim with responsive
-input. No fatal crash or ANR appeared in the captured run. The previous female
-crash did not recur in that path; its original invalid-object cause is unresolved.
+Also corrects two shutdown ownership races: DLC images now release before their
+renderer cache, and queued audio callbacks cannot use a retired AudioTrack after
+native shutdown. Current-track audio playback remains active.
 
-Validation used Android 11/API 30 Google APIs x86 with ARMv7 translation,
-Emulator 31.1.4/KVM/SwiftShader, 1920×1080 and 4 KiB pages. This is not physical
-Thor or Android 13–16 gameplay certification. The final automated run remains
-red because a redundant final OCR step timed out after the required checkpoints;
-those screenshots/logs passed manual review. Details: docs/RUNTIME_ACCEPTANCE.md.
+The exact APK completed an actual Android run through female creation, five
+traits/name Alex, house gameplay, save/restart/load, a visible Chair Sit followed
+by a seated Sim, another save, and clean normal Quit back to the launcher. The
+accepted run contains no fatal crash/ANR or late-audio warning. Chair Sit was
+directly exercised; Sofa and C3 Android Home/resume were not. Source proof and
+all failure history are in docs/OBJECT_ACTIONS_RUNTIME_ACCEPTANCE.md.
 
-Install over the existing S3CE app without uninstalling or clearing data. Leave
-**Original rendering (diagnostic mode) unchecked** and start the game. Same package,
-signing key and private-data location preserve update compatibility. The Report
-overlay was removed because it covered an original control; use **Home → app icon
-→ Save report** to access diagnostics.
+Validation used Android 11/API 30 x86 with ARMv7 translation, Emulator 31.1.4/KVM/
+SwiftShader, 1920×1080 and 4 KiB pages. A first same-byte attempt aborted inside the
+emulator translator; the retry completed. No new physical Thor or Android 13–16
+certification is claimed.
 
-Requires a device supporting 32-bit ARM applications and 4 KiB pages. ARM64-only
-and 16 KiB-page devices remain unsupported. Android 13–16 are compatibility
-targets, not four separately verified gameplay environments.
+Install over your existing S3CE app without uninstalling or clearing data. Keep
+**Original rendering (diagnostic mode) unchecked**. Same package/signing key/data
+location preserve update compatibility. Reports: **Home→app icon→Save report**.
+Requires 32-bit ARM app support and 4 KiB pages; target SDK 28 remains intentional.
 
 APK SHA256:
-45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb
+3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5

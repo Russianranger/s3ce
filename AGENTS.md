@@ -1,25 +1,29 @@
-# Current work — object-action selection (0.1.11 pending)
+# Current release — 0.1.11 object actions: gate passed
 
-The user physically verified 0.1.10 on the Thor: UI, character creation, house,
-walking, saving, camera zoom and pan work. Visible object-action buttons do not
-accept taps. Preserve those working behaviors. Do not present or publish a new
-APK until normal Android UI input selects an object action and the Sim completes
-it; retain actual screenshots, logs, exact APK hash and environment limitations.
+The user physically verified 0.1.10 UI, character creation, house, walking,
+saving, zoom and pan on the Thor, then reported visible actions rejecting taps.
+Exact C3 APK SHA256
+`3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5` (76,762,457 bytes)
+passes the new real Android gate: visible Cheap Dining Chair / Sit selected,
+Sim walks then sits, ordinary post-action Save and Quit, normal main-menu Quit,
+native Main return, Activity finish and Compat launcher resume. Entire accepted
+run has no fatal/ANR matches or late-audio warning. Root and two independent
+reviewers inspected actual frames and the complete hash-verified archive.
 
-Source analysis identifies UIContextMenu's coarse rectangle Y=0,H=320 while
-visible anchored rows move into logical Y380..700 at1920x1080/scale3.375.
-Correct only its rectangle origin using the original Display Y transform;
-retain original rendering, input transforms, action selection and game logic.
-Verify the compiled helper and ARM thunk, source fingerprints, all row/negative
-cases and legacy dimensions before runtime acceptance. The current report also
-contains a later ImageIPhone/render-cache teardown crash; distinguish it from
-the earlier menu tap failure and avoid speculative NULL skips.
+Run 41215805134 attempt 2 / source 02b1375300f541f3d092b3d1720d16031f4b7a06 is green.
+Its automated acceptance file retains gate_passed=false awaiting human visual
+review; the manual decision is separately recorded in the durable receipt.
+C2's late SoundPlayer NPE and C3 attempt 1's ARM-translator startup abort remain
+preserved as failures. Do not describe all attempts as successful. Sofa itself
+and C3 Android Home/resume were not directly exercised. Runtime is API 30 x86
+with ARMv7 translation, not physical Thor or Android 13–16 certification.
 
-Internal C2 run41212609908 completed a real Chair Sit through the visible action
-menu, but clean Quit correctly failed on a queued SoundPlayer callback after
-native Main returned. C3 adds guarded, serialized audio lifecycle ownership and
-retired-track rejection. Require a fresh real object action and fatal-free native
-Quit on the exact C3 APK before publication; C2 remains unreleased.
+Publication of these exact tested bytes is authorized. See
+[object-action runtime receipt](docs/OBJECT_ACTIONS_RUNTIME_ACCEPTANCE.md).
+Future APK changes require fresh evidence for affected behavior. Never replace
+actual game progression with phase/memory/save writes or host fixtures.
+Preserve the context-menu anchored hit rectangle, DLC/cache cleanup ownership,
+and guarded serialized audio lifecycle. No generic NULL-callee skip is applied.
 
 # Historical 0.1.10 delivery gate — passed
 

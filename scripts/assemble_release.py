@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-STAGING = ROOT / '.publish/v0.1.10-character-creation'
+STAGING = ROOT / '.publish/v0.1.11-object-actions'
 
 def digest(path):
     with path.open('rb') as stream:

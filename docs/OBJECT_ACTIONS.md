@@ -63,34 +63,31 @@ native-hardening checks, v2/v3 signature/package/version/launcher checks,
 assembled touch/lifecycle/GL regressions and310-method DEX analysis with no
 static type/register failures.
 
-## Runtime delivery gate
+## Runtime delivery gate — passed for C3
 
-Internal C2 APK SHA256
-`a5a98513afa16520bc86b2aff67fda2b68d3505755d57e69e75cd6499453aa48`,
-76,762,457 bytes. Native SHA256
-`d0f375b7e74b8174f0f00472a3b3eb6f44f0b5d2f48ffcfa1f03e812b236cf68`.
-Run [41212609908](https://github.com/Russianranger/s3ce/actions/runs/41212609908),
-source `c49b2cdf62ee73b15a3dab3b90b79af40689e4a6`, completed the female creation,
-house gameplay, normal save and new-process load prefix. Ordinary frame-guided
-Android input then selected the visible Cheap Dining Chair **Sit** action at
-1235,353. Frame6 shows the standing Sim, empty chair and action menu; frame7
-shows the Sim seated at the table with the chair action icon. Root and two
-independent reviewers inspected the hash-verified raw frames. Frame7 PNG SHA256:
-`5aa234152451b1e36157433a166bcc4f9eaea0e11b4767e4c8379d5d886c3655`.
-This is actual Chair Sit execution through the shared context menu; Sofa itself
-was not exercised. No game-memory or save-file values were written.
+Accepted exact C3 APK SHA256
+`3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5`,76,762,457 bytes.
+[Run 41215805134 attempt 2](https://github.com/Russianranger/s3ce/actions/runs/41215805134/attempts/2),
+source `02b1375300f541f3d092b3d1720d16031f4b7a06`, completed female creation,
+house gameplay, normal save and new-process load. Ordinary bound Android input
+selected the visible Cheap Dining Chair / Sit action at 1235,353. Frames 7/8/10
+show the menu, approach/queue, then seated Sim. Normal post-action SaveQuit and
+main-menu Quit returned from native Main and finished the Activity into Compat.
+The full accepted log has zero fatal/ANR matches and no late-audio warning.
 
-Normal Save and Quit returned to the main menu. Native Quit returned from Main
-and requested Activity.finish, but a queued audio callback then caused a genuine
-Java fatal exception. The workflow correctly failed and C2 is **not accepted
-for release**. Artifact13047588702 is112,228,778 bytes, ZIP SHA256
-`e690ad48715216e3af370d33f4a0cb429c937c5016281fb1d2fa704b3bee24ab`.
-The follow-up C3 audio lifecycle correction must repeat actual interaction and
-clean Quit before publication; `.validation` is internal staging only.
+Root and two independent reviewers accepted those actual raw frames and full
+artifact13048233710, ZIP SHA256
+`95448d02d49e77fd5a3175e000673f6227411e163436492bdeaf5d0e097f3c8a`.
+The original automated gate_passed=false awaiting visual review remains intact;
+manual signoff is separately recorded in the [durable receipt](OBJECT_ACTIONS_RUNTIME_ACCEPTANCE.md).
+No game memory, phases or save values were written. Sofa itself and C3 Android
+Home/resume were not directly exercised. Runtime was API 30 x86/ARMv7 translation,
+not new physical Thor/Android 13–16 acceptance.
 
-Do not publish a new APK based only on menu dismissal or the host ARM fixtures.
-The runtime environment is Android11/API30 with ARMv7 translation; physical Thor
-Android13 behavior for the new patch still needs to be distinguished precisely.
+C2 had already completed Chair Sit but was rejected on its late audio Quit NPE.
+C3 attempt 1 aborted in the emulator ARM translator's VADDL alignment check before
+UI; its exact origin remains unproven. Identical C3 bytes passed attempt 2. Both
+failures remain in the receipt/index. Publication uses only accepted C3 bytes.
 
 ## Separate exit crash
 
@@ -109,7 +106,7 @@ handles, GPU deletion and unrelated subsystem termination are fixture inputs or
 modeled boundaries. This identifies an original lifetime hazard consistent with
 the report; the report did not capture its precise cached DLC entry. Actual
 Android C2 execution reached native Main return without a native fatal signal.
-The separate Java failure below still blocks clean-Quit acceptance.
+The separate Java failure below blocked C2; corrected C3 passed clean Quit.
 
 ## Queued audio callback after Quit
 
@@ -131,9 +128,9 @@ stop/restart identity, concurrent generation/write drain, reentrant retirement,
 and exception/monitor checks. The old C2 DEX reproduces the observed delayed
 generation and null-track write. Six original method fingerprints plus native
 generation/init guards reject tampering before any write; repeat application is
-idempotent. All310 implemented C3 DEX methods pass static register/type analysis.
+idempotent. All 310 implemented C3 DEX methods pass static register/type analysis.
 These host checks model Android AudioTrack and native mixing boundaries, so the
-actual C3 Android interaction/clean-Quit replay remains required. C3 APK SHA256
+actual C3 Android interaction/clean-Quit replay above supplies the required evidence. C3 APK SHA256
 is `3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5`;
 only classes.dex and signing records differ from C2. Native bytes, the launcher
 DEX, AndroidManifest and original assets remain identical.

@@ -2,11 +2,11 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **0.1.10 restores the missing UI and has completed a real Android
-playthrough of female character creation, the playable house, Save & Quit and
-loading the saved Sim after a full process restart.**
+Java/JNI bridge. **0.1.11 fixes visible object-action buttons rejecting taps and
+corrects shutdown ownership/audio races. The exact APK completed female character
+creation, house gameplay, a real Chair Sit, save/reload and clean native Quit.**
 
-[Download the tested APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.10-character-creation/S3CE-0.1.10-character-creation-arm32.apk).
+[Download the tested APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.11-object-actions/S3CE-0.1.11-object-actions-arm32.apk).
 Install over the existing S3CE app without clearing data. Leave **Original
 rendering (diagnostic mode) unchecked**. To access reports, press Home and open
 the app icon, then choose Save report. The permanent Report overlay was removed
@@ -56,18 +56,29 @@ XY rendering and input coordinates. Original game assets are restored after the
 unsuccessful 0.1.9 indexed-quad experiment.
 
 The exact release APK was tested on Android 11/API 30 Google APIs x86 with ARMv7
-translation, Emulator 31.1.4/KVM/SwiftShader, 4 KiB pages and 1920×1080. Actual
-screenshots show appearance controls, female hairstyle changes, five traits,
-name Alex, the house with full HUD, Save & Quit, and the saved female Sim loaded
-in a new process with responsive gameplay. The earlier female-customization
-crash did not recur in this tested path; its original invalid-object cause is
-not established. No new physical Thor or Android 13–16 playthrough is claimed.
+translation, Emulator 31.1.4/KVM/SwiftShader, 4 KiB pages and 1920×1080. Ordinary
+Android input completed female creation, five traits, Alex naming, house/HUD,
+Save and Quit, a full process restart and saved-Sim load. Selecting the visible
+Cheap Dining Chair / Sit made Alex walk to the chair and sit. A subsequent save
+and normal native Quit returned cleanly to the launcher, with zero fatal/ANR
+matches or late-audio warnings in that accepted run.
 
-[Runtime evidence and screenshots](docs/RUNTIME_ACCEPTANCE.md) records the
-required acceptance checkpoints. The final automated run remains red because a
-redundant OCR step timed out after the successful save/load and interaction
-checkpoints; those checkpoints passed manual screenshot/log review. This is
-not an all-green automation claim.
+[Runtime evidence and screenshots](docs/OBJECT_ACTIONS_RUNTIME_ACCEPTANCE.md)
+record the exact APK and raw-image hashes, commands, process/save evidence and
+manual visual signoff. Attempt2 of run 41215805134 passed. Its first attempt
+aborted inside the emulator ARM translator before the UI; those same bytes
+passed the retry. The precise origin of that initial translator assertion is
+unproven. Sofa itself and C3 Android Home/resume were not directly exercised.
+The previous female-customization crash did not recur in this path; its original
+invalid-object cause remains unresolved. No new physical Thor or Android 13–16
+playthrough is claimed. The user confirmed the preceding 0.1.10 on the Thor.
+
+Object-menu drawing used Display anchoring while its coarse touch rectangle
+remained at Y=0. The guarded correction uses the same original anchored Y as the
+visible rows. Rendering, global touch scaling and action dispatch remain intact.
+Native shutdown retains the renderer cache until DLC images are released;
+SoundPlayer retires old tracks and serializes callbacks with lifecycle changes.
+See [implementation and proof boundaries](docs/OBJECT_ACTIONS.md).
 
 ## Build
 

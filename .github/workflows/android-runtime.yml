@@ -40,12 +40,9 @@ jobs:
           mkdir -p build/runtime-evidence "$ANDROID_AVD_HOME"
           printf 'ANDROID_HOME=%s\nANDROID_AVD_HOME=%s\n' "$ANDROID_HOME" "$ANDROID_AVD_HOME" > build/runtime-evidence/setup.txt
           python3 - <<'PYMODE'
-          import json, os, time
-          from pathlib import Path
-          plan = json.loads(Path('scripts/android_runtime_plan.json').read_text())
-          enabled = (os.environ.get('DISPATCH_INTERACTIVE', '').lower() == 'true'
-                     if os.environ['WORKFLOW_EVENT'] == 'workflow_dispatch'
-                     else bool(plan.get('interactive_control_enabled', False)))
+          import os, time
+          enabled = (os.environ['WORKFLOW_EVENT'] == 'workflow_dispatch'
+                     and os.environ.get('DISPATCH_INTERACTIVE', '').lower() == 'true')
           with open(os.environ['GITHUB_ENV'], 'a') as env:
               env.write('S3CE_RUNTIME_INTERACTIVE=' + str(enabled).lower() + '\n')
               env.write('S3CE_RUNTIME_DEADLINE_EPOCH=' + str(int(time.time()) + 4800) + '\n')
@@ -128,7 +125,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends tesseract-ocr python3-pil
           /usr/bin/python3 -c 'import PIL; print("Pillow", PIL.__version__)'
           tesseract --version
-      - name: Exercise baseline and candidate through real Android input
+      - name: Exercise automated creation, save, and reload smoke
         if: env.S3CE_RUNTIME_INTERACTIVE != 'true'
         env:
           CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}

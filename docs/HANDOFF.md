@@ -1,4 +1,46 @@
-# Development handoff — 0.1.10
+# Development handoff — 0.1.11
+
+ROOT delivery gate PASSED for C3, 76,762,457 bytes, SHA256
+`3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5`. VersionCode 111,
+same package/key/private-data location, ARMv7/4 KiB/target SDK 28. Install over the
+existing app; Original rendering unchecked. Frozen bytes reconstruct from
+.publish/v0.1.11-object-actions without rebuilding or resigning.
+
+Actual run 41215805134 attempt 2 / source 02b1375300f541f3d092b3d1720d16031f4b7a06
+completed female creation, five traits/name Alex, house gameplay, normal save,
+new-process saved-Sim load (PID4010→11395), visible Chair Sit followed by a seated
+pose, another normal save, and main-menu Quit→native Main return→Activity.finish
+→Compat launcher. The complete run has zero fatal/ANR matches and no late-audio
+warning. Root and two reviewers accepted the raw frames/full archive. Original
+automated gate_passed=false remains intact; manual signoff is recorded separately.
+See [durable receipt](OBJECT_ACTIONS_RUNTIME_ACCEPTANCE.md) and its JSON index.
+
+Three targeted corrections: context-menu bounds now use original Display Y
+anchoring; CacheGLES destruction follows existing DLC/image cleanup; six guarded
+SoundPlayer methods serialize callback/lifecycle ownership and reject retired
+track callbacks before JNI. Native bytes and original assets are unchanged from
+C2; only the audio bridge DEX and signing records changed. The 14 native sanitizer
+suites,20 context-menu ARM cases, 16 shutdown ARM cases, audio DEX lifecycle/race
+regressions, old-C2 counterexample, six method guards and310-method static DEX
+analysis pass. Android/native audio services remain host fixture boundaries in
+those race tests; the actual accepted run supplies gameplay and Quit evidence.
+
+C2 was rejected on a late queued SoundPlayer null-track write after native Quit.
+C3 attempt 1 aborted pre-UI in the emulator ARM translator's VADDL alignment check;
+its exact cause remains unproven and those exact bytes passed attempt 2. Preserve
+both failures. The test environment is API 30 x86/ARMv7 translation, not native
+ARM hardware or new Android 13–16 acceptance. Sofa and C3 Android Home/resume were
+not directly exercised; the controller cannot safely follow Home's portrait
+orientation with its retained landscape viewport. The earlier female crash's
+invalid-object root cause also remains unresolved; no generic skip was added.
+
+Unattended runtime CI now stops after the established creation/save/reload prefix;
+frame-guided object/Quit review is opt-in. Source checkpoints and publication of
+these exact accepted bytes are authorized; future APK edits need affected checks.
+Keep keys and complete user reports outside Git. Publication verification will
+be recorded after the release workflow and independent public download pass.
+
+# Historical handoff — 0.1.10
 
 The user delivery gate PASSED for the exact frozen release APK. Actual Android
 execution shows restored UI, female customization with three hairstyle changes,

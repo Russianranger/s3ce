@@ -1,4 +1,41 @@
-# 0.1.10 acceptance — required runtime gate passed
+# 0.1.11 acceptance — object actions and clean Quit passed
+
+Exact C3 APK 76,762,457 bytes / SHA256
+`3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5` passed root plus two
+independent reviews of actual run 41215805134 attempt 2. The full archive is
+artifact 13048233710, 122,659,146 bytes, SHA256
+`95448d02d49e77fd5a3175e000673f6227411e163436492bdeaf5d0e097f3c8a`.
+
+| Check | Evidence |
+| --- | --- |
+| Real progression | Female creation,5 traits/name Alex, house/HUD, ordinary SaveQuit and saved-Sim load in new PID4010→11395 |
+| Object action | Visible Cheap Dining Chair/Sit frame7→walk/queue frame8→seated pose frame10; ordinary bound Android tap |
+| Post-action save | Normal Pause/SaveQuit confirmation; sim3dat0/settings mtime updated and main menu returned |
+| Native Quit | Actual Quit/green Yes→native return16:09:47.743→Activity.finish.744→Compat resumed; Main not resumed |
+| Fatal evidence | Entire accepted live log has zero fatal/ANR and zero generateAudio-after-shutdown warnings |
+| Native proofs |14 ASan/UBSan suites; 20 compiled context-menu ARM and 16 shutdown ownership ARM cases; exact fingerprints/bounds/cache flush |
+| Audio proofs | Actual assembled six-method DEX lifecycle, 1,000 late callbacks, restart identity, concurrent generation/write drain, reentrancy and exception/monitor tests; oldC2 race reproduced |
+| Packaging | Original assets/config preserved; identical C2 native/classes2/manifest; v2/v3 signature, same cert/package,111/target28, ARM32 hardening |
+| Static DEX |310 implemented methods, zero type/register analysis errors; no ART claim from static checks |
+
+[Durable runtime receipt](OBJECT_ACTIONS_RUNTIME_ACCEPTANCE.md) retains raw hashes,
+all 17 commands, previews, actual checkpoints, environment and manual signoff.
+The automated gate_passed=false awaiting visual review was not rewritten.
+Attempt2 workflow is green. C2's real audio Quit failure and C3 attempt 1's native
+translator startup abort remain preserved; their history is not an all-green
+claim. The first C3 abort's exact origin remains unproven; identical bytes passed
+the retry. Sofa itself and C3 Android Home/resume were not directly exercised.
+
+Actual environment: Android 11/API 30 Google APIs x86/ARMv7 translation, pinned
+Emulator 31.1.4/KVM/SwiftShader, 1920×1080, 4 KiB pages. No new native ARM hardware,
+Thor, Android 13–16 or16 KiB-page gameplay certification. The prior female crash
+was not reproduced in this path; no generic NULL skip or model replacement.
+Native SHA256 `d0f375b7e74b8174f0f00472a3b3eb6f44f0b5d2f48ffcfa1f03e812b236cf68`;
+res.dz SHA256 `3bbb04b058f245b1784370270f26a547ac36d124ef26d09fbadac05ee2dfcf82`.
+
+Publication/download verification will be appended after the release workflow.
+
+# Historical0.1.10 acceptance — required runtime gate passed
 
 The exact release APK passed manual review of actual Android UI, female
 character creation, house gameplay, Save & Quit, process restart and saved-Sim

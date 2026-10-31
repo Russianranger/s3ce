@@ -65,6 +65,18 @@ def sha(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def plan_execution_scope(plan, interactive, interactive_after):
+    """Bound unattended smoke runs without changing the normal input prefix."""
+    endpoint = interactive_after if interactive else plan.get('automated_stop_after')
+    mode = 'frame-guided' if interactive else 'automated-prefix' if endpoint else 'automated-full-plan'
+    if endpoint is None:
+        return {'mode': mode, 'endpoint': None, 'limit': None}
+    matches = [index for index, step in enumerate(plan['steps']) if step['name'] == endpoint]
+    if len(matches) != 1:
+        raise ValueError('Runtime prefix endpoint is missing or ambiguous: ' + str(endpoint))
+    return {'mode': mode, 'endpoint': endpoint, 'limit': matches[0] + 1}
+
+
 def game_viewport(hierarchy, windows):
     """Prefer the actual native view; otherwise use its fullscreen Main window."""
     candidates = []
@@ -698,10 +710,12 @@ def main():
     image = sdk / 'system-images/android-30/google_apis/x86'
     original_size = (image / 'system.img').stat().st_size
     plan = json.loads(args.plan.read_text())
+    execution_scope = plan_execution_scope(plan, args.interactive, args.interactive_after)
     result = {'status': 'pending', 'candidate_sha256': sha(args.candidate),
               'baseline_sha256': sha(args.baseline), 'git_sha': os.environ.get('GITHUB_SHA'),
               'environment': {}, 'checkpoints': {}, 'visual_review': 'required',
-              'gate_passed': False, 'actions': 'Android UI input only; no game-state writes'}
+              'gate_passed': False, 'actions': 'Android UI input only; no game-state writes',
+              'execution_scope': execution_scope}
     android = Android(sdk, output)
     emulator = logcat = None
     emulator_log = (output / 'emulator.txt').open('wb')
@@ -783,13 +797,7 @@ def main():
                     android.snapshot('baseline-final')
                 android.shell('am', 'force-stop', PACKAGE)
             else:
-                limit = None
-                if args.interactive:
-                    matches = [i for i, step in enumerate(plan['steps']) if step['name'] == args.interactive_after]
-                    if len(matches) != 1:
-                        raise RuntimeError('Interactive prefix endpoint is missing or ambiguous')
-                    limit = matches[0] + 1
-                result['checkpoints'] = android.run_plan(plan, label, limit=limit)
+                result['checkpoints'] = android.run_plan(plan, label, limit=execution_scope['limit'])
                 result['events'] = android.events
                 for checkpoint in ['gameplay', 'resume']:
                     observation = result['checkpoints'].get(checkpoint, {})

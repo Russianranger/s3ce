@@ -13,7 +13,7 @@ from unittest.mock import patch
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from android_runtime import Android, CONTROL_URL, CONTROL_CONTENTS_URL, fetch_control_document, sha
+from android_runtime import Android, CONTROL_URL, CONTROL_CONTENTS_URL, fetch_control_document, plan_execution_scope, sha
 
 
 class FakeAndroid(Android):
@@ -39,6 +39,26 @@ class FakeAndroid(Android):
 
 
 class InteractiveProtocolTests(unittest.TestCase):
+    def test_unattended_scope_stops_after_normal_saved_game_reload(self):
+        plan = json.loads((Path(__file__).resolve().parents[1] / 'android_runtime_plan.json').read_text())
+        scope = plan_execution_scope(plan, False, 'unused-interactive-endpoint')
+        prefix = plan['steps'][:scope['limit']]
+        tail = plan['steps'][scope['limit']:]
+        self.assertEqual(scope['mode'], 'automated-prefix')
+        self.assertEqual(prefix[-1]['name'], 'close-alex-context-before-object-test')
+        self.assertTrue({'gameplay', 'saved-to-menu', 'resume'}.issubset(
+            {step.get('checkpoint') for step in prefix}))
+        self.assertFalse(any(step.get('lamp_toggle_cycle') or step.get('verify_native_quit') for step in prefix))
+        self.assertTrue(any(step.get('verify_native_quit') for step in tail))
+        interactive = plan_execution_scope(plan, True, 'close-alex-context-before-object-test')
+        self.assertEqual(interactive['limit'], scope['limit'])
+        self.assertEqual(interactive['mode'], 'frame-guided')
+        with self.assertRaises(ValueError):
+            plan_execution_scope(plan, True, 'absent-endpoint')
+        duplicate = {**plan, 'steps': plan['steps'] + [prefix[-1]]}
+        with self.assertRaises(ValueError):
+            plan_execution_scope(duplicate, False, 'unused')
+
     def test_stale_and_wrong_frame_never_execute_and_finish_calls_guard(self):
         with tempfile.TemporaryDirectory() as temporary:
             android = FakeAndroid(Path(temporary))
