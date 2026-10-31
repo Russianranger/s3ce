@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 7,
-  "frame_sha256": "1e32e74c93b0d27b6d43c86d6220ade33ddd2e2a5c4b787c5c8785ce93fbd3cb",
+  "seq": 8,
+  "frame_sha256": "fd3adcb6c739fc9768cc2a7eea0ff206462438682a413cab1fe904723cc3d275",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 797,
-    "y": 854
+    "x": 113,
+    "y": 965
   },
-  "note": "Decline visible New Wish overlay before selecting Pause."
+  "note": "Open Pause now that the visible New Wish overlay is dismissed."
 }
