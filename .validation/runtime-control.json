@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 7,
-  "frame_sha256": "146ef41aa31b818477b182c1652e1ebb16cd75bca68727725d92d5246dd501da",
+  "seq": 8,
+  "frame_sha256": "4e97d56305e414396e7dbb3c3a5a81683dc8145b25e05ead97a1992b5d7c7a5e",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 2
+    "type": "tap",
+    "x": 500,
+    "y": 300
   },
-  "note": "Observe release stability after pan drag."
+  "note": "Dismiss the visible timed Go to Town hint before testing jewel with camera enabled."
 }
