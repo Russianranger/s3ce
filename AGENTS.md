@@ -1,3 +1,19 @@
+# 0.1.12 targeted test candidate — exact bytes accepted for publication
+
+APK SHA256 b73c15341acbb61e7fa85173eb440650c665a65df57ce1ac46caf0e2d7325b64,
+code112, existing certificate/package/data. Run41230641948 attempt1 is green;
+root and two reviewers accepted all4 menu cold starts (0failures), normal
+creation/save/restart/load, status/Build selection, Bed Sit, post-action save
+and clean native Quit. Complete log has0fatal/ANR and0late-audio warnings.
+See docs/HUD_STARTUP_RUNTIME_ACCEPTANCE.md and its JSON evidence index.
+
+Publish only these frozen signed bytes; no rebuild/resign. Automated gate=false
+is retained; separate manual decision authorizes this focused Thor test release.
+Wishes-strip activation, prior0.1.11 save install-over, new Home/return and
+physical LOW_MEMORY reliability remain unconfirmed. Do not claim those passed.
+Next is publication verification and explicit APK/test handoff, then Thor feedback.
+Future APK edits require fresh affected checks. Keep private reports/keys out.
+
 # Current assignment — Thor HUD refinement and startup attribution
 
 User authorizes focused source/docs changes, commits/pushes and next test release.

@@ -1,19 +1,27 @@
 # S3CE — The Sims 3 Android compatibility project
 
-Experimental preservation build of the user-supplied Android game, using
-[Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **0.1.11 fixes visible object-action buttons rejecting taps and
-corrects shutdown ownership/audio races. The exact APK completed female character
-creation, house gameplay, a real Chair Sit, save/reload and clean native Quit.**
+Experimental preservation build of the supplied Android game, using
+[Russianranger/rea](https://github.com/Russianranger/rea) and existing original
+ARM analysis. The 0.1.12 candidate corrects HUD hit testing, avoids an unused
+GL-view bitmap and retains startup/session memory evidence across retries.
+See [current handoff](docs/HANDOFF.md), [HUD analysis](docs/HUD_INPUT.md),
+[startup evidence](docs/STARTUP_DIAGNOSTICS.md) and
+[memory change](docs/SURFACE_MEMORY.md).
 
-[Download the tested APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.11-object-actions/S3CE-0.1.11-object-actions-arm32.apk).
-Install over the existing S3CE app without clearing data. Leave **Original
-rendering (diagnostic mode) unchecked**. To access reports, press Home and open
-the app icon, then choose Save report. The permanent Report overlay was removed
-because it covered an original character-creation control.
+The user physically confirmed 0.1.11 object interactions and previous-save
+continuation on the Thor. A first failed start is consistent with Android's
+retained LOW_MEMORY exit; three circled HUD areas remained difficult to select.
+Earlier Thor testing confirmed visible UI, character creation, house entry,
+walking, saving and camera zoom/pan. These are preservation requirements.
 
-Current source work and acceptance requirements are recorded in
-[AGENTS.md](AGENTS.md) and [the handoff](docs/HANDOFF.md).
+[Download 0.1.12](https://github.com/Russianranger/s3ce/releases/download/v0.1.12-hud-startup/S3CE-0.1.12-hud-startup-arm32.apk).
+[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.12-hud-startup).
+[Actual runtime evidence](docs/HUD_STARTUP_RUNTIME_ACCEPTANCE.md): four menu cold
+starts with zero failures; status/Build selection, Bed Sit, save/load and clean
+Quit. Wishes activation and physical low-memory reliability remain Thor tests.
+
+Install updates over the existing app without clearing data. Keep **Original rendering (diagnostic mode)
+unchecked**. Reports: **Home → app icon → Save report**.
 
 ## Supported candidate configuration
 
@@ -55,7 +63,10 @@ The guarded native correction fixes the projection Z scale at 1 and preserves
 XY rendering and input coordinates. Original game assets are restored after the
 unsuccessful 0.1.9 indexed-quad experiment.
 
-The exact release APK was tested on Android 11/API 30 Google APIs x86 with ARMv7
+The following describes the historical 0.1.11 acceptance; the current 0.1.12
+receipt is linked above.
+
+The exact 0.1.11 release APK was tested on Android 11/API 30 Google APIs x86 with ARMv7
 translation, Emulator 31.1.4/KVM/SwiftShader, 4 KiB pages and 1920×1080. Ordinary
 Android input completed female creation, five traits, Alex naming, house/HUD,
 Save and Quit, a full process restart and saved-Sim load. Selecting the visible

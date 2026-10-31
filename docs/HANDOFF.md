@@ -30,13 +30,23 @@ checks, 348-method static DEX analysis, host retained-session tests and byte-exa
 release reconstruction pass. APK assets, ARMv7/4 KiB/target 28, package and signing
 identity are verified. These are host checks, not new Android gameplay evidence.
 
-Next: push the exact candidate to the established KVM Android workflow, with
-four accounted menu cold starts then normal creation/save/new-process reload
-and frame-guided HUD/object/lifecycle/Quit checks. Local KVM is unavailable.
-Publish only after reviewing available runtime evidence, or explicitly deliver
-a targeted diagnostic candidate if an environment dependency blocks execution.
-Reduced allocation and stronger diagnostics do not alone prove Thor reliability.
-Never edit game memory, phases or saves to manufacture progression.
+[Run 41230641948 attempt1](https://github.com/Russianranger/s3ce/actions/runs/41230641948)
+is green. Root and two reviewers inspected the complete hash-verified archive:
+four rendered menu cold starts, zero failures; ordinary creation/save/restart/load;
+visible status and Build controls; completed Bed Sit; post-action save and clean
+normal native Quit. Full log has zero fatal/ANR and zero late-audio warnings.
+See [runtime receipt](HUD_STARTUP_RUNTIME_ACCEPTANCE.md) and its evidence index.
+The original automated gate_passed=false remains intact; separate manual decision
+allows this exact targeted Thor test candidate. No rebuild or resign is needed.
+
+Limits: runtime save was candidate-created; prior0.1.11 save install-over remains
+Thor validation. Wishes activation was not demonstrated: source-proven coordinate
+repair remains, but runtime reached original tutorial gating/Go to Town hint.
+New Home/return and physical memory-pressure reliability remain unconfirmed.
+This is API30 x86/ARMv7 translation, not physical ARM or Android13–16 acceptance.
+
+Next: publish the frozen bytes, verify the download/signature/checksum, explicitly
+deliver APK/test links, then wait for the user's existing-save/HUD/startup report.
 
 # Development handoff — 0.1.11
 

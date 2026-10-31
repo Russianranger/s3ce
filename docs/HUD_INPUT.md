@@ -75,3 +75,20 @@ helpers, partial generations, changed already-patched helper/literal and repeat
 application. `verify_legacy.py` checks guard arrays against the pinned original
 APK. Android/emulator and Thor evidence belong separately in the release/runtime
 handoff. Green host tests alone do not establish device acceptance.
+
+## Original tutorial gates during runtime checks
+
+The lower needs/Wishes strips are handled only when `SceneGame+1c0==6`
+(`107770..107778`). The plumbob circle accepts phase6 or tutorial phase21
+(`1075e4..1075f0`). In normal phase6, `ffcec(action3)` enters phase8 and calls
+`UIInfo::7efe8(tab3)` without inspecting a particular Wish slot. In phase21,
+`107638..107680` initializes that tab but advances the tutorial through its own
+hint/phase9 path. A Go to Town tutorial after the plumbob is therefore evidence
+of this original tutorial route, not proof of a failed panel selection.
+
+Candidate runtime run41230641948 visibly opened the upper-left Well rested
+status panel and the Buy introduction/actual chooser. Its subsequent strip tap
+left the game HUD; the following plumbob tap displayed Go to Town. This supports
+a tutorial-gated strip interpretation. Runtime confirmation of normal phase6
+Wishes selection remains separate; do not claim this one strip tap opened it.
+The host comparisons explicitly use ordinary phase6 and retain original gates.
