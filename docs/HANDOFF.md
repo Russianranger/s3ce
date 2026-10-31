@@ -1,4 +1,37 @@
-# Development handoff — 0.1.8
+# Development handoff — 0.1.9
+
+The Thor now passes the original hint confirmation and rotates/customizes the
+Sim. Input is working. Current blocker: missing M3G HUD sprites/panels/icons;
+fonts, standalone PNG hand buttons and3D room/models render. Preserve all RAM,
+stack, texture and touch fixes.
+
+0.1.9 is a narrow graphics compatibility candidate, not a confirmed device fix.
+It changes the one anim2d.m3g strip shared by530 sprites from implicit first0/
+length4 to explicit0,1,2,3/length4. Source ARM captures show the intended change
+is only DrawArrays→DrawElements; host pixel comparisons are identical. No texture
+filter/material workaround is justified by the available evidence.
+
+patches/ui_indices.py accepts only the pinned original or exact patched res.dz.
+It modifies TSA object5, fixes required header/section lengths/Adlers, and does
+ordered LZMA stream replacement. All677 other compressed and decoded entries
+remain identical. Never use nonmonotonic append-retarget offsets without proving
+legacy reader semantics. scripts/verify.py checks exact expected archive/config.
+
+The native GPU witness is read-only, shape-scoped and bounded to25 snapshots.
+It captures arrays/units/binding/filter/caps/color/viewport and three matrices;
+no GL state is changed and no client/index pointer is read. Error flags are
+preserved. UI GPU labels identify matching quad shapes, not verified HUD assets.
+
+Next Thor gate: install over0.1.8, Original rendering unchecked; inspect hint
+panel/close control, appearance/clothing controls and traits. If still missing,
+keep that run and save its report/screenshot. Compare live UI GPU state with
+source-captured expectations before choosing another graphics change.
+
+Artifact SHA67664a9f8490e0ccb28c1f83576b478ac99a1a48a958e69850e8c7cf97f4a344;
+native SHA71bc072c1ef411542c6797e7c897a87d7df111a53814e3c234acdb3698ae0e67.
+Publication receipt pending. Keep signing material and full reports private.
+
+## Historical 0.1.8 handoff
 
 Latest device evidence: callbacks and drag recognition work. The game remains
 in SceneMenu state12, the CAS welcome hint. State12 accepts logical event11

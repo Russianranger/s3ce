@@ -11,6 +11,119 @@ static int fallback_mode;
 static unsigned char first_pixel[4];
 static GLenum next_error;
 static const void *received_pixels;
+static GLenum test_error(void);
+static unsigned ui_logs, ui_queries, array_draws, element_draws;
+static int ui_context = 1, ui_query_failure;
+static GLenum expected_mode = 5, expected_type = 0x1403;
+static GLint expected_first;
+static GLsizei expected_count = 4;
+static const void *expected_indices;
+static void *test_current(void) { return ui_context ? (void *)(uintptr_t)1 : NULL; }
+static void ui_log(int priority, const char *format, ...) {
+    (void)priority;
+    if (!strncmp(format, "UI GPU", 6)) ++ui_logs;
+}
+static void test_integer(GLenum name, GLint *value) {
+    ++ui_queries;
+    if (ui_query_failure) { next_error = GL_INVALID_ENUM; return; }
+    if (name == 0xba2) {
+        const GLint viewport[] = {0, 0, 1920, 1080};
+        memcpy(value, viewport, sizeof(viewport));
+    } else {
+        assert(name == 0x84e0 || name == 0x84e1 || name == 0x8069 ||
+               name == 0x8074 || name == 0x8078 || name == 0x8076 || name == 0xba0);
+        *value = name == 0x84e0 || name == 0x84e1 ? 0x84c0 : 1;
+    }
+}
+static void test_float(GLenum name, float *value) {
+    ++ui_queries;
+    if (ui_query_failure) { next_error = GL_INVALID_ENUM; return; }
+    assert(name == 0xb00 || name == 0xba7 || name == 0xba6 || name == 0xba8);
+    unsigned size = name == 0xb00 ? 4 : 16;
+    for (unsigned i = 0; i < size; ++i) value[i] = size == 4 || i % 5 == 0 ? 1 : 0;
+}
+static void test_tex_parameter(GLenum target, GLenum name, GLint *value) {
+    ++ui_queries;
+    assert(target == GL_TEXTURE_2D && name == 0x2801);
+    if (ui_query_failure) { next_error = GL_INVALID_ENUM; return; }
+    *value = 0x2701;
+}
+static unsigned char test_enabled(GLenum name) {
+    ++ui_queries;
+    assert(name == GL_TEXTURE_2D || name == 0xbe2 || name == 0xbc0 ||
+           name == 0xb71 || name == 0xb44);
+    if (ui_query_failure) next_error = GL_INVALID_ENUM;
+    return name == GL_TEXTURE_2D || name == 0xbe2;
+}
+static void test_array_draw(GLenum mode, GLint first, GLsizei count) {
+    assert(mode == expected_mode && first == expected_first && count == expected_count);
+    ++array_draws;
+}
+static void test_element_draw(GLenum mode, GLsizei count, GLenum type, const void *indices) {
+    assert(mode == expected_mode && count == expected_count && type == expected_type);
+    assert(indices == expected_indices);
+    ++element_draws;
+}
+
+static void test_ui_state(void) {
+    real_current_context = test_current;
+    real_get_integer = test_integer;
+    real_get_float = test_float;
+    real_get_tex_parameter = test_tex_parameter;
+    real_is_enabled = test_enabled;
+    real_draw_arrays = test_array_draw;
+    real_draw_elements = test_element_draw;
+    real_get_error = test_error;
+    log_graphics = ui_log;
+    ui_draw_calls = draw_calls = 0;
+    while (diagnosed_get_error() != GL_NO_ERROR) {}
+    /* A failed/no-context diagnostic must never prevent or repeat the draw. */
+    ui_context = 0;
+    diagnosed_draw_arrays(5, 0, 4);
+    assert(array_draws == 1 && ui_queries == 0 && ui_logs == 0);
+    ui_context = 1;
+    real_get_float = NULL;
+    diagnosed_draw_arrays(5, 0, 4);
+    assert(array_draws == 2 && ui_queries == 0);
+    real_get_float = test_float;
+    real_get_error = NULL;
+    diagnosed_draw_arrays(5, 0, 4);
+    assert(array_draws == 3 && ui_queries == 0);
+    real_get_error = test_error;
+    ui_draw_calls = 0;
+    diagnosed_draw_arrays(5, 0, 4);
+    assert(array_draws == 4 && ui_logs == 4 && ui_queries == 18);
+    /* Observe an existing app flag plus a query failure without losing either. */
+    next_error = GL_INVALID_VALUE;
+    ui_query_failure = 1;
+    expected_indices = (const void *)(uintptr_t)1; /* Must never be dereferenced. */
+    diagnosed_draw_elements(5, 4, 0x1403, expected_indices);
+    assert(element_draws == 1 && ui_logs == 8);
+    assert(diagnosed_get_error() == GL_INVALID_VALUE);
+    assert(diagnosed_get_error() == GL_INVALID_ENUM);
+    assert(diagnosed_get_error() == GL_NO_ERROR);
+    ui_query_failure = 0;
+    /* Non-UI topology, start, count and index type get no state queries. */
+    unsigned before = ui_queries;
+    expected_first = 1;
+    diagnosed_draw_arrays(5, 1, 4);
+    expected_first = 0; expected_mode = 4;
+    diagnosed_draw_arrays(4, 0, 4);
+    expected_mode = 5; expected_count = 3;
+    diagnosed_draw_arrays(5, 0, 3);
+    expected_count = 4; expected_type = 0x1401;
+    diagnosed_draw_elements(5, 4, 0x1401, expected_indices);
+    expected_type = 0x1403;
+    assert(ui_queries == before);
+    ui_draw_calls = ui_logs = ui_queries = 0;
+    for (unsigned i = 0; i < (1u << 20) + 1; ++i) diagnosed_draw_arrays(5, 0, 4);
+    assert(ui_logs == 25 * 4 && ui_queries == 25 * 18);
+    ui_draw_calls = UINT_MAX - 1;
+    before = ui_queries;
+    diagnosed_draw_arrays(5, 0, 4);
+    diagnosed_draw_arrays(5, 0, 4);
+    assert(ui_draw_calls == UINT_MAX && ui_queries == before);
+}
 static void test_log(int priority, const char *format, ...) {
     (void)priority; (void)format; ++logs;
 }
@@ -137,5 +250,6 @@ int main(void) {
     driver_pvrtc = 1;
     compressed(GL_TEXTURE_2D,0,PVRTC_RGB_4BPP,8,8,0,sizeof(red),red);
     assert(compressed_calls == 2); /* Native-capable GPU keeps native path. */
+    test_ui_state();
     puts("GL transparency/errors/bounds and conditional PVRTC fallback: PASS");
 }

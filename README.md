@@ -2,13 +2,12 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **The Thor now reaches Create-a-Sim with room/hair textures.
-Reopening now works too. The 0.1.8 report confirms callback delivery and drag
-recognition. The game is waiting for the welcome hint's confirmation control,
-which is invisible in the supplied screenshot. Advancing that hint on the Thor
-is the next device check.**
+Java/JNI bridge. **The Thor now starts, reopens, rotates the Sim and reaches
+character customization. HUD panels and controls are still missing. Version
+0.1.9 changes the shared HUD quad to indexed drawing, with identical intended
+geometry and pixels. This is a compatibility candidate awaiting Thor validation.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.8-gesture-trace)
+[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.9-ui-rendering)
 
 ## Supported candidate configuration
 
@@ -37,24 +36,30 @@ not a claim of successful gameplay on all four versions.
 - Screen wake uses the public window API instead of privileged `userActivity`.
 - A separate launcher can save, share, view and copy report files after a game
   crash. Reports include available Android exit/tombstone records and Java exceptions.
-- All original game/audio assets remain byte-identical except for a guarded Android GLES-version setting, and stay uncompressed, as
-  required by the original `AssetManager.openFd` audio path.
+- Original audio, textures and all other game assets remain byte-identical.
+  Guarded changes enable the existing Android GL/stack configuration and replace
+  one shared HUD strip's implicit indices with equivalent explicit indices.
+  Assets stay uncompressed for the original `AssetManager.openFd` audio path.
 
 ## Latest update and Thor test
 
-The latest Thor report shows both registered callbacks delivering input, the
-game draining its input queues, and successful drag recognition. Its active
-state is the welcome hint (12), before character rotation (13). The original
-code ignores swipes in that hint and advances only after its confirmation
-control emits an action. A tap on the message body does not confirm it.
+The latest report confirms hint dismissal, callback delivery, rotation and
+character-option changes. Missing graphics are the M3G HUD sprites; the visible
+hand buttons are standalone PNGs. The original sprites, textures, mip generation,
+material state, arrays and camera pass host execution/rendering checks. No exact
+on-device cause is established.
 
-Use the current 0.1.8 APK with **Original rendering unchecked**. At the welcome
-hint, try a clean tap near **(500, 370)** on the 1920×1080 screen: approximately
-26% from the left and 34% from the top, beside the hint's upper-left corner.
-This is the source-derived area of its invisible round close/confirm control;
-the exact vertical center depends on text layout. Release and wait one second,
-then drag the Sim left/right. If the hint stays, use Report → Save report while
-that run remains open. See
+The candidate changes one shared quad from implicit vertices 0..3 to explicit
+indices 0..3, using the indexed draw API already used by visible 3D geometry.
+All 530 referenced sprite meshes retain their positions, UVs, topology and art.
+Source ARM execution and headless pixel comparisons validate equivalence; those
+checks do not establish the Thor result. Reports now include bounded read-only
+GPU state for matching quad draws if controls remain invisible.
+
+Install over the existing app, leave **Original rendering unchecked**, and start
+the game. Check the welcome dialog's panel/close control, then the appearance,
+clothing and traits controls. Continue using the touchscreen. If graphics remain
+missing, save that run's report and a screenshot. See
 [test instructions](docs/RELEASE_NOTES.md) and [native details](native/README.md).
 
 ## Build

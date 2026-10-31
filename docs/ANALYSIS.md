@@ -312,3 +312,61 @@ uses LINEAR magnification and LINEAR_MIPMAP_NEAREST minification. Whether the
 specific live UI atlas receives or generates all required mip levels remains
 unverified; the base-only upload logs do not prove incompleteness. Do not apply
 a texture-filter workaround without establishing that remaining condition.
+
+## 0.1.9 HUD draw-path compatibility candidate
+
+The next Thor report confirms successful hint dismissal, state13 rotation with
+changing angles, and state15 character/traits interaction. Missing UI artwork
+persists. Visible blue hand buttons exactly match standalone btn_hand.png;
+missing panels/icons use M3G HUD atlases. The control hit targets still work.
+
+Asset inspection finds all HUD groups01–09 have intact RGBA8 Image2D data and
+visible pixels, with no encoded no-mipmap flag. Source constructors/generators/
+upload loops produce complete alpha-bearing mip chains. Original material setup
+disables alpha/depth/culling as expected and uses source-alpha blending. Actual
+SHORT position/UV array setup, color, transforms, implicit strip parsing and
+GL draw parameters are valid in host execution. The orthographic camera is also
+valid. No exact live Adreno failure is established by these checks.
+
+All530 HUD sprite meshes share one implicit TriangleStripArray in anim2d.m3g:
+encoding01, start0, one strip of length4. Visible room meshes use explicit index
+arrays. The controlled candidate converts only that shared object to encoding81
+with indices0,1,2,3 and the same strip length. Actual original ARM parsing and
+rendering at low/high separately relocated addresses show the intended change
+is DrawArrays(TRIANGLE_STRIP,0,4) → DrawElements(TRIANGLE_STRIP,4,UNSIGNED_SHORT,
+[0,1,2,3]); all other captured calls, matrices, colors and buffers match.
+
+Independent Mesa fixed-function comparisons cover all530 meshes.520 use exact
+supplied texture assets and original ARM-generated mip levels.10 reference an
+optional export texture absent from both supplied archives; those use labeled
+geometry-control textures rather than claiming original-art validation. Both
+index representations produce byte-identical pixels in every case. This proves
+intended equivalence, not that the original API is generally broken or that the
+Thor UI is repaired. The published candidate requires a device result.
+
+patches/ui_indices.py pins the original archive and raw M3G hashes. It changes
+only TSA object5 plus required header sizes, section lengths and Adler32 values.
+Ordered LZMA stream replacement shrinks res.dz by35 bytes and adjusts subsequent
+file offsets. All677 other compressed payloads and decoded entries remain
+byte-identical. Nonmonotonic append/retarget was deliberately avoided because
+legacy reader extent semantics were not established. Other game/audio/texture
+assets are unchanged. Build and final-APK verification apply the same guard.
+
+The GPU witness records the first8 matching quad-strip draws and powers of two
+through2^20, at most25 snapshots. It logs active/server/client texture units,
+binding/filter, array enables, caps, color/viewport and projection/modelview/
+texture matrices through valid GLES1.1 queries. No state is written or client/
+index memory dereferenced. Optional-symbol/no-context failures skip observation;
+existing and query-generated GL errors are preserved through the prior queue.
+The UI GPU label identifies a draw shape, not a confirmed atlas. This evidence
+will locate live state differences if the equivalent indexed path still fails.
+
+Release transport now reuses matching spans within changed large STORED members,
+so editing a small archived resource does not upload the full26 MB member as a
+literal. Bounded distinctive anchors and exact edge comparisons affect only
+reconstruction transport. The final signed APK is reconstructed byte-for-byte
+and hash-verified before publication; the existing manifest format is retained.
+
+Reference checked for texture/completeness/query semantics: Khronos OpenGL ES
+1.1.12 specification, sections3.7.7–3.7.9:
+https://registry.khronos.org/OpenGL/specs/es/1.1/es_full_spec_1.1.pdf

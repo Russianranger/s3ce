@@ -1,4 +1,53 @@
-# Candidate 0.1.8 validation
+# Candidate 0.1.9 validation
+
+Device0.1.8 evidence confirms startup, reopening, hint dismissal, rotation and
+character-option changes. The new report reaches menuState13 with changing Sim
+angles, then state15. Screenshots show missing M3G HUD art while fonts,3D models
+and standalone PNG hand buttons render. The exact live failure is not proven.
+
+Completed:
+
+- Five guarded asset tests pass: all677 other compressed streams and decoded
+  entries match exactly; all2500 M3G objects except the shared strip and required
+  header sizes/checksums match; all530 mesh references/topology remain intact.
+  Ordered repacking preserves archive offset order. Idempotence and original/
+  patched tamper rejection pass. Patched res.dz SHA256 is
+  fb9d27d61e2cf665c2d2cafb8a837424c9376fbb833a2b37bbb83ccc5415a124.
+- Four original ARM parser cases pass at low/high separately relocated code and
+  data addresses. The22-byte implicit strip and29-byte explicit strip produce
+  equivalent0..3 indices and a single four-vertex strip. Typed reads and memory
+  allocation are modeled; constructors, COW arrays and byte-order logic execute.
+- Original A4E40 renderer captures differ only in DrawArrays versus DrawElements;
+  matrices, opaque white color, SHORT position/UV arrays and other calls match.
+- Independent headless Mesa rendering compares all530 sprite meshes.520 use25
+  actual supplied atlases and original ARM-generated mip chains;10 reference an
+  optional export texture absent from both archives and use labeled geometry
+  controls. Both draw paths are byte-identical in every case. This is not Adreno
+  execution and does not establish hardware recovery.
+- Eleven native ASan/UBSan suites pass. New GPU witness tests verify exact-once
+  forwarding, optional-query/no-context skips, error preservation, no pointer
+  dereferences, bounded snapshots and counter saturation. Independent review
+  approves valid ES1.1 queries and current-unit semantics. Matching quad shape
+  does not itself identify a HUD atlas.
+- ARM warnings-as-errors compilation,4247 relocations,131 imports, native ELF
+  hardening, source asset guards, APK signature and install identity checks pass.
+- Three release-transport tests pass for stored-member insertions, shifted data,
+  unrelated members and repeated regions. Byte-exact reconstruction of the final
+  signed APK from the pinned0.1.0 base passes with a500798-byte literal payload.
+
+Actual assembled APK touch, pointer-ID/CANCEL, lifecycle and GL-wrapper
+regressions pass. Static analysis of all310 implemented methods across both DEX
+files against Android35 framework classes reports zero errors; this is not ART
+execution. Independent publication/download verification remains pending.
+Same application ID/certificate/data location; versionCode109 and target28.
+
+APK SHA256:
+`67664a9f8490e0ccb28c1f83576b478ac99a1a48a958e69850e8c7cf97f4a344`.
+
+Native shim SHA256:
+`71bc072c1ef411542c6797e7c897a87d7df111a53814e3c234acdb3698ae0e67`.
+
+## Historical 0.1.8 checks
 
 The user confirms reopening works after 0.1.7. Its report shows large horizontal
 swipes reach JNI with the text gate clear and frames continuing. Create-a-Sim

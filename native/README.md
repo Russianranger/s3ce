@@ -241,6 +241,16 @@ queries, CPU decoding, and GPU uploads help identify the last operation before a
 native crash; no signal handler or signal-time logging is installed. The decoder uses a static C++ runtime; no `libc++_shared.so`
 installation is needed.
 
+Matching four-vertex UI strip draws also receive a bounded, read-only GPU-state
+witness: the first eight draws and powers of two through 2^20, at most 25
+snapshots. It records the active server/client texture units, bound texture and
+minification filter, client-array enables, viewport, current color, selected
+enables and projection/modelview/texture matrices in GL column-major order.
+Queries require a current EGL
+context, never change state or read client buffers, and preserve observed GL
+errors for the game. Missing query functions skip the snapshot and retain the
+original draw call.
+
 Run the CPU tests, optionally with sanitizers:
 
 ```sh
@@ -271,6 +281,7 @@ python3 native/tests/emulate_pointer_proxies.py /path/to/source.apk \
   /path/to/source.s3e.unpacked --ndk "$ANDROID_NDK_HOME"
 python3 native/tests/emulate_cas_rotation.py /path/to/source.s3e.unpacked
 python3 native/tests/emulate_cas_tutorial.py /path/to/source.s3e.unpacked
+python3 native/tests/emulate_ui_strip_parser.py --source /path/to/source.s3e.unpacked
 ```
 
 The first script executes original `setViewNative`, `s3eGL_start`, and `callMethod`
@@ -301,6 +312,11 @@ phase13 rotation. The original control needs a tap and release followed by its
 400ms animation; dragging the instruction screen does not dismiss it. The proof
 tests preferred and high split allocations and explicitly models sprite/audio,
 temporary-array storage and resource creation after the phase commit.
+The UI-strip parser proof executes the original M3G constructors, parser, vector
+copies and reference-count operations for the shipped implicit four-vertex strip
+and an equivalent explicit index array. Both parse to the same vertex range and
+strip length at preferred and high split addresses. Only typed stream reads and
+allocation/free boundaries are modeled; this proof does not test a GPU driver.
 
 ## Behavior
 
@@ -347,7 +363,12 @@ The 0.1.6 registered-stack bridge, original API stack switching, complete veneer
 cache maintenance, and native-only exception diagnostics pass host and ARM
 emulation checks. The user confirmed Android window startup and PVRTC rendering
 on the Thor with 0.1.6, and working relaunch with the 0.1.7 RAM-reader correction.
-Swipe behavior remains unresolved; 0.1.8 adds the callback-to-game witness needed
-to locate the remaining device-specific failure.
+The 0.1.8 callback-to-game witness showed that dragging reaches the original
+gesture state machine. The user confirmed that dismissing the Create-a-Sim
+instruction screen through its original circular close control enables rotation
+and progression to traits. Missing M3G interface sprites remain under graphics
+investigation; a UI-only equivalent indexed-strip representation is tested as a
+bounded draw-path compatibility candidate, without changing texture pixels,
+coordinates, material state or input behavior.
 Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.
