@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 16,
-  "frame_sha256": "2e5a13d1bd8d331ffefef4d4dbd9833bdbe7f717244da60825383598897042bd",
+  "seq": 17,
+  "frame_sha256": "2228fdb5ae96c28ea0bbf79718c2f4ed55134ee491336d05aa81ae6e9d19f2fb",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 12
+    "type": "tap",
+    "x": 500,
+    "y": 245
   },
-  "note": "Allow the queued Bed Sit to settle; menu closure and approach alone are not completion."
+  "note": "Close the visible full-slot Wish notice to inspect the completed seated pose."
 }
