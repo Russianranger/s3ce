@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 9,
-  "frame_sha256": "19d7542b86e662b83b8f0a937336b17e30ae6a515347a76fa389e63abc8e3ce9",
+  "seq": 10,
+  "frame_sha256": "ea82975dd928e9ae1270937bb9b0fd70d732abe85d0809b7dac7072f16778bdf",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 5
+    "type": "tap",
+    "x": 799,
+    "y": 854
   },
-  "note": "Observe the queued Sit action through completion; menu dismissal alone is not sufficient."
+  "note": "Dismiss the visible optional Wish with its red X to inspect the completed Sit pose."
 }
