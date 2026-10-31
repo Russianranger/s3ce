@@ -172,6 +172,52 @@ class Android:
                   *self.coordinates([x2, y2], coordinate_size)]
         self.shell('input', 'swipe', *scaled, duration)
 
+    def select_traits_visually(self, prefix, targets, max_scrolls=12):
+        from android_runtime_visual import analyze_traits
+        chosen = set()
+        sequence = 0
+
+        def inspect(suffix):
+            nonlocal sequence
+            name = f'{prefix}-visual-{sequence:02d}-{suffix}'
+            sequence += 1
+            self.snapshot(name)
+            directory = self.output / re.sub(r'[^A-Za-z0-9_-]', '-', name)
+            observation = analyze_traits(directory / 'screen.png', directory / 'trait-ocr', self.viewport)
+            print(json.dumps({'visual_traits': name, **{key: observation[key]
+                              for key in ('selected_count', 'next_visible', 'matches')}}), flush=True)
+            return observation
+
+        observation = inspect('initial')
+        if observation['selected_count'] != 2:
+            raise RuntimeError('Visual trait selection requires the two initial compatible checks')
+        for attempt in range(max_scrolls + 1):
+            for target in targets:
+                row = observation['matches'].get(target)
+                if target in chosen or row is None:
+                    continue
+                if not row['checked']:
+                    previous_count = observation['selected_count']
+                    x = self.coordinates([1449, 0], [1920, 1080])[0]
+                    self.shell('input', 'tap', x, round(row['center_y']))
+                    time.sleep(1)
+                    after = inspect('selected-' + target)
+                    checked = after['matches'].get(target, {}).get('checked')
+                    if not checked or after['selected_count'] != previous_count + 1:
+                        raise RuntimeError(f'Visible checkbox/count did not confirm selecting {target}')
+                    observation = after
+                chosen.add(target)
+            if chosen == set(targets):
+                if observation['selected_count'] != 5 or not observation['next_visible']:
+                    raise RuntimeError('All desired trait labels were chosen without five checks and Next')
+                return
+            if attempt == max_scrolls:
+                break
+            self.swipe([1449, 800, 1449, 300, 1000], [1920, 1080])
+            time.sleep(1.5)
+            observation = inspect(f'scrolled-{attempt + 1}')
+        raise RuntimeError('Visual trait selection did not find all desired rows: ' + ', '.join(set(targets) - chosen))
+
     def run_plan(self, plan, prefix, limit=None):
         checkpoints = {}
         for index, step in enumerate(plan['steps'][:limit]):
@@ -194,6 +240,8 @@ class Android:
                 self.shell('input', 'keyevent', int(step['keyevent']))
             elif 'click_text' in step:
                 self.click_text(step['click_text'], timeout=step.get('timeout', 45))
+            elif 'select_traits' in step:
+                self.select_traits_visually(name, step['select_traits'], step.get('max_scrolls', 12))
             elif step.get('relaunch'):
                 self.shell('am', 'force-stop', PACKAGE)
                 self.launch()
@@ -309,7 +357,9 @@ def main():
         variants = [('baseline', args.baseline), ('candidate', args.candidate)] if plan.get('run_baseline', True) else [('candidate', args.candidate)]
         for label, apk in variants:
             android.adb('uninstall', PACKAGE, check=False)
-            android.adb('logcat', '-c')
+            # Diagnostic clearing is best effort; the live stream and fresh
+            # installation delimit this run even when logd rejects a clear.
+            android.adb('logcat', '-c', check=False)
             android.adb('install', '-r', '-d', apk.resolve(), timeout=120)
             android.launch()
             time.sleep(plan.get('launch_wait', 20))

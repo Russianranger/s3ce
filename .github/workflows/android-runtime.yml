@@ -98,12 +98,21 @@ jobs:
           "$RUNNER_TEMP/s3ce-emulator-31.1.4/emulator/emulator" -no-window -version
           "$RUNNER_TEMP/s3ce-emulator-31.1.4/emulator/emulator" -list-avds
           "$RUNNER_TEMP/s3ce-emulator-31.1.4/emulator/emulator" -accel-check
+      - name: Install screenshot trait recognition tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          exec > >(tee -a build/runtime-evidence/setup.txt) 2>&1
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr python3-pil
+          /usr/bin/python3 -c 'import PIL; print("Pillow", PIL.__version__)'
+          tesseract --version
       - name: Exercise baseline and candidate through real Android input
         env:
           CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}
           BASELINE_APK: ${{ steps.apks.outputs.baseline }}
         run: |
-          python3 scripts/android_runtime.py --avd S3CE_VALIDATION --candidate "$CANDIDATE_APK" --baseline "$BASELINE_APK" --plan scripts/android_runtime_plan.json --output build/runtime-evidence
+          /usr/bin/python3 scripts/android_runtime.py --avd S3CE_VALIDATION --candidate "$CANDIDATE_APK" --baseline "$BASELINE_APK" --plan scripts/android_runtime_plan.json --output build/runtime-evidence
       - name: Upload screenshots and runtime evidence only
         if: always()
         uses: actions/upload-artifact@v4

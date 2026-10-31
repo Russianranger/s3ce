@@ -38,8 +38,8 @@ not a claim of successful gameplay on all four versions.
 - A separate launcher can save, share, view and copy report files after a game
   crash. Reports include available Android exit/tombstone records and Java exceptions.
 - Original audio, textures and all other game assets remain byte-identical.
-  Guarded changes enable the existing Android GL/stack configuration and replace
-  one shared HUD strip's implicit indices with equivalent explicit indices.
+  Guarded configuration changes enable the existing Android GL/stack path;
+  a fingerprinted native instruction correction preserves UI projection depth.
   Assets stay uncompressed for the original `AssetManager.openFd` audio path.
 
 ## Latest update and Thor test
@@ -54,7 +54,10 @@ XY/input coordinates remain identical.
 The unsuccessful indexed-quad experiment is removed from the build; original
 assets are restored. A separate crash at game offset13b784 involves an invalid
 Group/World cast object. Its origin is still under investigation. Internal
-Android runtime testing is in progress. No new APK is ready for presentation.
+Android screenshots now confirm visible controls, female hairstyle changes and
+same-process reopening. Trait-selection automation is being corrected using
+the visible labels; gameplay/save testing remains pending. No new APK is ready
+for presentation.
 
 ## Build
 

@@ -215,78 +215,14 @@
       "capture": true
     },
     {
-      "name": "traits-scroll-bottom-1",
-      "swipe": [
-        1449,
-        800,
-        1449,
-        300,
-        1000
+      "name": "visually-select-three-compatible-traits",
+      "select_traits": [
+        "Neat",
+        "Absent-Minded",
+        "Neurotic"
       ],
-      "wait": 2,
-      "capture": true
-    },
-    {
-      "name": "traits-scroll-bottom-2",
-      "swipe": [
-        1449,
-        800,
-        1449,
-        300,
-        1000
-      ],
-      "wait": 2,
-      "capture": true
-    },
-    {
-      "name": "traits-scroll-bottom-3",
-      "swipe": [
-        1449,
-        800,
-        1449,
-        300,
-        1000
-      ],
-      "wait": 2,
-      "capture": true
-    },
-    {
-      "name": "traits-scroll-bottom-4",
-      "swipe": [
-        1449,
-        800,
-        1449,
-        300,
-        1000
-      ],
-      "wait": 2,
-      "capture": true
-    },
-    {
-      "name": "trait-12-slob",
-      "tap": [
-        1449,
-        430
-      ],
-      "wait": 2,
-      "capture": true
-    },
-    {
-      "name": "trait-15-absent-minded",
-      "tap": [
-        1449,
-        810
-      ],
-      "wait": 2,
-      "capture": true
-    },
-    {
-      "name": "trait-11-active",
-      "tap": [
-        1449,
-        293
-      ],
-      "wait": 2,
+      "max_scrolls": 12,
+      "wait": 1,
       "capture": true
     },
     {
@@ -494,7 +430,7 @@
       "capture": true
     }
   ],
-  "trait_source": "CI4 actual Android screenshots establish post-four-swipe visible rows Active293, Slob430, Neat565, Genius700, Absent-Minded835 (scroll approximately\u2212453 logical, not the assumed\u2212510 clamp). Keep initial Shy0 and GoodSenseOfHumor2; then select Slob12 at430, Absent-Minded15 at810 inside the visible row, and Active11 at293. Final IDs0,2,12,15,11; opposites1,3,13,14,10 are absent. The original UI only draws Next once five traits are selected; actual state16 remains required.",
+  "trait_source": "Keep initial source-proven Shy0 and GoodSenseOfHumor2 taps. Read actual PNG labels and green checkmarks to select only unchecked Neat13, Absent-Minded15, and Neurotic16; bounded ordinary scrolling finds rows regardless of gesture distance. Require each visible checkbox/count increment, all five bottom green checks, visible Next, then actual phase16. No game memory or save data is written by validation.",
   "run_baseline": false,
   "appearance_source": "Original ARM camera/FOV/look-at/orientation/projection helpers and real model anchor hierarchy prove gender category118,449/leftarrow646,540 and hair category1802,263/rightarrow1274,581 at full1920x1080 native canvas. One gender arrow toggles the default male NPC0 to female.",
   "save_resume_source": "Actual original ARM pause-icon hit103178\u2192104014\u2192107254 at113,965; pause-list65030 draw/64E7C hit places SaveQuit resource0x831 at960,797. ConfirmationYes uses original1089EC\u219288904+88E44 persistence, then SceneMenu. Existing-slot11AA58\u219211AB90\u219212F770nonzero selects pendingScene2; empty slot instead enters CAS."
