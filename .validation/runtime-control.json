@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 5,
-  "frame_sha256": "3ac504d92d4115948b0c43b6d91f63907bce17e7059124cb0f6329b961083d8e",
+  "seq": 6,
+  "frame_sha256": "3e546dd15704b9d685da1e8bd5263dfa8e378969ef844b82dca97a6a3cf3ae83",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 600,
-    "y": 866
+    "x": 277,
+    "y": 220
   },
-  "note": "Select the visible sofa backrest above the bottom HUD."
+  "note": "Close the visible Status panel; the lower sofa area overlaps HUD input."
 }
