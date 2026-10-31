@@ -1,16 +1,14 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 23,
-  "frame_sha256": "e692ec54661fc4a6dadbe2138e07b9681f902e170ea10a41128f9a663016289b",
+  "seq": 24,
+  "frame_sha256": "2e47408ff3e7315291e5063caa16e024c9537da24093b96512c90c52acca09f1",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1124,
-    "y": 730
+    "type": "finish"
   },
-  "note": "Confirm normal native Quit and verify launcher return without fatal or late audio failure."
+  "note": "Collect all startup/gameplay evidence after visible HUD fixes, Bed Sit, post-action save and normal fatal-free native Quit."
 }
