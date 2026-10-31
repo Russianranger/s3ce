@@ -371,7 +371,7 @@ class Android:
                     or normalized(menu['title']['text']) == normalized(config['title']))
                     and any(normalized(a['text']) == normalized(config['action']) for a in menu['actions'])):
                 self.context_action(prefix + '-selected', config, menu)
-                return
+                return target
         description = config.get('title') or config.get('description', config['action'] + ' object')
         outcome = {'name': prefix, 'title': description, 'action': config['action'],
                    'status': 'object-not-found', 'tried': tried,
@@ -380,6 +380,45 @@ class Android:
         (self.output / (prefix + '-search-observation.json')).write_text(json.dumps(outcome, indent=2) + '\n')
         if config.get('required', True):
             raise RuntimeError('Bounded normal-touch search did not find ' + description)
+
+    def lamp_toggle_cycle(self, prefix, config):
+        from android_runtime_visual import normalized
+        title = 'Retro Tall Lamp'
+        world_point = self.find_context_action(prefix + '-turn-off', {
+            'title': title, 'action': 'Turn off', 'targets': config['targets'],
+            'capture_seconds': [2, 8], 'required': True})
+        cycle = {'name': prefix, 'title': title, 'world_selection_point': world_point,
+                 'status': 'awaiting-offered-action-transition', 'state_checks': []}
+        self.object_actions.append(cycle)
+
+        def await_offered_action(expected, absent, suffix):
+            menu = self.context_menu(prefix + '-' + suffix + '-initial')
+            for attempt in range(6):
+                if menu['actions']:
+                    if not menu['title']['text']:
+                        raise RuntimeError('Cannot safely refresh an unidentified action panel')
+                    self.tap([254, 142], [1920, 1080])
+                    time.sleep(1)
+                self.tap(world_point, [1920, 1080])
+                time.sleep(3)
+                label = f'{prefix}-{suffix}-{attempt:02d}'
+                menu = self.context_menu(label)
+                actions = {normalized(a['text']) for a in menu['actions']}
+                if (normalized(menu['title']['text']) == normalized(title)
+                        and normalized(expected) in actions and normalized(absent) not in actions):
+                    cycle['state_checks'].append({'capture': label, 'offered_action': expected,
+                                                   'absent_action': absent, 'time': time.time()})
+                    return menu
+                time.sleep(3)
+            raise RuntimeError('Lamp action did not produce the expected visible ' + expected + ' state')
+
+        menu = await_offered_action('Turn on', 'Turn off', 'verified-off')
+        self.context_action(prefix + '-turn-on', {'title': title, 'action': 'Turn on',
+                                                'capture_seconds': [2, 8]}, menu)
+        await_offered_action('Turn off', 'Turn on', 'verified-on')
+        cycle['status'] = 'off-on-object-state-observed'
+        (self.output / (prefix + '-lamp-state-observation.json')).write_text(json.dumps(cycle, indent=2) + '\n')
+        self.tap([254, 142], [1920, 1080])
 
     def close_context_if_visible(self, prefix):
         menu = self.context_menu(prefix + '-before')
@@ -469,6 +508,8 @@ class Android:
                 self.context_action(name, step['context_action'])
             elif step.get('find_context_action'):
                 self.find_context_action(name, step['find_context_action'])
+            elif step.get('lamp_toggle_cycle'):
+                self.lamp_toggle_cycle(name, step['lamp_toggle_cycle'])
             elif step.get('close_context_if_visible'):
                 self.close_context_if_visible(name)
             elif step.get('main_quit_visually'):
