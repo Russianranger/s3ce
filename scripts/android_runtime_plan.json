@@ -6,7 +6,7 @@
   "launch_wait": 30,
   "baseline_steps": 3,
   "visual_review": "required: controls, panels, Sim appearance, and eventual gameplay screenshots must be inspected; native state alone does not prove visible UI",
-  "scope": "Candidate-only real Android capture exercises visible UI, female gender and hairstyles, Home/reopen in the same game process, traits, naming, and confirmation into SceneGame. Save/resume checkpoint remains absent until its actual UI route is verified. This plan cannot pass the release gate.",
+  "scope": "Candidate-only real Android capture exercises visible UI, female gender and three hairstyles, Home/reopen in the same process, all character creation pages, normal Skip Tutorial, gameplay interaction, Save and Quit through the real UI, process restart, loading the existing saved Sim, and resumed gameplay. Native observations support progression; screenshot review remains mandatory.",
   "source": "Pinned original game SHA256 8198558b93316a963c2106f172fde53015063955af16d2aa13ee51a89a1e114a; original ARM layout/display helpers at scale3.375. The first two taps were also observed in device JNI trace 4409685594089518444.",
   "steps": [
     {
@@ -34,11 +34,15 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 12,
-      "probe_tap": [
+      "timeout": 180,
+      "probe_swipe": [
         20,
-        540
+        540,
+        80,
+        540,
+        1000
       ],
-      "timeout": 120
+      "probe_interval": 0.2
     },
     {
       "name": "dismiss-rotation-tutorial",
@@ -50,10 +54,15 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 13,
-      "probe_tap": [
+      "probe_swipe": [
         20,
-        540
-      ]
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_interval": 0.2,
+      "timeout": 180
     },
     {
       "name": "appearance-visible-controls",
@@ -127,12 +136,16 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 13,
-      "probe_tap": [
-        20,
-        540
-      ],
       "timeout": 180,
-      "expect_same_pid": true
+      "expect_same_pid": true,
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_interval": 0.2
     },
     {
       "name": "appearance-next",
@@ -144,10 +157,15 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 14,
-      "probe_tap": [
+      "probe_swipe": [
         20,
-        540
-      ]
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_interval": 0.2,
+      "timeout": 180
     },
     {
       "name": "choose-first-persona",
@@ -168,10 +186,15 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 15,
-      "probe_tap": [
+      "probe_swipe": [
         20,
-        540
-      ]
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_interval": 0.2,
+      "timeout": 180
     },
     {
       "name": "trait-0",
@@ -276,11 +299,15 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 16,
-      "probe_tap": [
+      "timeout": 180,
+      "probe_swipe": [
         20,
-        540
+        540,
+        80,
+        540,
+        1000
       ],
-      "timeout": 180
+      "probe_interval": 0.2
     },
     {
       "name": "open-name-dialog",
@@ -313,11 +340,15 @@
       "capture": true,
       "expect_scene": "SceneMenu",
       "expect_menu_state": 19,
-      "probe_tap": [
+      "timeout": 180,
+      "probe_swipe": [
         20,
-        540
+        540,
+        80,
+        540,
+        1000
       ],
-      "timeout": 180
+      "probe_interval": 0.2
     },
     {
       "name": "new-game-confirmation-yes",
@@ -333,10 +364,128 @@
         900
       ],
       "timeout": 240,
-      "checkpoint": "gameplay"
+      "probe_interval": 0.2
+    },
+    {
+      "name": "skip-gameplay-tutorial-normally",
+      "tap": [
+        1122,
+        745
+      ],
+      "wait": 4,
+      "capture": true
+    },
+    {
+      "name": "dismiss-edit-appearance-tip",
+      "tap": [
+        500,
+        350
+      ],
+      "wait": 4,
+      "capture": true
     },
     {
       "name": "gameplay-floor-interaction",
+      "tap": [
+        1000,
+        700
+      ],
+      "wait": 8,
+      "capture": true,
+      "expect_scene": "SceneGame",
+      "probe_tap": [
+        960,
+        900
+      ],
+      "probe_interval": 0.2,
+      "timeout": 240,
+      "checkpoint": "gameplay"
+    },
+    {
+      "name": "open-gameplay-pause-menu",
+      "tap": [
+        113,
+        965
+      ],
+      "wait": 3,
+      "capture": true
+    },
+    {
+      "name": "choose-save-and-quit-to-menu",
+      "tap": [
+        960,
+        797
+      ],
+      "wait": 3,
+      "capture": true
+    },
+    {
+      "name": "confirm-save-and-quit",
+      "tap": [
+        798,
+        745
+      ],
+      "wait": 30,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "probe_tap": [
+        20,
+        540
+      ],
+      "probe_interval": 0.2,
+      "timeout": 240,
+      "checkpoint": "saved-to-menu"
+    },
+    {
+      "name": "restart-from-saved-game",
+      "relaunch": true,
+      "wait": 30,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 5,
+      "probe_tap": [
+        20,
+        540
+      ],
+      "probe_interval": 0.2,
+      "timeout": 180
+    },
+    {
+      "name": "reopened-main-menu-start",
+      "tap": [
+        1356,
+        683
+      ],
+      "wait": 4,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 9,
+      "probe_tap": [
+        20,
+        540
+      ],
+      "probe_interval": 0.2,
+      "timeout": 180
+    },
+    {
+      "name": "load-existing-saved-female-sim",
+      "tap": [
+        643,
+        577
+      ],
+      "wait": 30,
+      "capture": true,
+      "expect_scene": "SceneGame",
+      "probe_tap": [
+        960,
+        900
+      ],
+      "probe_interval": 0.2,
+      "timeout": 240,
+      "checkpoint": "resume"
+    },
+    {
+      "name": "resumed-gameplay-floor-interaction",
       "tap": [
         1000,
         700
@@ -347,5 +496,6 @@
   ],
   "trait_source": "Original SimsData constructor/parser: NPC0 starts with no traits; opposites are 0/1,2/3,4/5,6/7,8/9,10/11,12/13,14/15; trait16 has no opposite. Select0,2,13,15,16. Original ARM list scrolling clamps at\u2212510 logical.",
   "run_baseline": false,
-  "appearance_source": "Original ARM camera/FOV/look-at/orientation/projection helpers and real model anchor hierarchy prove gender category118,449/leftarrow646,540 and hair category1802,263/rightarrow1274,581 at full1920x1080 native canvas. One gender arrow toggles the default male NPC0 to female."
+  "appearance_source": "Original ARM camera/FOV/look-at/orientation/projection helpers and real model anchor hierarchy prove gender category118,449/leftarrow646,540 and hair category1802,263/rightarrow1274,581 at full1920x1080 native canvas. One gender arrow toggles the default male NPC0 to female.",
+  "save_resume_source": "Actual original ARM pause-icon hit103178\u2192104014\u2192107254 at113,965; pause-list65030 draw/64E7C hit places SaveQuit resource0x831 at960,797. ConfirmationYes uses original1089EC\u219288904+88E44 persistence, then SceneMenu. Existing-slot11AA58\u219211AB90\u219212F770nonzero selects pendingScene2; empty slot instead enters CAS."
 }

@@ -166,6 +166,12 @@ class Android:
         return (round(left + position[0] * (right - left) / coordinate_size[0]),
                 round(top + position[1] * (bottom - top) / coordinate_size[1]))
 
+    def swipe(self, values, coordinate_size):
+        x1, y1, x2, y2, duration = values
+        scaled = [*self.coordinates([x1, y1], coordinate_size),
+                  *self.coordinates([x2, y2], coordinate_size)]
+        self.shell('input', 'swipe', *scaled, duration)
+
     def run_plan(self, plan, prefix, limit=None):
         checkpoints = {}
         for index, step in enumerate(plan['steps'][:limit]):
@@ -179,10 +185,7 @@ class Android:
             if 'tap' in step:
                 self.tap(step['tap'], plan['coordinate_size'])
             elif 'swipe' in step:
-                x1, y1, x2, y2, duration = step['swipe']
-                scaled = [*self.coordinates([x1, y1], plan['coordinate_size']),
-                          *self.coordinates([x2, y2], plan['coordinate_size'])]
-                self.shell('input', 'swipe', *scaled, duration)
+                self.swipe(step['swipe'], plan['coordinate_size'])
             elif 'text' in step:
                 if not re.fullmatch(r'[A-Za-z0-9_%.-]+', step['text']):
                     raise ValueError('Plan text must be shell-safe Android input text')
@@ -204,16 +207,19 @@ class Android:
                 expected_menu = step.get('expect_menu_state')
                 before_probe = self.latest_native
                 def scene_ready():
-                    if step.get('probe_tap'):
+                    if step.get('probe_swipe'):
+                        self.swipe(step['probe_swipe'], plan['coordinate_size'])
+                        time.sleep(.3)
+                    elif step.get('probe_tap'):
                         self.tap(step['probe_tap'], plan['coordinate_size'])
                         time.sleep(.3)
                     observed = self.native_scene()
                     matches = (expected is None or observed == expected) and (
                         expected_menu is None or self.last_menu_state() == expected_menu)
-                    fresh = not step.get('probe_tap') or self.latest_native != before_probe
+                    fresh = not (step.get('probe_tap') or step.get('probe_swipe')) or self.latest_native != before_probe
                     return matches and fresh
                 self.wait_for(name + ' scene/menu observation', scene_ready,
-                              step.get('timeout', 90))
+                              step.get('timeout', 90), interval=step.get('probe_interval', 2))
             self.snapshot(name)
             if step.get('expect_same_pid') and (not previous_pid or self.events[-1]['game_pid'] != previous_pid):
                 raise RuntimeError(f'{name}: game process changed across Home/reopen')
@@ -250,7 +256,7 @@ def main():
     try:
         command = [str(emulator_dir / 'emulator'), '-avd', args.avd, '-port', '5554',
                    '-accel', 'on', '-gpu', os.environ.get('S3CE_GPU_MODE', 'swiftshader'), '-no-window', '-no-audio',
-                   '-no-boot-anim', '-no-snapshot', '-skip-adb-auth', '-memory', '3072',
+                   '-no-boot-anim', '-no-snapshot', '-skip-adb-auth', '-verbose', '-memory', '3072',
                    '-cores', '4', '-feature', '-Vulkan,DynamicPartition', '-show-kernel',
                    '-prop', 'qemu.hw.mainkeys=1',
                    '-partition-size', str(math.ceil(original_size / 1048576))]

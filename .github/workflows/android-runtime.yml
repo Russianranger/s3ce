@@ -54,7 +54,7 @@ jobs:
           values = dict(line.split('=', 1) for line in avd.read_text().splitlines() if '=' in line)
           values.update({'hw.lcd.width': '1080', 'hw.lcd.height': '1920', 'hw.lcd.density': '320',
                          'hw.initialOrientation': 'landscape', 'hw.cpu.ncore': '4', 'hw.ramSize': '3072',
-                         'hw.gpu.enabled': 'yes', 'hw.gpu.mode': 'swiftshader_indirect',
+                         'hw.gpu.enabled': 'yes', 'hw.gpu.mode': 'host',
                          'hw.audioInput': 'no', 'hw.audioOutput': 'no', 'hw.camera.back': 'none',
                          'hw.camera.front': 'none', 'disk.dataPartition.size': '6442450944',
                          'disk.systemPartition.size': str((image / 'system.img').stat().st_size),
@@ -65,45 +65,27 @@ jobs:
           print('Configured AVD:', avd)
           print('Original GPT system image bytes:', (image / 'system.img').stat().st_size)
           PY
-      - name: Pin GLES1-compatible Android Emulator
+      - name: Prepare Xvfb and record Mesa host renderer
         shell: bash
         run: |
           set -euo pipefail
           exec > >(tee -a build/runtime-evidence/setup.txt) 2>&1
-          python3 - <<'PY'
-          import hashlib, os, urllib.request, zipfile
-          from pathlib import Path
-          root = Path(os.environ['RUNNER_TEMP']) / 's3ce-emulator-31.1.4'
-          root.mkdir(exist_ok=True)
-          archive = root / 'emulator-linux_x64-7920983.zip'
-          url = 'https://dl.google.com/android/repository/emulator-linux_x64-7920983.zip'
-          with urllib.request.urlopen(url, timeout=90) as source, archive.open('wb') as target:
-              while block := source.read(1024 * 1024):
-                  target.write(block)
-          expected = '5690099ab213a6265bc025d1d2218055e6b9d69414972c13cf2ef1c98a9c4565'
-          assert hashlib.file_digest(archive.open('rb'), 'sha256').hexdigest() == expected
-          with zipfile.ZipFile(archive) as package:
-              package.extractall(root)
-              for entry in package.infolist():
-                  mode = entry.external_attr >> 16
-                  if mode:
-                      (root / entry.filename).chmod(mode)
-          with open(os.environ['GITHUB_ENV'], 'a') as env:
-              env.write('ANDROID_SDK_ROOT=' + os.environ['ANDROID_HOME'] + '\n')
-              env.write('S3CE_EMULATOR_DIR=' + str(root / 'emulator') + '\n')
-              env.write('S3CE_GPU_MODE=swiftshader_indirect\n')
-          print('Pinned official Emulator31.1.4 archive SHA256:', expected)
-          PY
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xvfb xauth libgl1-mesa-dri libegl-mesa0 libglx-mesa0 mesa-utils
+          printf 'ANDROID_SDK_ROOT=%s\nS3CE_EMULATOR_DIR=%s/emulator\nS3CE_GPU_MODE=host\nLIBGL_ALWAYS_SOFTWARE=1\n' "$ANDROID_HOME" "$ANDROID_HOME" >> "$GITHUB_ENV"
           export ANDROID_SDK_ROOT="$ANDROID_HOME"
-          "$RUNNER_TEMP/s3ce-emulator-31.1.4/emulator/emulator" -no-window -version
-          "$RUNNER_TEMP/s3ce-emulator-31.1.4/emulator/emulator" -list-avds
-          "$RUNNER_TEMP/s3ce-emulator-31.1.4/emulator/emulator" -accel-check
+          export LIBGL_ALWAYS_SOFTWARE=1
+          xvfb-run -a -s '-screen 0 1920x1080x24' glxinfo -B | tee build/runtime-evidence/host-renderer.txt
+          grep -Ei 'OpenGL renderer string:.*(llvmpipe|softpipe)' build/runtime-evidence/host-renderer.txt
+          "$ANDROID_HOME/emulator/emulator" -no-window -version
+          "$ANDROID_HOME/emulator/emulator" -list-avds
+          "$ANDROID_HOME/emulator/emulator" -accel-check
       - name: Exercise baseline and candidate through real Android input
         env:
           CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}
           BASELINE_APK: ${{ steps.apks.outputs.baseline }}
         run: |
-          python3 scripts/android_runtime.py --avd S3CE_VALIDATION --candidate "$CANDIDATE_APK" --baseline "$BASELINE_APK" --plan scripts/android_runtime_plan.json --output build/runtime-evidence
+          xvfb-run -a -s '-screen 0 1920x1080x24' python3 scripts/android_runtime.py --avd S3CE_VALIDATION --candidate "$CANDIDATE_APK" --baseline "$BASELINE_APK" --plan scripts/android_runtime_plan.json --output build/runtime-evidence
       - name: Upload screenshots and runtime evidence only
         if: always()
         uses: actions/upload-artifact@v4
