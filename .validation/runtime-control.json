@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 1,
-  "frame_sha256": "5d69b75e82eb73487b3d19f7256df7ae17d66e729473cd88e8f266a05ccaf4be",
+  "seq": 2,
+  "frame_sha256": "aff389fdb4673938db4f0a63ee36461fa328d23134d12ab776544b33b5981b79",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1300,
-    "y": 300
+    "x": 1130,
+    "y": 792
   },
-  "note": "Select the visible bed early in this session, before extended timed-hint/game-time progression."
+  "note": "Select the visible Cheap Bed Sit row; inspect pose rather than menu closure."
 }
