@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 11,
-  "frame_sha256": "18efcf7e5ee45c40f28a0bd6828a5c9b5fd74c82352e3b4003b0e1b03be9d2eb",
+  "seq": 12,
+  "frame_sha256": "b7b4a09c43897fde71b43d66c96db096a6f06a63d8d24fb4e69a0a2aa2426347",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 500,
-    "y": 300
+    "x": 1448,
+    "y": 999
   },
-  "note": "Dismiss the visible Go to Town tutorial and inspect its ordinary next state."
+  "note": "Test the wishes strip after normal dismissal of the Go to Town hint."
 }
