@@ -1,5 +1,9 @@
 # Development handoff — 0.1.2
 
+Published source: `1f2805317582e2d7cefa5a8145cb1b59c9643424`.
+Publication/download-verification run `41147877179` passed. APK and instructions
+are available on release `v0.1.2-crash-report`.
+
 0.1.0 reached the menus/Create-a-Sim with missing graphics and stalled swipes.
 0.1.1 added PVRTC fallback + input fixes + separate report launcher, then crashed
 at startup on the Thor. Its plain EXTRA_TEXT sharing could not be saved by the

@@ -20,6 +20,9 @@ Completed:
 - ARM cross-compilation, all 4,247 relocations, 131 imports, native ELF hardening,
   identical original assets/configuration, APK assembly and signatures pass.
 - The same application ID/certificate is retained; versionCode 102.
+- GitHub publication run [41147877179](https://github.com/Russianranger/s3ce/actions/runs/41147877179)
+  passed byte-exact reconstruction, APK signature/identity checks, publication,
+  and independent download/SHA-256 verification of the published APK.
 - Native rendering mode can bypass all new GL interposition. Durable log markers
   bracket initial GL queries, PVRTC decoding and GPU uploads. All 691 actual
   texture mip levels also passed host sanitizer checks; no native cause proven.
