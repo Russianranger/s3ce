@@ -23,6 +23,15 @@ cc -std=gnu11 "${flags[@]}" "$native_dir/tests/code_flush_test.c" -o "$test_dir/
 cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \
     "$native_dir/tests/memory_compat_test.c" -o "$test_dir/memory_test"
 "$test_dir/memory_test"
+cc -std=gnu11 "${flags[@]}" "$native_dir/tests/pointer_callbacks_test.c" \
+    "$native_dir/pointer_callbacks.c" -pthread -o "$test_dir/pointer_test"
+"$test_dir/pointer_test"
+cc -std=gnu11 "${flags[@]}" "$native_dir/tests/game_pointer_observer_test.c" \
+    "$native_dir/game_pointer_observer.c" -o "$test_dir/observer_test"
+"$test_dir/observer_test"
+cc -std=gnu11 "${flags[@]}" "$native_dir/tests/mapped_memory_test.c" \
+    "$native_dir/mapped_memory.c" -o "$test_dir/mapped_test"
+"$test_dir/mapped_test"
 c++ -std=c++14 "${flags[@]}" "$native_dir/pvrtc/test_bridge.cpp" \
     "$native_dir/pvrtc/PVRTDecompress.cpp" "$native_dir/pvrtc/pvrtc_bridge.cpp" \
     -o "$test_dir/decoder_test"

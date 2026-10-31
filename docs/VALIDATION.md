@@ -1,4 +1,49 @@
-# Candidate 0.1.7 validation
+# Candidate 0.1.8 validation
+
+The user confirms reopening works after 0.1.7. Its report shows large horizontal
+swipes reach JNI with the text gate clear and frames continuing. Create-a-Sim
+still does not respond. No swipe fix is established.
+
+Completed:
+
+- Eleven native ASan/UBSan suites pass, including callback identity/forwarding,
+  every failed state-reader access, split code/data guards, map boundaries,
+  worst-case output length and existing graphics/JNI/RAM regressions.
+- Eighteen compiled production-proxy ARM scenarios pass, including proxy text
+  at0xdb000000 and separately relocated high game/data/heap/stack addresses.
+  Original registration, dynamic generic veneer, queue/copy/Yield/Notify,
+  nested callback gateways, game adapters, frame drain and gesture states execute.
+  Cookies, return values, R9, callee-saved registers, SP and fibre state survive.
+  Duplicate/unregister/reentry, allocation failure and slot-limit pass-through
+  retain original registry behavior.
+- Original game drag threshold, gesture tick and full CAS rotation math pass at
+  low/high addresses with real helpers. Only unrelated OS/UI effects are modeled.
+  These are host instruction fixtures, not an Android VM or device gameplay.
+- Independent review approves guarded register/unregister hooks, generic stack
+  bookkeeping, stable callback identities, split-data literal resolution, class
+  checks and readable-memory copies on the source-proven engine thread.
+- ARM warnings-as-errors build,4247 relocations,131 legacy imports, native ELF
+  hardening, original asset/configuration guards and APK signatures pass.
+- All310 executable APK methods pass static DEX type/control-flow analysis against
+  SDK35. Actual assembled touch-wrapper, pointer-ID/CANCEL, lifecycle lost-wake
+  and GL-wrapper regressions pass. This does not establish ART/device execution.
+
+Same certificate/application ID and data location; versionCode108, target28.
+Callback tracing changes no intended input semantics. Bounded snapshots are
+recorded after callback enqueue, before a later frame may consume that input.
+The new hardware report must establish registration/delivery, queue drain and
+Scene routing state. Reopening and room/hair rendering were already confirmed.
+
+APK SHA-256:
+`5889dd74a5094603e78534fcde915590ae1cb87d45c7f0252eb5fa4d51d0143a`.
+
+Shim SHA-256:
+`3b9397d65bafe7921185b48390183bbd006004bfd18dcf37dc50b4c990ac7912`.
+
+Byte-exact reconstruction from the pinned0.1.0 base APK passed. Independent
+publication/download verification pending.
+
+## Historical 0.1.7 checks
 
 Device0.1.6 evidence confirms startup/Create-a-Sim, working room/hair textures,
 PVRTC uploads and continued frames during touch arrivals. Swipes remain blocked.

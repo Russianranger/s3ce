@@ -20,6 +20,8 @@ EXPECTED_PATCH_SITES = {
     0x3397c: bytes.fromhex("f0b5194e81b0336a"),
     0x169c8: bytes.fromhex("2af02abb4218034c"),
     0x223b8: bytes.fromhex("f0b5474680b41b4c"),
+    0x3752c: bytes.fromhex("10b582b0041c0092"),
+    0x3766c: bytes.fromhex("00b583b00b1c0021"),
 }
 
 
@@ -106,6 +108,17 @@ def main():
     assert symbol_values["_Z12get_mem_infoRiS_"] == 0x223b9
     assert symbol_values["AirplayView_onMotionEvent"] == 0x2148d
     assert symbol_values["g_s3ePointerGlobals"] == 0x55d80
+    assert symbol_values["s3ePointerRegister"] == 0x3752d
+    assert symbol_values["s3ePointerUnRegister"] == 0x3766d
+    assert symbol_values["s3eCallbacksRegister"] == 0x26edd
+    assert symbol_values["s3eCallbacksUnRegister"] == 0x27525
+    assert symbol_values["s3eStackSwitchCallCallback"] == 0x3c558
+    assert symbol_values["s3eStackSwitchGetDynamicCallbackAddr"] == 0x3c9a1
+    assert data[0x26edc:0x26ee4] == bytes.fromhex("30b585b008ac20cc")
+    assert data[0x27524:0x2752c] == bytes.fromhex("f0b557464e464546")
+    assert data[0x3c558:0x3c560] == bytes.fromhex("f04f2de90050a0e1")
+    assert data[0x3c9a0:0x3c9a8] == bytes.fromhex("f0b581b00e1c171c")
+    assert struct.unpack_from("<I", data, 0x3ca94)[0] == 0x3c808
     assert data[0x41020:0x41028] == bytes.fromhex("f0b5051c0e1c030b")
     assert data[0x3c7f0:0x3c7fc] == bytes.fromhex("00402de997ffffeb0040bde8")
     assert struct.unpack_from("<I", data, 0x3c750)[0] == 0x56758

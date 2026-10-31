@@ -71,8 +71,33 @@ Later DOWN/UP boundaries include bounded action-count summaries, so later
 gestures remain observable. These concurrent state samples are diagnostic.
 Executing the original Thumb input routines confirms that pointer IDs 0, 7, and
 31 deliver down/move/up callbacks and polling state, while a second pointer
-cannot steal the primary drag. Device logs are still needed to locate the
-reported swipe failure in the running app.
+cannot steal the primary drag. The game uses callbacks and does not import
+`PointerUpdate`; published polling coordinates can therefore remain zero while
+every movement reaches its callback. The 0.1.7 device report confirmed valid JNI
+movement delivery and pending coordinates, but did not establish game consumption.
+
+The 0.1.8 observer also guards the original `PointerRegister`/`PointerUnRegister`
+entries. It delegates their exact original registry calls and uses stable proxy
+identities keyed by event and original function. Cookies remain unchanged. The
+original dynamic gateway factory generates **generic** Int32 proxies with its
+fast flag disabled. Delivery follows the original callback gateway to the game
+stack, the generic proxy back to the OS stack, then a nested original callback
+gateway to the unchanged game function. This preserves the runtime's saved stack,
+R9 and callback reentry protocol. The sixteen stable identities are never reused;
+capacity or generation failures permanently retain the original callback path.
+Duplicate registrations, multiple callbacks, unregister and reentrant updates
+retain their original semantics. No input events are injected or repeated.
+
+Bounded callback entry/exit records include the actual payload, original callback,
+cookie and return. After a known game callback returns on the engine thread,
+`game_pointer_observer.c` records its AppEngine queue counts, recognized Scene
+gesture state, input gates, menu route and CAS angle. Code and data occupy
+separate allocations: global pointers resolve through guarded **relocated
+literal pools**, never a preferred address added to the code base. Each copy
+passes a readable-map range check. Original adapter lifetimes and synchronous
+engine-thread observation prevent the relevant objects being freed during the
+snapshot. Unknown profiles, classes or unreadable ranges produce an unavailable
+reason. Observation changes no game state, timing settings or gesture behavior.
 
 ## Restore the registered pthread stack for JNI (0.1.6)
 
@@ -227,7 +252,9 @@ These verify decoder colors, 2/4-bpp, alpha, small mip levels, invalid input and
 output guards, conditional GL fallback, native-driver pass-through, context-start
 ordering and recursion, complete generated-code flush ranges, typed JNI arguments,
 64-bit RAM parsing and saturation while preserving genuine low RAM, stale-cache
-bypass, exact-once bounded input tracing, native-only Throwable classification, and preservation of
+bypass, exact-once bounded input tracing, stable callback identities and fallback,
+mapped-read bounds, split-data observer guards/failure paths, native-only
+Throwable classification, and preservation of
 the same Throwable even if diagnostics fail. Set ANDROID_NDK_HOME
 for the typed JNI test; it uses a temporary copy of the NDK's real JNI header.
 
@@ -239,6 +266,10 @@ python3 native/tests/emulate_gl_start.py /path/to/source.apk
 python3 native/tests/emulate_stack_bridge.py /path/to/source.apk --ndk "$ANDROID_NDK_HOME"
 python3 native/tests/emulate_memory_preflight.py /path/to/source.apk
 python3 native/tests/emulate_pointer_input.py /path/to/source.apk
+python3 native/tests/emulate_pointer_queue.py /path/to/source.apk
+python3 native/tests/emulate_pointer_proxies.py /path/to/source.apk \
+  /path/to/source.s3e.unpacked --ndk "$ANDROID_NDK_HOME"
+python3 native/tests/emulate_cas_rotation.py /path/to/source.s3e.unpacked
 ```
 
 The first script executes original `setViewNative`, `s3eGL_start`, and `callMethod`
@@ -253,6 +284,15 @@ is bundled. The third script executes the original RAM parser, free-memory
 property, and signed startup comparison to demonstrate overflow before allocation.
 The fourth checks the original pointer dispatch and polling behavior across IDs
 and primary/secondary pointer transitions.
+The fifth executes the real registry, owned payload copies, DeviceYield, dispatch
+and ARM callback gateway, including StackSwitch modes zero and one. The sixth
+compiles the production C proxies at both low and high native addresses and runs
+them through the original generic gateway, original queue, nested callback,
+actual split-data game adapters, frame drain and gesture FSM. It checks cookies,
+R9/SP/fibre restoration, real duplicate/unregister policies, failure/retry,
+seventeen callbacks and reentrant replacement. The last script executes the
+original CAS rotation arithmetic at preferred and high addresses. Game fixtures
+require the separately unpacked, SHA-pinned source S3E; no game bytes are included.
 
 ## Behavior
 
@@ -298,7 +338,8 @@ context, and 0.1.5 preserved a pre-entry Java failure that also blocked its logg
 The 0.1.6 registered-stack bridge, original API stack switching, complete veneer
 cache maintenance, and native-only exception diagnostics pass host and ARM
 emulation checks. The user confirmed Android window startup and PVRTC rendering
-on the Thor with 0.1.6; swipe input and relaunch still needed correction. The RAM
-reader correction is verified on the host and requires device confirmation.
+on the Thor with 0.1.6, and working relaunch with the 0.1.7 RAM-reader correction.
+Swipe behavior remains unresolved; 0.1.8 adds the callback-to-game witness needed
+to locate the remaining device-specific failure.
 Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.

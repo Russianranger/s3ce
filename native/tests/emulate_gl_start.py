@@ -27,8 +27,10 @@ def cstring(vm, address):
         result.append(value)
         address += 1
 
-def machine(data):
+def machine(data, cpu_model=None):
     vm = Uc(UC_ARCH_ARM, UC_MODE_THUMB)
+    if cpu_model is not None:
+        vm.ctl_set_cpu_model(cpu_model)
     vm.mem_map(BASE, 0x60000)
     vm.mem_map(AUX, 0x10000)
     vm.mem_map(STACK, 0x10000)

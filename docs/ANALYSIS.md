@@ -214,3 +214,46 @@ primary/pending/published state. Java records action/source/ID plus the actual
 text-input gate and action totals.128KiB native report retention keeps initial
 DOWN/RAM evidence alongside the compact trace. The next Thor report must locate
 where delivery diverges before another behavior patch is justified.
+
+## 0.1.8 callback delivery and game gesture boundary
+
+The 0.1.7 Thor report and user result confirm reopening works. MemTotal is
+15621188 KiB and MemFree 1441044 KiB in that run; the compatibility reader returns
+INT32_MAX total bytes and 1475629056 free bytes. Startup continues normally.
+
+Fourteen DOWN/UP pairs and 283 MOVE events reach JNI. The source is touchscreen,
+ID is zero, the text-input gate is false, and large horizontal movement changes
+native pending coordinates. The primary pointer remains selected until UP.
+Frames continue during the attempts. Published polling coordinates stay zero,
+but the game imports only PointerRegister, not PointerUpdate/GetX/GetY/GetState;
+those unused polling fields are not evidence of lost callback motion.
+
+Actual original ARM execution covers registration, JNI synthesis, event queue,
+exact payload copying, DeviceYield dispatch, notification and callback stack
+switching. Motion events can be dropped when event1 has no registered callback;
+registration/delivery is the remaining missing device witness. The original game
+registers event0 and event1, reads both callback coordinates without a gesture
+filter, and queues them into two 50-entry AppEngine buffers. Frame consumption
+flips and drains those buffers. A matching primary drag crosses the original
+10-pixel threshold and reaches state3; state3 emits gesture event5 each tick.
+
+The actual Create-a-Sim handler for menu state13 converts horizontal delta to
+negative360 times delta/width, updates the Sim angle, inertia and timer, and the
+renderer reads that angle. Original math helpers and high-address execution
+pass. No hidden acknowledgement, hitbox, float ABI or extra timing gate was
+established. These are host ARM execution results, not hardware gameplay.
+
+The caller can still gate rotation when SceneMenu's UI selector at+0xf8 is
+active, or AppEngine's transition flags at+0x420/+0x430 block routing. Selecting
+a UI element also resets gesture state and pointer ownership. Transition value,
+direction and speed are at+0x424/+0x428/+0x42c. The observer includes these fields;
+their source semantics do not establish which gate, if any, is active on the
+device.
+
+The observer must preserve callback identity across duplicate registration and
+unregister, use the generic stack gateway for its C proxy, and invoke the game
+through the original callback gateway. Fast switching would bypass nested stack
+bookkeeping. Code and initialized game data are separate allocations; preferred
+global offsets must be resolved through guarded relocated literal pools rather
+than added to the code base. Only validated objects may supply state snapshots.
+Full reports and signing material remain private.

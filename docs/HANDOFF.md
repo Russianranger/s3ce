@@ -1,4 +1,43 @@
-# Development handoff — 0.1.7
+# Development handoff — 0.1.8
+
+The Thor now reopens successfully. Preserve the working RAM, graphics, stack and
+cache-flush fixes. Swiping at Create-a-Sim remains unresolved.
+
+The 0.1.7 report shows touchscreen source0x1002, ID0, text gate false, fourteen
+DOWN/UP pairs and 283 MOVE events with substantial horizontal deltas. Native
+primary/pending fields update and frames advance. Published polling fields stay
+zero because the game registers callbacks and never imports the polling API.
+Do not inject PointerUpdate or duplicate synthesized single-pointer events.
+
+Actual original ARM queue/callback execution works; absent event1 registration
+reproduces taps without movement. The game's real adapters, two input buffers,
+frame consumer, drag threshold, state3 gesture tick and CAS rotation math work
+at low/high code and separately relocated data addresses. No hidden tutorial
+acknowledgement, hitbox, float ABI or timing gate was found.
+
+0.1.8 adds a bounded observer of registration and actual callback entry/return.
+Its proxy must use the generic Int32 stack gateway, then the original callback
+gateway for the unchanged game callback. Fast switching breaks nested stack
+bookkeeping. Duplicate registration, unregister, reentry, permanent generation
+failure and slot exhaustion must preserve original behavior. Slots are never
+reused. Game-state snapshots are read only after strict source/literal/vtable
+validation and safe reads; split data is not codebase+preferred-global-offset.
+
+Next hardware gate: install over the existing app, Original rendering unchecked,
+reach CAS, drag left/right a few times and immediately save the same run's report.
+Look for event1 REGISTER, ENTER/EXIT and queued counts/Scene gesture state/menu
+state13/CAS angle. The last snapshot is after callback enqueue, before a later
+frame may consume it; interpret that timing rather than equating a queued event
+with final rendered rotation.
+
+Final APK SHA5889dd74a5094603e78534fcde915590ae1cb87d45c7f0252eb5fa4d51d0143a;
+shim SHA3b9397d65bafe7921185b48390183bbd006004bfd18dcf37dc50b4c990ac7912.
+Eleven sanitizer suites, eighteen compiled ARM proxy scenarios, independent
+review,310-method static DEX analysis and APK build/signature checks pass.
+Publication receipt pending. Same app ID/key/data. All full user reports and
+signing material stay private.
+
+## Historical 0.1.7 handoff
 
 Published source `9a6c82ef217a4a206c73592dc12b9df67adf93d4`.
 Publication/download-verification run `41156929416` passed.

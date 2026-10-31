@@ -27,6 +27,9 @@
 #include "code_flush.h"
 #include "memory_compat.h"
 #include "input_trace.h"
+#include "pointer_callbacks.h"
+#include "game_pointer_observer.h"
+#include "mapped_memory.h"
 #include <EGL/egl.h>
 
 static char diagnostic_path[PATH_MAX];
@@ -78,6 +81,11 @@ static const uintptr_t *original_loader_sp_slot;
 static void (*original_stack_gateway)(void);
 static int (*original_platform_cache_flush)(void *, uint32_t);
 static const uint8_t *original_stack_switch_flag;
+static const uintptr_t *original_dynamic_space_slot;
+static s3ce_pointer_callback (*original_dynamic_callback)(s3ce_pointer_callback, unsigned, unsigned);
+static uintptr_t original_pointer_proxy_gateway;
+static int32_t (*original_callback_gateway)(s3ce_pointer_callback, void *, void *,
+    uintptr_t, uintptr_t, uintptr_t, uintptr_t, uintptr_t);
 static unsigned expanded_flush_logs;
 static pthread_mutex_t load_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -150,6 +158,66 @@ static int flush_legacy_code(void *start, uint32_t length) {
 
 static void read_legacy_memory_info(int *total, int *free_bytes) {
     s3ce_get_memory_info(total, free_bytes, diagnostic_log);
+}
+
+static s3ce_pointer_callback create_pointer_proxy(s3ce_pointer_callback proxy) {
+    /* Generic Int32 is required: the fast gateway does not save current game
+     * frames before a native observer reenters an original game callback. */
+    s3ce_pointer_callback result = original_dynamic_callback(proxy, 4, 0);
+    if (!original_stack_switch_flag || !*original_stack_switch_flag)
+        return result == proxy ? result : NULL;
+    uintptr_t address = (uintptr_t)result;
+    uintptr_t arena = original_dynamic_space_slot ? *original_dynamic_space_slot : 0;
+    if (!address || (address & 3) || !arena || address < arena || address - arena > 1024 - 16)
+        return NULL;
+    pthread_mutex_lock(&code_lock);
+    struct code_allocation *entry = code_allocations;
+    while (entry) {
+        uintptr_t start = (uintptr_t)entry->address;
+        if (address >= start && address - start <= entry->length &&
+            16 <= entry->length - (address - start)) break;
+        entry = entry->next;
+    }
+    uint32_t words[4] = {0};
+    if (entry) memcpy(words, (const void *)address, sizeof(words));
+    int valid = entry != NULL;
+    pthread_mutex_unlock(&code_lock);
+    if (!valid || words[0] != 0xe59fc000 || words[1] != 0xe59ff000 ||
+        words[2] != (uint32_t)(uintptr_t)proxy ||
+        words[3] != (uint32_t)original_pointer_proxy_gateway) return NULL;
+    return result;
+}
+
+static int32_t invoke_pointer_callback(s3ce_pointer_callback callback, void *system, void *user) {
+    return original_callback_gateway(callback, system, user, 0, 0, 0, 0, 0);
+}
+
+static void observe_pointer_game(int event, s3ce_pointer_callback callback,
+                                 char *text, size_t capacity) {
+    (void)event;
+    uintptr_t address = (uintptr_t)callback;
+    pthread_mutex_lock(&code_lock);
+    struct code_allocation *entry = code_allocations;
+    while (entry) {
+        uintptr_t start = (uintptr_t)entry->address;
+        if (address >= start && address - start < entry->length) break;
+        entry = entry->next;
+    }
+    if (!entry) {
+        snprintf(text, capacity, "Game input snapshot unavailable: callback outside tracked code");
+    } else {
+        /* Original pointer adapters only append to AppEngine's event arrays;
+         * they cannot destroy AppEngine/Scene. Observe synchronously on that
+         * same engine thread, with a complete readable-range check per copy.
+         * The code lock also prevents the tracked code mapping being freed. */
+        struct s3ce_readable_memory readable;
+        if (!s3ce_load_readable_memory(&readable))
+            snprintf(text, capacity, "Game input snapshot unavailable: readable maps");
+        else
+            s3ce_observe_game_pointer((uintptr_t)entry->address, address,
+                s3ce_read_mapped_memory, &readable, text, capacity);
+    }
+    pthread_mutex_unlock(&code_lock);
 }
 
 static int legacy_exception_status(void) {
@@ -451,13 +519,40 @@ static jint load_legacy(JNIEnv *env, JavaVM *vm, jobject asset_manager) {
     if (!platform_flush || memcmp(platform_flush, platform_flush_code, sizeof(platform_flush_code))) goto done;
     original_platform_cache_flush = (int (*)(void *, uint32_t))(uintptr_t)(image.base + 0x41021);
     original_stack_switch_flag = image_pointer(&image, 0x54b68 + 0x18, 1);
+    original_dynamic_space_slot = image_pointer(&image, 0x54b68 + 0x10, sizeof(uintptr_t));
+    static const uint32_t callback_addresses[4] = {0x26edc,0x27524,0x3c558,0x3c9a0};
+    static const uint8_t callback_guards[4][8] = {
+        {0x30,0xb5,0x85,0xb0,0x08,0xac,0x20,0xcc},
+        {0xf0,0xb5,0x57,0x46,0x4e,0x46,0x45,0x46},
+        {0xf0,0x4f,0x2d,0xe9,0x00,0x50,0xa0,0xe1},
+        {0xf0,0xb5,0x81,0xb0,0x0e,0x1c,0x17,0x1c}};
+    if (!original_stack_switch_flag || !original_dynamic_space_slot) goto done;
+    uint32_t *proxy_gateway_literal = image_pointer(&image, 0x3ca94, sizeof(uint32_t));
+    original_pointer_proxy_gateway = (uintptr_t)(image.base + 0x3c808);
+    if (!proxy_gateway_literal || *proxy_gateway_literal != original_pointer_proxy_gateway) goto done;
+    for (unsigned i = 0; i < 4; ++i) {
+        const uint8_t *code = image_pointer(&image, callback_addresses[i], 8);
+        if (!code || memcmp(code, callback_guards[i], 8)) goto done;
+    }
+    original_dynamic_callback = (s3ce_pointer_callback (*)(s3ce_pointer_callback, unsigned, unsigned))
+        (uintptr_t)(image.base + 0x3c9a1);
+    original_callback_gateway = (int32_t (*)(s3ce_pointer_callback, void *, void *,
+        uintptr_t, uintptr_t, uintptr_t, uintptr_t, uintptr_t))(uintptr_t)(image.base + 0x3c558);
+    s3ce_pointer_callbacks_bind(
+        (s3ce_pointer_core_register)(uintptr_t)(image.base + 0x26edd),
+        (s3ce_pointer_core_unregister)(uintptr_t)(image.base + 0x27525),
+        create_pointer_proxy, invoke_pointer_callback, observe_pointer_game, diagnostic_log);
     original_stack_gateway = (void (*)(void))(uintptr_t)(image.base + 0x3c7f0);
     original_gl_start = (void (*)(void))(uintptr_t)(image.base + 0x210a5);
     s3ce_gl_safety_bind(get_string_slot, diagnostic_log,
         legacy_initialize_window_context, legacy_exception_status);
     static const uint8_t memory_info_code[8] = {0xf0,0xb5,0x47,0x46,0x80,0xb4,0x1b,0x4c};
     static const uint8_t cache_flush_code[8] = {0x2a,0xf0,0x2a,0xbb,0x42,0x18,0x03,0x4c};
-    if (patch_thumb_function(&image, 0x223b8, memory_info_code, (void *)(uintptr_t)&read_legacy_memory_info) ||
+    static const uint8_t pointer_register_code[8] = {0x10,0xb5,0x82,0xb0,0x04,0x1c,0x00,0x92};
+    static const uint8_t pointer_unregister_code[8] = {0x00,0xb5,0x83,0xb0,0x0b,0x1c,0x00,0x21};
+    if (patch_thumb_function(&image, 0x3752c, pointer_register_code, (void *)(uintptr_t)&s3ce_pointer_register_observed) ||
+        patch_thumb_function(&image, 0x3766c, pointer_unregister_code, (void *)(uintptr_t)&s3ce_pointer_unregister_observed) ||
+        patch_thumb_function(&image, 0x223b8, memory_info_code, (void *)(uintptr_t)&read_legacy_memory_info) ||
         patch_thumb_function(&image, 0x169c8, cache_flush_code, (void *)(uintptr_t)&flush_legacy_code) ||
         patch_thumb_function(&image, 0x37148, malloc_code, (void *)(uintptr_t)&allocate_game_code) ||
         patch_thumb_function(&image, 0x36434, free_code, (void *)(uintptr_t)&free_game_code) ||

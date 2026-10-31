@@ -3,11 +3,11 @@
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
 Java/JNI bridge. **The Thor now reaches Create-a-Sim with room/hair textures.
-Swipes still fail. Version 0.1.7 corrects legacy RAM-reporting overflow that can
-block restarting, and records input delivery to diagnose the remaining gesture
-problem. Restart and gesture behavior need the next device test.**
+Reopening now works too. Swipes still fail. Version 0.1.8 records callback
+registration, delivery into the game and drag state to locate that remaining
+failure. It does not contain a verified swipe fix.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.7-input-restart)
+[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.8-gesture-trace)
 
 ## Supported candidate configuration
 
@@ -41,21 +41,21 @@ not a claim of successful gameplay on all four versions.
 
 ## Latest update and Thor test
 
-The old RAM helper reads MemFree in KiB, then shifts into a signed32 byte count.
-Several multi-GiB free-memory ranges become negative or zero; the existing signed
-64 KiB preflight can then show the observed insufficient-memory warning before
-loading the game. Version 0.1.7 parses64-bit KiB values and caps results at the
-legacy signed-int maximum. Genuine low-memory and unknown readings retain their
-existing meanings.
+The latest Thor report contains large horizontal touchscreen swipes. Java does
+not block them, and the native handler receives changing coordinates while
+frames continue. The game consumes registered callbacks, so its unused polling
+coordinates remaining zero do not explain the failure.
 
-The working graphics/stack fixes remain. Original ARM input routines accept the
-current gesture sequence in tests, so the swipe cause is still unresolved.
-Java action/source/gate counters and bounded actual JNI before/after pointer
-state traces now make device delivery observable. Touch dispatch is unchanged.
+Original ARM queue, callback, game input-buffer, gesture-state and rotation tests
+accept these events. Version 0.1.8 adds bounded callback entry/return and validated
+game-state observations to find where the actual device differs. Original
+callbacks still receive the same payload, user data and return value through
+the engine's stack gateways. The swipe cause remains unresolved.
+
 Install over the existing app, leave **Original rendering unchecked**, and press
-Start game. Try dragging from the Sim’s torso to the left/right, then Save report if stuck.
-Also close/reopen the game to check restarting.
-On failure, reopen the app icon and Save report. See
+Start game. At Create-a-Sim, drag from the Sim's torso left/right a few times,
+then use Report → Save report while that run remains open. If necessary, reopen
+the app icon to access reports. See
 [test instructions](docs/RELEASE_NOTES.md) and [native details](native/README.md).
 
 ## Build
