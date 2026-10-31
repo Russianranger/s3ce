@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 10,
-  "frame_sha256": "52ed4054792f8ffd2963a4aab67d67346028293d1fc28144ded481466aeda917",
+  "seq": 11,
+  "frame_sha256": "1403630d9e5769f7e462f3b7369961c308b4bb0f5785d2cbb2c381f9555fd0ac",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1124,
-    "y": 730
+    "type": "wait",
+    "seconds": 20
   },
-  "note": "Confirm the visible Save Game progress-and-quit-to-main-menu dialog."
+  "note": "Allow normal save and main-menu loading to complete."
 }
