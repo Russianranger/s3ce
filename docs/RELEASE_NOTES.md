@@ -1,34 +1,35 @@
-S3CE 0.1.3 — targeted fix for the reported startup crash.
+S3CE 0.1.4 — initialize the actual game-window context before GL queries.
 
-The 0.1.2 report identifies SIGSEGV in glGetString(GL_VERSION), called by the
-original engine before Java has created an EGL context. Both rendering modes
-failed at the same original wrapper, so texture conversion was not the failing
-operation in that trace.
+The new report showed that 0.1.3 blocked the platform driver crash, but returning
+NULL was insufficient: the game immediately passes its extension string to
+strlen without a NULL check. That was an incomplete startup fix.
 
-Changes:
+This update invokes the original Airplay window initializer on the game thread
+before the first capability query. It uses the existing engine-mutex release,
+UI GL-view creation, surface wait, relock, and same-thread eglMakeCurrent flow.
+The real context remains the game's rendering context; there is no temporary
+pbuffer or fabricated graphics information.
 
-- Use the engine's existing Android [S3E] GLForceDLLVersion=0x0101 setting to
-  select its GLES1.1 path without the premature version probe.
-- Guard the original GL string wrapper in both modes. Without a current context,
-  return NULL before entering the GLES driver. Once a context is current, pass
-  through the normal query and preserve the original extension filtering.
-- Keep PVRTC texture conversion, touch corrections, and the working report
-  save/share/view options. The earlier alpha workaround stays disabled.
+The initializer validates the saved JNI game-thread state and rechecks the
+current EGL context and JNI exception state before querying the actual driver.
+Failed or recursive initialization stops with an explicit saved diagnostic
+instead of continuing into another NULL-string crash. Existing texture, touch,
+report saving and shared rendering-mode safety features remain.
 
-The fix matches the captured crash path and passes native no-context/current-
-context regression tests, ARM compilation, independent review, and packaging
-checks. The updated game still needs device confirmation.
+Checks passed: independent binary/JNI review, native sanitizer regressions for
+initialization/query ordering, recursion and failure cases, ARM compilation,
+relocation/import verification, asset/config checks and APK signatures. Actual
+Thor window creation and gameplay still need confirmation.
 
 Test:
 
-1. Install over 0.1.2. Do not uninstall or clear app data.
-2. Open The Sims 3 CE and **uncheck Original rendering (diagnostic mode)**.
-   Your last test enabled it; that setting can persist through the update.
-3. Tap Start game and check whether the menu loads. Check backgrounds, hair/eyes
-   and the room, then swipe across the Sim in Create-a-Sim.
-4. If it works, proceed into the house and save/reopen when convenient.
-5. If it crashes or stalls, reopen the app icon, use Save report, and attach the
-   .txt file. Report saving worked on the previous test and is retained.
+1. Install over 0.1.3 without uninstalling or clearing data.
+2. Leave Original rendering (diagnostic mode) **unchecked**, then Start game.
+3. Check whether the menu loads. Check room/backgrounds/hair/eyes and swipe in
+   Create-a-Sim; if successful, proceed into the house and save/reopen.
+4. If it crashes or hangs, reopen the app icon and Save report again. The new
+   log records window-initialization state and EGL/JNI failures, and the report
+   includes additional AirplayGL/AirplayView/EGL error output.
 
-Same app ID, signing certificate, saved-data location, ARM32 and 4 KiB page
-requirements. No new game-file import is needed.
+Same app ID, signing key and data location. ARM32 and 4 KiB requirements remain.
+No additional game-data import is required.

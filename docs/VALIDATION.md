@@ -1,4 +1,43 @@
-# Candidate 0.1.3 validation
+# Candidate 0.1.4 validation
+
+Captured 0.1.3 evidence: early GL string queries had no current context and were
+blocked; the game then crashed at code-relative PC 0x1134 in its unchecked string
+length path. This confirms the 0.1.3 NULL-return fix was incomplete.
+
+Completed:
+
+- Trace of the game capability initializer shows an extension query followed by
+  unconditional strlen. A real context/string is required before that code.
+- Lazy startup uses original s3eGL_start Thumb entry 0x210a5. Its instruction
+  fingerprint, ELF symbol and executable mapping are verified.
+- Private Android state 0x53af0 is cross-checked against its symbol and original
+  literal 0x210f0. Saved game JNIEnv, thread reference+8, glInit methodID+14, and
+  allocated engine-lock pointer+10c are checked before the callback. UI input
+  callbacks do not overwrite the saved environment.
+- Original runNative holds the engine lock before game execution. Reusing its
+  original glInit path correctly releases it for UI surface creation and relocks
+  afterward. No Java GL call is made prematurely or on the UI thread.
+- Host sanitizer tests model first-query initialization, valid current-context
+  dispatch, safe nested calls after creation, recursive/failed startup, required
+  NULL results and a pending JNI exception despite successful context creation.
+  These are host control-flow tests, not an Android EGL simulation.
+- Independent reviewers approved callback/binding/thread/mutex semantics.
+- Existing PVRTC regressions, ARM compilation,4,247 relocations,131 import audit,
+  native hardening, guarded configuration/original asset checks, APK assembly and
+  signatures pass. Same app ID/certificate, versionCode104.
+
+APK SHA-256:
+`31dd1d1483e91325fcc79f313eb127439c7b4f391d723267d0fbf2e78c593aa3`.
+
+Shim SHA-256:
+`ddbf3fd394ae8d69975a22e675994300ec69d9238c5a52115b0b495d944bddce`.
+
+Not yet established: actual Thor EGL window startup, menu/gameplay rendering,
+input and save/reload. Failed initialization now has an explicit diagnostic,
+but host checks do not establish that the device initializer will succeed.
+
+## Historical 0.1.3 checks
+
 
 Captured device evidence: both rendering modes crashed in platform
 libGLESv1_CM glGetString, from original Airplay wrapper return offset 0x33987,

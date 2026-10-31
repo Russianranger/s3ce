@@ -62,6 +62,9 @@ static void *legacy_base;
 static size_t legacy_mapping_size;
 static jint legacy_jni_version;
 static int graphics_enabled = 1;
+static JavaVM *runtime_vm;
+static void (*original_gl_start)(void);
+static void **original_android_state;
 static pthread_mutex_t load_lock = PTHREAD_MUTEX_INITIALIZER;
 
 struct code_allocation {
@@ -109,6 +112,32 @@ static void free_game_code(void *address) {
     if (!found) { LOGE("Unknown S3E code free rejected: %p", address); return; }
     munmap(found->address, found->length);
     free(found);
+}
+
+static int legacy_exception_status(void) {
+    JNIEnv *env = NULL;
+    if (!runtime_vm || (*runtime_vm)->GetEnv(runtime_vm, (void **)&env, JNI_VERSION_1_6) != JNI_OK)
+        return -1;
+    return (*env)->ExceptionCheck(env) ? 1 : 0;
+}
+
+/* This adapter is entered from a legacy capability query on the engine thread.
+ * Reuse Airplay's existing mutex release/UI-view creation/relock protocol. */
+static void legacy_initialize_window_context(void) {
+    JNIEnv *env = NULL;
+    int attached = runtime_vm && (*runtime_vm)->GetEnv(runtime_vm, (void **)&env, JNI_VERSION_1_6) == JNI_OK;
+    int env_matches = attached && original_android_state && original_android_state[0] == (void *)env;
+    int thread_present = original_android_state && original_android_state[0x08 / 4] != NULL;
+    int method_present = original_android_state && original_android_state[0x14 / 4] != NULL;
+    int lock_present = original_android_state && original_android_state[0x10c / 4] != NULL;
+    LOGI("Original GL bootstrap state: engine JNI=%d thread=%d glInit=%d lock=%d exception=%d",
+         env_matches, thread_present, method_present, lock_present, legacy_exception_status());
+    if (!env_matches || !thread_present || !method_present || !lock_present || !original_gl_start ||
+        (*env)->ExceptionCheck(env)) {
+        LOGE("Original GL bootstrap prerequisites failed");
+        return;
+    }
+    original_gl_start();
 }
 
 static void *legacy_dlsym(void *handle, const char *name) {
@@ -312,7 +341,16 @@ static jint load_legacy(JNIEnv *env, JavaVM *vm, jobject asset_manager) {
     static const uint8_t get_string_code[8] = {0xf0,0xb5,0x19,0x4e,0x81,0xb0,0x33,0x6a};
     void **get_string_slot = image_pointer(&image, 0x55a64, sizeof(void *));
     if (!get_string_slot) goto done;
-    s3ce_gl_safety_bind(get_string_slot, diagnostic_log);
+    static const uint8_t gl_start_code[8] = {0x10,0xb5,0x10,0x4c,0x10,0x4b,0x22,0x68};
+    uint8_t *gl_start = image_pointer(&image, 0x210a4, sizeof(gl_start_code));
+    if (!gl_start || memcmp(gl_start, gl_start_code, sizeof(gl_start_code))) goto done;
+    uint32_t *android_literal = image_pointer(&image, 0x210f0, sizeof(uint32_t));
+    original_android_state = image_pointer(&image, 0x53af0, 276);
+    if (!android_literal || *android_literal != (uint32_t)(uintptr_t)(image.base + 0x53af0) ||
+        !original_android_state) goto done;
+    original_gl_start = (void (*)(void))(uintptr_t)(image.base + 0x210a5);
+    s3ce_gl_safety_bind(get_string_slot, diagnostic_log,
+        legacy_initialize_window_context, legacy_exception_status);
     if (patch_thumb_function(&image, 0x37148, malloc_code, (void *)(uintptr_t)&allocate_game_code) ||
         patch_thumb_function(&image, 0x36434, free_code, (void *)(uintptr_t)&free_game_code) ||
         patch_thumb_function(&image, 0x3397c, get_string_code, (void *)(uintptr_t)&s3ce_safe_gl_get_string)) goto done;
@@ -355,7 +393,9 @@ done:
     AAsset_close(asset);
     if (result == JNI_ERR) {
         LOGE("Legacy load failed during %s; errno=%d (%s)", phase, errno, strerror(errno));
-        s3ce_gl_safety_bind(NULL, NULL);
+        s3ce_gl_safety_bind(NULL, NULL, NULL, NULL);
+        original_gl_start = NULL;
+        original_android_state = NULL;
         if (image.base) munmap(image.base, image.size);
         for (size_t i = 0; i < image.handle_count; ++i) dlclose(image.handles[i]);
     }
@@ -411,7 +451,7 @@ JNIEXPORT jint JNICALL Java_com_ideaworks3d_thesims3_GameBootActivity_nativeBoot
 }
 
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
-    (void)vm;
+    runtime_vm = vm;
     (void)reserved;
     page_size = (size_t)sysconf(_SC_PAGESIZE);
     if (page_size != 4096) { LOGE("This ARM32 runtime requires 4 KiB pages"); return JNI_ERR; }

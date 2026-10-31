@@ -87,6 +87,12 @@ def main():
             name = names[name_at:names.index(0, name_at)].decode("ascii")
             symbol_values[name] = value
     assert symbol_values["g_glGetString"] == dispatch_slot
+    assert symbol_values["s3eGL_start"] == 0x210a5
+    assert symbol_values["g_s3eAndroidGlobals"] == 0x53af0
+    assert struct.unpack_from("<I", data, 0x210f0)[0] == 0x53af0
+    assert any(p[0] == 1 and p[6] & 1 and p[2] <= 0x210a4 < p[2]+p[5]
+               for p in programs), "Original GL start callback must be in executable ELF code"
+    assert data[0x210a4:0x210ac] == bytes.fromhex("10b5104c104b2268")
     assert any(p[0] == 1 and p[6] & 2 and p[2] <= dispatch_slot < p[2]+p[5]
                for p in programs), "GL dispatch slot must be in writable ELF data"
     image = virtual_bytes(data, programs)

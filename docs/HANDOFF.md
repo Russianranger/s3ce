@@ -1,4 +1,35 @@
-# Development handoff — 0.1.3
+# Development handoff — 0.1.4
+
+0.1.3 avoided the original platform glGetString crash but returned NULL for
+pre-context Vendor/Renderer/Version/Extensions. The new report then crashed in
+the game's unchecked string length code at S3E PC+0x1134. Do not return NULL or
+invent capability strings for those game startup queries.
+
+0.1.4 lazy-initializes the REAL game-window context via original s3eGL_start
+Thumb 0x210a5 on the running engine thread. JNI state at 0x53af0 must match that
+thread; fields+8/+14/+10c provide thread/method/lock prerequisites. Original
+AirplayThread.glInit provides the correct unlock/UI-view/surface-wait/relock flow.
+Calling Java glInit before runNative would unlock an unowned engine mutex, so
+that alternative remains invalid. No temporary pbuffer context is used.
+
+After initialization, require current EGL context AND no pending JNI exception;
+then obtain actual driver/adapter strings. Recursion/failed initialization
+records an explicit EGL/JNI abort message before termination. Root report export
+works and now includes AirplayGL/AirplayView/System.err/EGL output for this path.
+Keep original driver dispatch 0x55a64 and original extension filtering intact.
+The existing Android GLForceDLLVersion 0x0101 override stays for the GLES1.1 path.
+
+All native/host/binary/packaging checks passed. Thor confirmation remains pending.
+Next test: install over 0.1.3, leave original-renderer option UNCHECKED, Start game,
+menu/backgrounds/hair/eyes, CAS swipes, then house and save/reopen. On failure,
+read the new initialization markers and EGL/JNI abort details before patching.
+
+Preserve the same app ID/key/data, original JNI classnames, ARM32/4KiB/target28
+constraints and private signing backup. Full device logs stay private. Release
+publication uses the pinned 0.1.0 base APK and byte-exact literal reconstruction.
+
+## Historical 0.1.3 handoff
+
 
 Published source `4a4e138e6a13f796355d20658cef754e3e790530`;
 publication/download-verification run `41149513664` passed.

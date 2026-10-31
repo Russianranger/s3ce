@@ -47,7 +47,7 @@ public final class CompatActivity extends Activity {
         status = new TextView(this);
         status.setTextColor(0xffeeeeee);
         status.setTextSize(18);
-        status.setText("The Sims 3 CE\nCompatibility build 0.1.3\n\n"
+        status.setText("The Sims 3 CE\nCompatibility build 0.1.4\n\n"
                 + "Touch controls. Saves stay on this device.\n"
                 + "Save a report before retrying a crashed game.\n");
         layout.addView(status);
@@ -189,7 +189,7 @@ public final class CompatActivity extends Activity {
     }
 
     private String report() {
-        StringBuilder text = new StringBuilder("S3CE 0.1.3 diagnostic report\n");
+        StringBuilder text = new StringBuilder("S3CE 0.1.4 diagnostic report\n");
         text.append("Android: ").append(Build.VERSION.RELEASE).append(" API ")
                 .append(Build.VERSION.SDK_INT).append("\nDevice: ")
                 .append(Build.MANUFACTURER).append(' ').append(Build.MODEL)
@@ -212,7 +212,8 @@ public final class CompatActivity extends Activity {
         java.lang.Process logcat = null;
         try {
             logcat = new ProcessBuilder("logcat", "-d", "-v", "threadtime", "-t", "300",
-                    "S3CECompat:I", "AirplayActivity:I", "AirplayThread:I", "AndroidRuntime:E", "*:S")
+                    "S3CECompat:I", "AirplayActivity:I", "AirplayThread:I", "AirplayGL:I", "AirplayView:I",
+                    "libEGL:E", "System.err:W", "AndroidRuntime:E", "*:S")
                     .redirectErrorStream(true).start();
             final java.lang.Process process = logcat;
             ByteArrayOutputStream captured = new ByteArrayOutputStream();

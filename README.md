@@ -2,11 +2,12 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **The latest report traced the startup crash to an engine
-GL-version query before context creation. Version 0.1.3 targets that exact path;
-new device confirmation is pending.**
+Java/JNI bridge. **The latest trace showed that returning NULL from early GL
+queries crashes the game itself. Version 0.1.4 creates the real game-window
+context through the original engine initializer before those queries. Thor
+confirmation is pending.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.3-gl-startup)
+[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.4-egl-startup)
 
 ## Supported candidate configuration
 
@@ -40,14 +41,16 @@ not a claim of successful gameplay on all four versions.
 
 ## Latest update and Thor test
 
-Version 0.1.3 avoids the original engine's pre-context GL-version probe using its
-existing GLES1.1 configuration. A shared guard also prevents GL string driver
-calls when the current thread has no EGL context, in both rendering modes.
+Version 0.1.4 invokes the original window-context initializer on the game thread
+before capability queries, preserving the engine's native/UI synchronization.
+It requires a real current EGL context and clean JNI state before driver calls.
+This replaces 0.1.3's incomplete NULL-return behavior. No temporary rendering
+context or invented capability strings are used.
 
-Install over the existing app, **uncheck Original rendering (diagnostic mode)**,
-and press Start game. Check menu/backgrounds, Sim hair/eyes, room textures, and
-swipes. On failure, reopen the app icon and use Save report. Saved data and the
-working report export remain intact. See [test instructions](docs/RELEASE_NOTES.md).
+Install over the existing app, leave **Original rendering unchecked**, and press
+Start game. Check menu/backgrounds, Sim hair/eyes, room textures, and swipes.
+On failure, reopen the app icon and Save report. See
+[test instructions](docs/RELEASE_NOTES.md) and [native details](native/README.md).
 
 ## Build
 

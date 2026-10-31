@@ -81,3 +81,19 @@ https://registry.khronos.org/EGL/specs/eglspec.1.4.pdf
 The dispatch binding is g_glGetString 0x55a64, independently verified from the
 original instruction/literal and ELF symbol. Full user reports stay private;
 only technical crash offsets are recorded here.
+
+## 0.1.4 real-context initialization
+
+The next trace showed NULL strings from the guarded no-context query path,
+followed by a fault at S3E code-relative 0x1134. The capability initializer at
+unpackedfile 0x64a04 queries extensions at 0x64a14 and calls strlen at 0x64a30.
+The original window initializer is s3eGL_start 0x210a5; it invokes the cached
+AirplayThread.glInit method on the game thread. runNative acquires the engine
+mutex before game execution, making the original Java unlock/UI/wait/relock
+protocol valid at this lazy-init point. It is not valid before runNative.
+
+The new binding and prerequisite checks use original symbols/instructions for
+s3eGL_start and g_s3eAndroidGlobals. No OS-thread context is fabricated or moved
+between UI/render threads, and early textures remain in the actual window's
+context. Failed context creation is reported explicitly rather than returning
+NULL into the known string dereference.

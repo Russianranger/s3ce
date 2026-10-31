@@ -40,31 +40,45 @@ original JNI version; a negative return is failure. Bootstrap must finish before
 starting the original game Activity. The original Activity's later library load
 then reuses the already loaded shim.
 
-## Pre-context GL safety (0.1.3)
+## Real GL startup before capability queries (0.1.4)
 
-The Thor's native tombstone identifies `libGLESv1_CM.so glGetString+0x1c`, called
-from the original runtime at offset `0x33987`, before Java GL initialization.
-Disassembly confirms that `s3eGLGetInt_platform` can invoke the version probe
-before a current EGL context exists. The old runtime checks the query's NULL
-result only after entering the driver; this modern driver crashes before it can
-return.
+The Thor's first native tombstone identified `libGLESv1_CM.so glGetString+0x1c`,
+called from the original runtime at offset `0x33987` before an EGL context was
+current. The 0.1.3 guard prevented that driver access, but the next device trace
+showed that returning NULL was insufficient: the game's capability initializer
+passes its extension string to `strlen` at S3E code offset `0x1134` without a NULL
+check.
 
-The loader now replaces the original `wrap_glGetString` entry at `0x3397c` with
-a guarded implementation. `eglGetCurrentContext()==EGL_NO_CONTEXT` returns NULL
-without entering the driver, for every string name. With a current context, the
-original driver or PVRTC adapter receives the unchanged query. The original
-runtime's intentional `GL_OES_framebuffer_object` filter is preserved, with safe
-handling of NULL extension strings.
+The mandatory guard now establishes the real window context before the query.
+It invokes the original `s3eGL_start` callback, which calls
+`AirplayThread.glInit(int)` on the engine thread. This reuses Airplay's existing
+engine-mutex release, UI GL-view creation, surface wait, mutex reacquisition,
+and same-thread `eglMakeCurrent` sequence. No temporary pbuffer, UI-thread GL
+context, or invented capability string is used. Textures uploaded immediately
+after capability detection belong to the actual rendering context.
 
-The real dispatch slot is `0x55a64`. The verifier derives it from the original
-Thumb LDR at `0x3397e`, its PC-relative literal at `0x339e4`, and the table base
-`0x55a44 + 0x20`; it cross-checks the unstripped `g_glGetString` symbol and writable
-ELF segment. These are separate from version globals at `0x55a04`.
+Before calling the original initializer, the loader checks that the current JNI
+environment matches the environment saved by `runNative`, and that the original
+thread reference, `glInit` method ID, and engine lock exist. A thread-local guard
+prevents recursive initialization. After initialization, a real current EGL
+context is required before dispatching the original driver or PVRTC adapter.
+Initialization failure stops with a durable diagnostic and Android abort message
+containing the EGL error and pending-JNI-exception status; it does not pass NULL
+into the game's known string dereference.
 
-The original engine's Android-only `GLForceDLLVersion=0x0101` setting avoids the
-premature probe and selects its existing GLES 1.1 rendering path. The guard is
-still required for other early string queries and original-renderer mode. It
-creates no EGL context and invents no vendor or extension strings.
+The original `wrap_glGetString` entry is `0x3397c`; its real dispatch slot is
+`0x55a64`. The verifier derives that slot from the Thumb LDR at `0x3397e`, its
+PC-relative literal at `0x339e4`, and table base `0x55a44 + 0x20`, then checks the
+unstripped `g_glGetString` symbol and writable ELF segment. These are separate
+from version globals at `0x55a04`.
+
+The original window-start callback is Thumb entry `0x210a5`. Both its symbol and
+original instruction fingerprint are checked. Its private Android state is
+`g_s3eAndroidGlobals` at `0x53af0`, validated against the original literal at
+`0x210f0` and ELF symbol. The engine's Android-only
+`GLForceDLLVersion=0x0101` setting selects its existing GLES 1.1 path and avoids a
+recursive version probe during context startup. The original runtime's
+intentional `GL_OES_framebuffer_object` extension filter is preserved.
 
 ## Graphics compatibility (0.1.1)
 
@@ -150,8 +164,8 @@ The host verifier checks the exact source, simulates all 4,247 relocations,
 verifies both allocator guards, audits all 131 used imports against API28 ARM NDK
 system-library stubs plus the linked shim helpers, and checks the shim's ELF
 protections. The original 0.1.0 loader has reached game menus and Create-a-Sim on the Thor.
-The 0.1.1 and 0.1.2 candidates regressed startup on the Thor. The actual 0.1.2
-native trace identifies the pre-context `glGetString` fault addressed above.
-The 0.1.3 guard and version setting pass host regression checks; they and the
-PVRTC graphics path still require hardware confirmation. Validation must cover loading, graphics, audio, input, save/reload,
+The 0.1.1 and 0.1.2 candidates regressed startup on the Thor; 0.1.3 exposed the
+subsequent NULL-string assumption. The 0.1.4 real-window initialization passes
+host ordering, reentrancy, failure, and decoder tests. Its Android window startup
+and the PVRTC graphics path still require hardware confirmation. Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.
