@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 14,
-  "frame_sha256": "ce3ca8d5808b3099d1c771ff7000f8594e0d5cb3c1a43ea97a5085874b65fe2b",
+  "seq": 15,
+  "frame_sha256": "ca26d6892ffa43449d2c5617099b28f766ec18f58ad84ca942947db95f1e7aa3",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1130,
-    "y": 792
+    "type": "wait",
+    "seconds": 25
   },
-  "note": "Select visible Bed Sit; require Sim movement and seated pose, not just menu closure."
+  "note": "Observe queued Bed Sit through travel and final pose without modifying game state."
 }
