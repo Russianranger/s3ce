@@ -49,6 +49,7 @@ public final class CompatActivity extends Activity {
         status.setTextSize(18);
         status.setText("The Sims 3 CE\nCompatibility build 0.1.10\n\n"
                 + "Touch controls. Saves stay on this device.\n"
+                + "For reports during play, press Home and reopen this app icon.\n"
                 + "Save a report before retrying a crashed game.\n");
         layout.addView(status);
         originalRendering = new CheckBox(this);

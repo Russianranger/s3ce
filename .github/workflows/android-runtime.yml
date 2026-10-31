@@ -1,0 +1,69 @@
+name: Android runtime validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.validation/**'
+      - '.github/workflows/android-runtime.yml'
+      - 'scripts/android_runtime*.py'
+      - 'scripts/android_runtime_plan.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: s3ce-android-runtime
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare byte-exact internal APKs
+        id: apks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/android_runtime_prepare.py
+      - name: Install Android runtime tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -c /dev/kvm
+          sudo chmod a+rw /dev/kvm
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platform-tools' 'emulator' 'build-tools;35.0.0' 'system-images;android-30;google_apis;x86'
+          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --force --name S3CE_VALIDATION --package 'system-images;android-30;google_apis;x86' --device pixel_2
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          image = Path(os.environ['ANDROID_HOME']) / 'system-images/android-30/google_apis/x86'
+          avd = Path.home() / '.android/avd/S3CE_VALIDATION.avd/config.ini'
+          values = dict(line.split('=', 1) for line in avd.read_text().splitlines() if '=' in line)
+          values.update({'hw.lcd.width': '1080', 'hw.lcd.height': '1920', 'hw.lcd.density': '320',
+                         'hw.initialOrientation': 'landscape', 'hw.cpu.ncore': '4', 'hw.ramSize': '3072',
+                         'hw.gpu.enabled': 'yes', 'hw.gpu.mode': 'swiftshader',
+                         'hw.audioInput': 'no', 'hw.audioOutput': 'no', 'hw.camera.back': 'none',
+                         'hw.camera.front': 'none', 'disk.dataPartition.size': '6442450944',
+                         'disk.systemPartition.size': str((image / 'system.img').stat().st_size),
+                         'showDeviceFrame': 'no', 'fastboot.forceColdBoot': 'yes'})
+          avd.write_text(''.join(f'{key}={value.strip()}\n' for key, value in values.items()))
+          PY
+          "$ANDROID_HOME/emulator/emulator" -accel-check
+      - name: Exercise baseline and candidate through real Android input
+        env:
+          CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}
+          BASELINE_APK: ${{ steps.apks.outputs.baseline }}
+        run: |
+          python3 scripts/android_runtime.py --avd S3CE_VALIDATION --candidate "$CANDIDATE_APK" --baseline "$BASELINE_APK" --plan scripts/android_runtime_plan.json --output build/runtime-evidence
+      - name: Upload screenshots and runtime evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-runtime-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/runtime-evidence/
+          if-no-files-found: error
+          retention-days: 14

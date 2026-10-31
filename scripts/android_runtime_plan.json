@@ -1,0 +1,67 @@
+{
+  "coordinate_size": [1920, 1080],
+  "launch_wait": 30,
+  "baseline_steps": 3,
+  "visual_review": "required: controls, panels, Sim appearance, and eventual gameplay screenshots must be inspected; native state alone does not prove visible UI",
+  "scope": "Initial internal capture reaches Traits; gameplay and resume checkpoints are deliberately absent until their actual UI paths are implemented. This plan cannot pass the release gate.",
+  "source": "Pinned original game SHA256 8198558b93316a963c2106f172fde53015063955af16d2aa13ee51a89a1e114a; original ARM layout/display helpers at scale3.375. The first two taps were also observed in device JNI trace 4409685594089518444.",
+  "steps": [
+    {
+      "name": "main-menu-start-game",
+      "tap": [1356, 683],
+      "wait": 4,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 9,
+      "probe_tap": [20, 540]
+    },
+    {
+      "name": "empty-slot-create-sim",
+      "tap": [643, 577],
+      "wait": 15,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 12,
+      "probe_tap": [20, 540],
+      "timeout": 120
+    },
+    {
+      "name": "dismiss-rotation-tutorial",
+      "tap": [500, 370],
+      "wait": 3,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 13,
+      "probe_tap": [20, 540]
+    },
+    {
+      "name": "appearance-visible-controls",
+      "wait": 2,
+      "capture": true
+    },
+    {
+      "name": "appearance-next",
+      "tap": [1809, 959],
+      "wait": 4,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 14,
+      "probe_tap": [20, 540]
+    },
+    {
+      "name": "choose-first-persona",
+      "tap": [504, 557],
+      "wait": 3,
+      "capture": true
+    },
+    {
+      "name": "persona-next",
+      "tap": [808, 972],
+      "wait": 4,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 15,
+      "probe_tap": [20, 540]
+    }
+  ]
+}

@@ -6,10 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -50,15 +47,8 @@ public final class GameDiagnostics {
     public static void attach(final Activity activity) {
         logFile = new File(activity.getFilesDir(), "compat-events.log");
         glLogFile = new File(activity.getFilesDir(), "compat-java-gl.log");
-        Button report = new Button(activity);
-        report.setText("Report");
-        report.setTextSize(11);
-        report.setAlpha(0.8f);
-        report.setOnClickListener(v -> openReports(activity));
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.TOP | Gravity.RIGHT);
-        activity.addContentView(report, params);
+        // Native menus use every edge of the surface, including the upper-right
+        // CAS control. Reports remain available in the separate launcher process.
         startWatchdog();
     }
 
