@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41212609908",
-  "seq": 7,
-  "frame_sha256": "ce4e9a4fabfbe809affc40f1256d21789688b9e2ca499509b0bbd7491dfde76c",
+  "seq": 8,
+  "frame_sha256": "5aa234152451b1e36157433a166bcc4f9eaea0e11b4767e4c8379d5d886c3655",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1235,
-    "y": 353
+    "x": 113,
+    "y": 965
   },
-  "note": "Tap visible dining-chair Sit after acknowledging the timed wish."
+  "note": "Open pause menu after confirming the Sim is visibly seated on the selected chair."
 }
