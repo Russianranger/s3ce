@@ -1,5 +1,8 @@
 # Development handoff — 0.1.7
 
+Published source `9a6c82ef217a4a206c73592dc12b9df67adf93d4`.
+Publication/download-verification run `41156929416` passed.
+
 0.1.6 reached Create-a-Sim on the Thor with room/hair textures. Preserve its
 StackSwitch=1, complete veneer flush, PVRTC adapter and real-context safety.
 User still cannot swipe. Fresh subsequent processes show the early native
@@ -29,8 +32,8 @@ Final APK SHA202e92142bbaca64ed769a06df21e7b5f6609470330432a4d34d1def670c85fb;
 shim SHA215636395d2e539db5f06e23815ccb38d6b4877660a941b4a76d1c8f9ec3897e.
 Eight native sanitizer suites, original ARM RAM/pointer proofs, independent
 review,310-method DEX analysis, actual assembled touch wrapper tests and final
-build/signature/reconstruction checks pass. Publication is recorded after
-completion. Same app ID/key/data.
+build/signature/reconstruction and independent publication/download checks pass.
+Same app ID/key/data.
 Full user reports and signing material stay private.
 
 ## Historical 0.1.6 handoff

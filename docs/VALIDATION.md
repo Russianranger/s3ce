@@ -38,7 +38,10 @@ APK SHA-256:
 Shim SHA-256:
 `215636395d2e539db5f06e23815ccb38d6b4877660a941b4a76d1c8f9ec3897e`.
 
-Publication verification is recorded after completion.
+Publication run [41156929416](https://github.com/Russianranger/s3ce/actions/runs/41156929416)
+passed reconstruction, signature/identity checks, prerelease upload and independent
+download/SHA-256 verification. Published APK size/digest match the frozen local
+artifact. Published source `9a6c82ef217a4a206c73592dc12b9df67adf93d4`.
 RAM restart confirmation and the cause of the device swipe failure remain pending.
 
 ## Historical 0.1.6 checks
