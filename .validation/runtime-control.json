@@ -1,16 +1,14 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 16,
-  "frame_sha256": "ede149930f09e9f8d05e92b5807770b805852ef4e1dcf2fd738eb82a95801b57",
+  "seq": 17,
+  "frame_sha256": "192f2addd7ba2aa193f4c1f3b3d4f10bc6141bb08f2a91865416663ffd7ee5f4",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1122,
-    "y": 735
+    "type": "finish"
   },
-  "note": "Confirm normal native Quit using the visible green check."
+  "note": "Collect complete evidence after actual Sit, save, normal native Quit and fatal-free Compat return."
 }
