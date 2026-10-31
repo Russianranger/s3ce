@@ -67,6 +67,11 @@ shows Alex entered, but Gboard fullscreen extract UI covers the dialog: the
 automation's OK tap hits the keyboard. It also selects the small APPLICATION
 dialog frame instead of the1920×1080 BASE_APPLICATION canvas. The next harness
 revision hides the visible IME once before OK and selects the actual base canvas.
+Run41173056487 verifies the canvas/IME correction and accepts Alex, reaching
+phase19. Its red Cancel is left and green Confirm right; the test clicked Cancel
+and returned to16. Correct NewGameYes/SaveYes to1122,745 and TutorialNo to798,745.
+The earlier action fixture seeded Hint+9C/+A0 backwards; execute real constructor
+caller arguments when proving popup semantics. No game crash was observed.
 Use alternating forward/backward pointer-probe swipes for sparse native observer
 checkpoints; taps can need over240seconds to reach the next power-of-two sample.
 No gameplay/save/resume acceptance claim yet. Native-bridge float diagnostic

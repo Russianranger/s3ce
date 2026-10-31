@@ -15,7 +15,7 @@ staging or APK publication is authorized before it passes.
 | Native-control overlap | Permanent Report overlay removed; reports remain accessible from the launcher |
 | Full Android UI | Run41169033872 screenshots confirm panels/icons/buttons at1920×1080 on Android11 x86/ARMv7 translation, Emulator31.1.4/KVM/SwiftShader |
 | Female-Sim crash | Three female hairstyle changes and same-process Home/reopen plus30seconds pass in that run; the reported13b784 cause remains unresolved |
-| Character creation into gameplay | Run41171698028 reaches five traits and Name phase16; IME/dialog automation correction pending before gameplay |
+| Character creation into gameplay | Run41173056487 accepts Alex and reaches final confirmation19; correcting test's Cancel/Confirm selection before gameplay |
 | Gameplay and save/resume | Pending |
 
 Internal candidate SHA256:
