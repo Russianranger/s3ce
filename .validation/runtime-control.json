@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 6,
-  "frame_sha256": "488d025d8e3e8ab0dd5e87c685816f858525894b77261fec53e566698ab292a0",
+  "seq": 7,
+  "frame_sha256": "1c4a6654b52f7b924d0a1d60b9d5731591f1bcaf29fdb84e1c67cb1737db87e9",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 452,
-    "y": 210
+    "x": 1448,
+    "y": 999
   },
-  "note": "Close the visible Build action chooser without purchasing or moving furniture."
+  "note": "Tap the visible wishes strip, outside the plumbob circle, to verify its own dispatch."
 }
