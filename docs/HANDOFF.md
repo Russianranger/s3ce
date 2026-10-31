@@ -1,5 +1,8 @@
 # Development handoff — 0.1.6
 
+Published source `1b9e216947939308327287bb76decbd035829938`.
+Publication/download-verification run `41155065375` passed.
+
 0.1.5 still crashes on the Thor. Its fresh/cached method IDs match, but both
 CallVoidMethodA and the static Java logger throw before Java body entry. Do not
 continue blaming method identity or Java code inside glInit based on that report.
@@ -22,9 +25,17 @@ Final native SHA500525a6fe3a2f382f8445aa1ed13b91cbc2b7fc9ff5478ff537f5bcdfb75025
 APK SHA3b7b82da9ed56a8c0c2cf9afb0abd4c653eb1a1c63ebb04f774d5b0f7d726cd8.
 Six native sanitizer suites, eight compiled ARM bridge scenarios, independent
 review,309-method DEX analysis and build/package/reconstruction checks pass.
-Publication verification is recorded after completion. Actual Thor startup,
+Publication/download verification passed. Actual Thor startup,
 textures, swipes and save/reopen remain the next hardware gate. Full reports and
 private signing material stay private.
+
+Next-report markers: allocation must log StackSwitch=1; the expanded code flush
+must cover the entire tracked mapping including its generated veneer tail; the
+stack bridge must report SP inside the current pthread stack before JNI. Java
+GL ENTRY -> original glInit/createView(gl=true)/EGL -> EXIT then establishes the
+next startup gate. If it fails earlier, use the native Throwable summary and
+SP/bounds rather than trying another Java-only logger. Do not increase StackSize
+as a substitute for restoring a foreign stack.
 
 ## Historical 0.1.5 handoff
 

@@ -50,7 +50,10 @@ APK SHA-256:
 Shim SHA-256:
 `500525a6fe3a2f382f8445aa1ed13b91cbc2b7fc9ff5478ff537f5bcdfb75025`.
 
-Publication verification is recorded after completion.
+Publication run [41155065375](https://github.com/Russianranger/s3ce/actions/runs/41155065375)
+passed reconstruction, signature/identity checks, prerelease upload and independent
+download/SHA-256 verification. The release asset size/digest matches the frozen
+local APK. Published source `1b9e216947939308327287bb76decbd035829938`.
 Hardware startup/rendering/input/save results remain unverified.
 
 ## Historical 0.1.5 checks
