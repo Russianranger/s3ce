@@ -25,6 +25,9 @@ Completed:
 - Existing PVRTC regressions, ARM compilation,4,247 relocations,131 import audit,
   native hardening, guarded configuration/original asset checks, APK assembly and
   signatures pass. Same app ID/certificate, versionCode104.
+- Publication run [41150906072](https://github.com/Russianranger/s3ce/actions/runs/41150906072)
+  passed exact reconstruction, signature/identity verification, release upload,
+  and independent download/SHA-256 verification of the published APK.
 
 APK SHA-256:
 `31dd1d1483e91325fcc79f313eb127439c7b4f391d723267d0fbf2e78c593aa3`.

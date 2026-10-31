@@ -1,5 +1,8 @@
 # Development handoff — 0.1.4
 
+Published source `a410d920d57af7f4dce926f7742028f1a51e9111`.
+Publication and independent download verification passed in run `41150906072`.
+
 0.1.3 avoided the original platform glGetString crash but returned NULL for
 pre-context Vendor/Renderer/Version/Extensions. The new report then crashed in
 the game's unchecked string length code at S3E PC+0x1134. Do not return NULL or
