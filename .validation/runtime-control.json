@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "41212609908",
-  "seq": 2,
-  "frame_sha256": "8d6e5c6b57c1082ef0dc925e7ca0417caa130037c19da59b9b4734cc37e6d886",
+  "seq": 3,
+  "frame_sha256": "2341d1d0250d02ea4bb707cadbe8afbd4b9d5b66cf56712fbbe9b9213c6cf39d",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1122,
-    "y": 854
+    "type": "swipe",
+    "x1": 1834,
+    "y1": 200,
+    "x2": 1834,
+    "y2": 765,
+    "duration_ms": 1250
   },
-  "note": "Accept the visible Wish dialog."
+  "note": "Zoom out using the visible camera ladder after closing the Wish."
 }
