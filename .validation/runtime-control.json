@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 14,
-  "frame_sha256": "05377a96972306b771d4474d00222af062992f86ab1a12b2688f0cf8da5ba55b",
+  "seq": 15,
+  "frame_sha256": "fb251e3d73ac22806629ff8228fa2a05e115a535964117969e83123a1dac9c31",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 10
+    "type": "tap",
+    "x": 707,
+    "y": 798
   },
-  "note": "Allow normal post-save main-menu loading to complete."
+  "note": "Select the normal main-menu Quit button after saving."
 }
