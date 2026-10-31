@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 12,
-  "frame_sha256": "2e214a7f8a678991950119e4a66215a4e303145a5595ac53a0fd2860e0eaa310",
+  "seq": 13,
+  "frame_sha256": "808f2a180973858bf4bef164590a397ced9af2ac1c08a257b2cff968163e8fe4",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 710,
-    "y": 797
+    "x": 1124,
+    "y": 730
   },
-  "note": "Select the actual visible main-menu Quit row."
+  "note": "Confirm the visible native Quit dialog; require actual native return and Activity finish."
 }
