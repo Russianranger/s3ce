@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 13,
-  "frame_sha256": "35f211399cddd1adf81b6b20f03bd57ab4fe30b59bc35d770dbe8dcc1b086827",
+  "seq": 14,
+  "frame_sha256": "ce3ca8d5808b3099d1c771ff7000f8594e0d5cb3c1a43ea97a5085874b65fe2b",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1210,
-    "y": 240
+    "x": 1130,
+    "y": 792
   },
-  "note": "Select the visible bed as a regression check outside the camera button."
+  "note": "Select visible Bed Sit; require Sim movement and seated pose, not just menu closure."
 }
