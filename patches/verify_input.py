@@ -27,10 +27,12 @@ def main():
         output.mkdir()
         run(javac, '-cp', args.dexlib_jar, '-d', output, tests / 'MultiTouch.java',
             tests / 'MotionEvent.java', tests / 'AirplayView.java',
-            tests / 'TouchRegression.java', tests / 'LifecycleRace.java')
+            tests / 'TouchRegression.java', tests / 'LifecycleRace.java', tests / 'GlBridgeRegression.java')
         run(java, '-cp', str(output) + ':' + str(args.dexlib_jar.resolve()),
             '-Ds3ce.test.apk=' + str(args.apk.resolve()), 'com.ideaworks3d.airplay.TouchRegression')
         run(java, '-cp', output, 'LifecycleRace')
+        run(java, '-cp', str(output) + ':' + str(args.dexlib_jar.resolve()),
+            '-Ds3ce.test.apk=' + str(args.apk.resolve()), 'com.ideaworks3d.airplay.GlBridgeRegression')
 
 
 if __name__ == '__main__':

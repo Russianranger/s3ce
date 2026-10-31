@@ -1,4 +1,33 @@
-# Development handoff — 0.1.4
+# Development handoff — 0.1.5
+
+0.1.4 still fails on the Thor: callback returns with EGL_NO_CONTEXT/EGL_SUCCESS
+and no Java GL-entry log. Its post-call JNI exception=0 was not conclusive,
+since the original callMethod describes/clears exceptions internally.
+
+Independent original-Thumb execution and ABI/assembly review confirm cached
+Thread reference+8, glInit(I)V ID+14, CallVoidMethodV slot0xf8, arguments, pointer
+Thumb bits and 8-byte stack alignment. No static dispatch defect was found.
+
+0.1.5 replaces that initial dispatch with a fresh public compatGlInit(I)V lookup
+and CallVoidMethodA. The Java wrapper invokes the untouched/hash-guarded private
+glInit directly, records durable lifecycle state/full failure stack, and rethrows
+the same exception. Do not remove its original unlock/UI/surface/relock protocol.
+Typed startup must return without an exception and with a real current context
+before old s3eGL_start is used for its own bookkeeping. The shared GL guard,
+configuration, texture/input/report changes and install identity/key remain.
+
+Next device evidence must inspect compat-java-gl.log entry/exit/FAILURE and native
+typed-call markers. The exact prior device-side dispatch cause remains unknown;
+host mocks do not establish successful EGL startup or gameplay. Publication and
+build receipts are recorded in VALIDATION.md. All native sanitizer suites,
+original Thumb dispatch/exception proofs, actual wrapper DEX/Java logger tests,
+309-method static DEX analysis, ARM/import/relocation/asset/signature checks and
+byte-exact release reconstruction pass. APK SHA-256:
+69d26e8f6d96d67b64c2366811e9ed796231d9919ac2076a6c3c87d9bdc543db.
+Full user reports stay private.
+
+## Historical 0.1.4 handoff
+
 
 Published source `a410d920d57af7f4dce926f7742028f1a51e9111`.
 Publication and independent download verification passed in run `41150906072`.

@@ -17,21 +17,21 @@ import java.util.TreeMap;
 final class MultiTouch {
     private static final MethodImplementation CODE = load();
     private static MethodImplementation load() {
-        try { return loadDex(); }
+        try { return findCode("Lcom/ideaworks3d/airplay/MultiTouch;", "onTouchEvent"); }
         catch (Exception error) { throw new ExceptionInInitializerError(error); }
     }
-    private static MethodImplementation loadDex() throws java.io.IOException {
+    static MethodImplementation findCode(String descriptor, String methodName) throws java.io.IOException {
         for (Object item : DexFileFactory.loadDexContainer(new File(
                 System.getProperty("s3ce.test.apk")), Opcodes.forApi(26))
                 .getEntry("classes.dex").getDexFile().getClasses()) {
             ClassDef klass = (ClassDef) item;
-            if (!klass.getType().equals("Lcom/ideaworks3d/airplay/MultiTouch;")) continue;
-            for (Object entry : klass.getDirectMethods()) {
+            if (!klass.getType().equals(descriptor)) continue;
+            for (Object entry : klass.getMethods()) {
                 Method method = (Method) entry;
-                if (method.getName().equals("onTouchEvent")) return method.getImplementation();
+                if (method.getName().equals(methodName)) return method.getImplementation();
             }
         }
-        throw new AssertionError("APK MultiTouch.onTouchEvent missing");
+        throw new AssertionError("APK method missing: " + descriptor + "->" + methodName);
     }
     private static int integer(Object value) { return ((Number) value).intValue(); }
     public static boolean onTouchEvent(AirplayView view, MotionEvent event) {

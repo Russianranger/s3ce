@@ -171,6 +171,12 @@ for _relative, _signature, _original_sha, _replacement_file in json.loads(
         (_PATCH_ROOT / "input_methods.json").read_text(encoding="utf-8")):
     PATCHES.append((_relative, _signature, _original_sha,
                     (_PATCH_ROOT / "methods" / _replacement_file).read_text(encoding="utf-8").rstrip("\n")))
+METHOD_GUARDS = json.loads((_PATCH_ROOT / "method_guards.json").read_text(encoding="utf-8"))
+
+
+def method_matches(source: str, signature: str):
+    return list(re.finditer(r"^\.method [^\n]* " + re.escape(signature)
+                            + r"\n.*?^\.end method", source, re.M | re.S))
 
 
 def apply(decoded: Path) -> list[str]:
@@ -178,21 +184,31 @@ def apply(decoded: Path) -> list[str]:
     # manual modification must not silently produce an incompatible build.
     sources: dict[Path, str] = {}
     changed: list[str] = []
+    # The public compatibility entry delegates to the exact original private
+    # glInit lifecycle. Verify that untouched implementation before adding it.
+    for relative, signature, expected_sha in METHOD_GUARDS:
+        target = decoded / relative
+        source = sources.setdefault(target, target.read_text(encoding="utf-8"))
+        matches = method_matches(source, signature)
+        if len(matches) != 1 or hashlib.sha256(matches[0].group().encode()).hexdigest() != expected_sha:
+            raise ValueError(f"Unexpected original method bytes for {signature}; refusing compatibility wrapper")
     for relative, signature, original_sha, replacement in PATCHES:
         target = decoded / relative
         if target not in sources:
             sources[target] = target.read_text(encoding="utf-8")
         source = sources[target]
-        pattern = re.compile(r"^\.method [^\n]* " + re.escape(signature)
-                             + r"\n.*?^\.end method", re.M | re.S)
-        matches = list(pattern.finditer(source))
+        matches = method_matches(source, signature)
+        if not matches and original_sha is None:
+            sources[target] = source.rstrip() + "\n\n" + replacement + "\n"
+            changed.append(signature)
+            continue
         if len(matches) != 1:
             raise ValueError(f"Expected one method {signature}; got {len(matches)}")
         match = matches[0]
         current = match.group()
         if current == replacement:
             continue
-        if hashlib.sha256(current.encode()).hexdigest() != original_sha:
+        if original_sha is None or hashlib.sha256(current.encode()).hexdigest() != original_sha:
             raise ValueError(f"Unexpected method bytes for {signature}; refusing to patch")
         sources[target] = source[:match.start()] + replacement + source[match.end():]
         changed.append(signature)

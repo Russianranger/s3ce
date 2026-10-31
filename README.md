@@ -2,12 +2,11 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **The latest trace showed that returning NULL from early GL
-queries crashes the game itself. Version 0.1.4 creates the real game-window
-context through the original engine initializer before those queries. Thor
-confirmation is pending.**
+Java/JNI bridge. **Startup still fails on the Thor in 0.1.4. Version 0.1.5
+bypasses the old startup JNI dispatcher and records Java initialization failures.
+Its hardware result remains unverified.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.4-egl-startup)
+[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.5-jni-startup)
 
 ## Supported candidate configuration
 
@@ -41,12 +40,15 @@ not a claim of successful gameplay on all four versions.
 
 ## Latest update and Thor test
 
-Version 0.1.4 invokes the original window-context initializer on the game thread
-before capability queries, preserving the engine's native/UI synchronization.
-It requires a real current EGL context and clean JNI state before driver calls.
-This replaces 0.1.3's incomplete NULL-return behavior. No temporary rendering
-context or invented capability strings are used.
+Version 0.1.5 resolves a fresh Java startup wrapper and calls it with an explicit
+integer argument on the engine thread. The wrapper enters the original private
+GL initializer directly and saves entry/exit markers and full exception stacks.
+The original mutex/UI/surface protocol and real-context guard remain.
 
+The 0.1.4 report returned without a context or Java GL-entry log. Binary execution
+checks confirm the old cache and ABI layout; they also show that the old JNI
+helper clears exceptions. The exact device failure inside that path is still
+unresolved, so this change bypasses it and makes failures observable.
 Install over the existing app, leave **Original rendering unchecked**, and press
 Start game. Check menu/backgrounds, Sim hair/eyes, room textures, and swipes.
 On failure, reopen the app icon and Save report. See

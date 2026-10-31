@@ -36,3 +36,19 @@ Diagnostics hooks attach the game overlay after each surface view replacement,
 record touch arrival before native dispatch, and record a heartbeat after GL
 swap returns or a software canvas is posted. A returned swap call is not proof
 that a frame was successfully presented.
+
+The additive public `AirplayThread.compatGlInit(I)V` entry calls the original
+private `glInit(I)V` directly, without changing its mutex, UI-view, or surface
+ordering. `method_guards.json` fingerprints that untouched original method.
+The wrapper records Java entry and exit plus its thread/state, or records the
+full Throwable stack before rethrowing the identical object. These records are
+synced to `compat-java-gl.log` and included in report exports. Logging failures
+are contained and cannot replace the original failure.
+
+The DEX regression above also executes the actual wrapper's success and exception
+paths with the original lifecycle injected as a callee. Run the production file
+logger's persistence/failure regression separately:
+
+```bash
+python3 app/tests/verify_gl_log.py --jdk /path/full-jdk-17 --sdk /path/android-sdk
+```

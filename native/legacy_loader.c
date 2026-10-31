@@ -5,6 +5,7 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include <android/log.h>
+#include <android/set_abort_message.h>
 #include <dlfcn.h>
 #include <elf.h>
 #include <errno.h>
@@ -20,6 +21,8 @@
 #include <unistd.h>
 #include "graphics_diagnostics.h"
 #include "graphics_safety.h"
+#include "jni_gl_start.h"
+#include <EGL/egl.h>
 
 static char diagnostic_path[PATH_MAX];
 static pthread_mutex_t diagnostic_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -65,6 +68,7 @@ static int graphics_enabled = 1;
 static JavaVM *runtime_vm;
 static void (*original_gl_start)(void);
 static void **original_android_state;
+static uint32_t *original_gl_version;
 static pthread_mutex_t load_lock = PTHREAD_MUTEX_INITIALIZER;
 
 struct code_allocation {
@@ -132,12 +136,53 @@ static void legacy_initialize_window_context(void) {
     int lock_present = original_android_state && original_android_state[0x10c / 4] != NULL;
     LOGI("Original GL bootstrap state: engine JNI=%d thread=%d glInit=%d lock=%d exception=%d",
          env_matches, thread_present, method_present, lock_present, legacy_exception_status());
-    if (!env_matches || !thread_present || !method_present || !lock_present || !original_gl_start ||
+    if (!env_matches || !thread_present || !lock_present || !original_gl_start || !original_gl_version ||
         (*env)->ExceptionCheck(env)) {
         LOGE("Original GL bootstrap prerequisites failed");
+        if (attached && env && (*env)->ExceptionCheck(env))
+            s3ce_record_pending_gl_exception(env, diagnostic_log);
         return;
     }
+    jobject retained_receiver = (*env)->NewLocalRef(env, (jobject)original_android_state[0x08 / 4]);
+    if (!retained_receiver || (*env)->ExceptionCheck(env)) {
+        s3ce_record_pending_gl_exception(env, diagnostic_log);
+        return;
+    }
+    jint version = *original_gl_version > 0x1ff ? 2 : 1;
+    jmethodID fresh_private = NULL;
+    int typed_result = s3ce_call_java_gl_init(env, retained_receiver,
+        (jmethodID)original_android_state[0x14 / 4], version, &fresh_private, diagnostic_log);
+    EGLContext current = eglGetCurrentContext();
+    int pending = legacy_exception_status();
+    LOGI("Typed GL bootstrap validation: result=%d current=%p JNI exception=%d",
+         typed_result, (void *)current, pending);
+    if (typed_result || pending > 0 || current == EGL_NO_CONTEXT) {
+        (*env)->DeleteLocalRef(env, retained_receiver);
+        return;
+    }
+    /* setViewNative can replace its global handle while the bridge creates the
+     * GL view. The retained local stays valid; reread and compare the new handle. */
+    jboolean same_receiver = (*env)->IsSameObject(env, retained_receiver,
+        (jobject)original_android_state[0x08 / 4]);
+    if ((*env)->ExceptionCheck(env)) {
+        s3ce_record_pending_gl_exception(env, diagnostic_log);
+        (*env)->DeleteLocalRef(env, retained_receiver);
+        return;
+    }
+    (*env)->DeleteLocalRef(env, retained_receiver);
+    if (!same_receiver || !fresh_private) {
+        LOGE("GL bootstrap receiver changed; refusing to refresh a different receiver's JNI cache");
+        android_set_abort_message("S3CE GL bootstrap receiver changed during window initialization");
+        abort();
+    }
+    original_android_state[0x14 / 4] = (void *)fresh_private;
+    LOGI("Original GL private method cache refreshed for the current receiver");
+    /* The typed bridge established the real context and m_UseGL. Reuse the
+     * original callback's GL tracking/version bookkeeping afterward; its Java
+     * initializer now sees m_UseGL and skips duplicate window work. */
+    LOGI("Original GL bookkeeping begin after typed initialization");
     original_gl_start();
+    LOGI("Original GL bookkeeping returned");
 }
 
 static void *legacy_dlsym(void *handle, const char *name) {
@@ -348,6 +393,8 @@ static jint load_legacy(JNIEnv *env, JavaVM *vm, jobject asset_manager) {
     original_android_state = image_pointer(&image, 0x53af0, 276);
     if (!android_literal || *android_literal != (uint32_t)(uintptr_t)(image.base + 0x53af0) ||
         !original_android_state) goto done;
+    original_gl_version = image_pointer(&image, 0x55a04, sizeof(uint32_t));
+    if (!original_gl_version) goto done;
     original_gl_start = (void (*)(void))(uintptr_t)(image.base + 0x210a5);
     s3ce_gl_safety_bind(get_string_slot, diagnostic_log,
         legacy_initialize_window_context, legacy_exception_status);
@@ -396,6 +443,7 @@ done:
         s3ce_gl_safety_bind(NULL, NULL, NULL, NULL);
         original_gl_start = NULL;
         original_android_state = NULL;
+        original_gl_version = NULL;
         if (image.base) munmap(image.base, image.size);
         for (size_t i = 0; i < image.handle_count; ++i) dlclose(image.handles[i]);
     }
@@ -443,7 +491,12 @@ JNIEXPORT jint JNICALL Java_com_ideaworks3d_thesims3_GameBootActivity_nativeBoot
         if (fresh_log) fclose(fresh_log);
         LOGI("S3CE ARM32 compatibility loader starting; page size %zu; graphics mode=%s",
              page_size, graphics_enabled ? "PVRTC compatibility" : "original (no GL hooks)");
-        legacy_jni_version = load_legacy(env, vm, assets);
+        if (s3ce_prepare_java_gl_diagnostics(env, diagnostic_log)) {
+            LOGE("Could not prepare typed GL diagnostic Java helper");
+            legacy_jni_version = JNI_ERR;
+        } else {
+            legacy_jni_version = load_legacy(env, vm, assets);
+        }
     }
     jint result = legacy_jni_version;
     pthread_mutex_unlock(&load_lock);

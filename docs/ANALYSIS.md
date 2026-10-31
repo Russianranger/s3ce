@@ -97,3 +97,34 @@ s3eGL_start and g_s3eAndroidGlobals. No OS-thread context is fabricated or moved
 between UI/render threads, and early textures remain in the actual window's
 context. Failed context creation is reported explicitly rather than returning
 NULL into the known string dereference.
+
+## 0.1.5 direct Java startup bridge
+
+The 0.1.4 device report aborts because the original window-start callback returns
+without a current context. No AirplayThread.glInit entry or EGL initialization
+appears in its log; EGL reports success/no error and no JNI exception remains.
+That last observation was insufficient: original callMethod at 0x20f14 invokes
+ExceptionOccurred/ExceptionDescribe/ExceptionClear after the Java call.
+
+Independent disassembly/NDK checks and Unicorn execution of the original
+relocated Thumb bytes confirm setViewNative caches glInit(I)V at Android-state
++0x14 on the Thread receiver at +8. s3eGL_start passes version 1 or 2 through
+CallVoidMethodV, JNI slot 62/offset0xf8. The wrapper thunk, Thumb state and
+8-byte stack alignment are correct. These facts rule out several proposed static
+ABI errors; they do not reproduce the device's missing Java entry.
+
+0.1.5 bypasses that opaque startup dispatch. A fresh GetMethodID resolves a new
+public compatGlInit(I)V wrapper; CallVoidMethodA passes an explicit jvalue.i=1.
+The wrapper uses invoke-direct on the untouched original glInit and saves durable
+entry/exit/failure markers and full exception stacks. The current game-thread
+JNI environment and original lock/reference prerequisites remain required.
+Only after the typed call has no exception and a real current context may the
+original s3eGL_start run for its existing bookkeeping. A retained local Thread
+reference must still identify the current global receiver before the freshly
+resolved private method ID replaces its old cache entry. Java then skips duplicate
+initialization because m_UseGL is true. No private version-state writes are
+replicated in the compatibility layer.
+
+The exact device-side cause in the original dispatcher remains unresolved.
+This is a targeted route replacement with stronger diagnostics, not a verified
+hardware startup result. Full reports remain private.

@@ -1,4 +1,53 @@
-# Candidate 0.1.4 validation
+# Candidate 0.1.5 validation
+
+Device evidence: 0.1.4 aborted after its original startup callback returned
+without a current context. No Java glInit/EGL entry appears in the report.
+The old JNI helper describes and clears exceptions internally, so the reported
+post-call exception status did not prove a successful call.
+
+Completed implementation:
+
+- The original cache/receiver/descriptor/JNI table slots and ARM stack/Thumb
+  state were independently checked. Actual relocated Thumb instruction execution
+  verifies relevant setViewNative cache setup and version1/version2 JNI arguments.
+- Fresh JNI lookup and CallVoidMethodA enter a new public compatGlInit(I)V wrapper.
+  That wrapper invokes the exact, hash-guarded original private glInit directly;
+  its mutex/UI/surface lifecycle is unchanged.
+- Durable Java GL entry/exit/failure logs are included in exported reports.
+  Native JNI errors remain pending for the guard instead of being swallowed.
+- Only after the typed startup succeeds with a real current context may the old
+  callback perform its existing version/window bookkeeping. No private state
+  writes are duplicated in the shim.
+
+Completed verification:
+
+- Actual old Thumb dispatch tests cover both GL versions and injected Java
+  exceptions, confirming the legacy describe/clear behavior.
+- Four native sanitizer suites pass, including typed JNI calls with the NDK's
+  real JNI header, stale cache IDs, exact int1/int2 arguments, and preservation of
+  the same Throwable when the Java logger itself throws.
+- Original glInit guard, additive-wrapper idempotence/tamper rejection, actual
+  wrapper DEX success/failure with identical exception rethrow, touch/lifecycle
+  regressions and real Java file-logging failure/persistence checks pass.
+- The final APK has 309 executable DEX methods; static type/control-flow analysis
+  against the Android35 framework reports zero errors. This is not ART execution.
+- ARM compilation with warnings as errors, 4,247 relocation simulation, 131 import
+  audit, ELF hardening, original asset/configuration guards, APK signatures and
+  identity checks pass. App ID/certificate remain unchanged; versionCode105.
+- Release reconstruction from the pinned 0.1.0 APK matches the signed APK exactly.
+
+APK SHA-256:
+`69d26e8f6d96d67b64c2366811e9ed796231d9919ac2076a6c3c87d9bdc543db`.
+
+Shim SHA-256:
+`27495c5d7a8619055bd2a214026383636db3f4c0c115ee54a921f681dd72b4cd`.
+
+Publication verification is recorded after completion.
+Hardware startup/rendering/input/save results remain unverified. The exact
+cause of the device's original JNI-dispatch failure remains unresolved.
+
+## Historical 0.1.4 checks
+
 
 Captured 0.1.3 evidence: early GL string queries had no current context and were
 blocked; the game then crashed at code-relative PC 0x1134 in its unchecked string

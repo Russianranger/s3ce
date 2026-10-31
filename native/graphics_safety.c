@@ -59,7 +59,7 @@ const unsigned char *s3ce_safe_gl_get_string(unsigned name) {
         if (pending_exception > 0)
             context_failure("pending Java exception after window initialization", name);
         if (current == EGL_NO_CONTEXT)
-            context_failure("original window initialization returned without a current EGL context", name);
+            context_failure("window initialization callback returned without a current EGL context", name);
     }
     if (!get_string_slot || !*get_string_slot)
         context_failure("missing real GL string dispatch", name);

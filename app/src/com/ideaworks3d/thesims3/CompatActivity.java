@@ -47,7 +47,7 @@ public final class CompatActivity extends Activity {
         status = new TextView(this);
         status.setTextColor(0xffeeeeee);
         status.setTextSize(18);
-        status.setText("The Sims 3 CE\nCompatibility build 0.1.4\n\n"
+        status.setText("The Sims 3 CE\nCompatibility build 0.1.5\n\n"
                 + "Touch controls. Saves stay on this device.\n"
                 + "Save a report before retrying a crashed game.\n");
         layout.addView(status);
@@ -189,7 +189,7 @@ public final class CompatActivity extends Activity {
     }
 
     private String report() {
-        StringBuilder text = new StringBuilder("S3CE 0.1.4 diagnostic report\n");
+        StringBuilder text = new StringBuilder("S3CE 0.1.5 diagnostic report\n");
         text.append("Android: ").append(Build.VERSION.RELEASE).append(" API ")
                 .append(Build.VERSION.SDK_INT).append("\nDevice: ")
                 .append(Build.MANUFACTURER).append(' ').append(Build.MODEL)
@@ -198,7 +198,7 @@ public final class CompatActivity extends Activity {
         text.append("Launcher selected original rendering: ")
                 .append(getPreferences(MODE_PRIVATE).getBoolean("original_rendering", false)).append('\n');
         ExitReport.append(this, text);
-        for (String name : new String[]{"compat-java-crash.log", "compat-boot.log", "compat-native.log", "compat-events.log", "compat-java-launcher.log"}) {
+        for (String name : new String[]{"compat-java-gl.log", "compat-java-crash.log", "compat-boot.log", "compat-native.log", "compat-events.log", "compat-java-launcher.log"}) {
             File log = new File(getFilesDir(), name);
             try (RandomAccessFile input = new RandomAccessFile(log, "r")) {
                 int length = (int) Math.min(input.length(), 32768);
@@ -213,7 +213,7 @@ public final class CompatActivity extends Activity {
         try {
             logcat = new ProcessBuilder("logcat", "-d", "-v", "threadtime", "-t", "300",
                     "S3CECompat:I", "AirplayActivity:I", "AirplayThread:I", "AirplayGL:I", "AirplayView:I",
-                    "libEGL:E", "System.err:W", "AndroidRuntime:E", "*:S")
+                    "libEGL:E", "art:W", "System.err:W", "AndroidRuntime:E", "*:S")
                     .redirectErrorStream(true).start();
             final java.lang.Process process = logcat;
             ByteArrayOutputStream captured = new ByteArrayOutputStream();

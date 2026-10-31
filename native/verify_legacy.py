@@ -89,6 +89,9 @@ def main():
     assert symbol_values["g_glGetString"] == dispatch_slot
     assert symbol_values["s3eGL_start"] == 0x210a5
     assert symbol_values["g_s3eAndroidGlobals"] == 0x53af0
+    assert symbol_values["g_s3eGLGlobals"] == 0x55a04
+    assert struct.unpack_from("<I", data, 0x210e8)[0] == 0x55a04
+    assert struct.unpack_from("<I", data, 0x210ec)[0] == 0x1ff
     assert struct.unpack_from("<I", data, 0x210f0)[0] == 0x53af0
     assert any(p[0] == 1 and p[6] & 1 and p[2] <= 0x210a4 < p[2]+p[5]
                for p in programs), "Original GL start callback must be in executable ELF code"

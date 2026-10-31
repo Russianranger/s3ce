@@ -1,35 +1,34 @@
-S3CE 0.1.4 — initialize the actual game-window context before GL queries.
+S3CE 0.1.5 — direct JNI graphics initialization.
 
-The new report showed that 0.1.3 blocked the platform driver crash, but returning
-NULL was insufficient: the game immediately passes its extension string to
-strlen without a NULL check. That was an incomplete startup fix.
+0.1.4 still stopped during startup on the Thor: its original JNI callback returned
+without creating a context, and the Java GL initializer produced no entry log.
+The legacy dispatcher clears Java exceptions internally, so its clean exception
+status did not establish a successful Java call.
 
-This update invokes the original Airplay window initializer on the game thread
-before the first capability query. It uses the existing engine-mutex release,
-UI GL-view creation, surface wait, relock, and same-thread eglMakeCurrent flow.
-The real context remains the game's rendering context; there is no temporary
-pbuffer or fabricated graphics information.
+This update bypasses that dispatcher for initial window creation. It resolves a
+fresh Java wrapper and calls it with an explicit integer argument on the running
+engine thread. The wrapper invokes the original GL initializer directly, keeping
+its engine-lock release, UI view creation, surface wait and relock sequence.
+Java entry/exit markers and any full exception stack are saved in the report.
+A real current EGL context is still required before game GL queries.
 
-The initializer validates the saved JNI game-thread state and rechecks the
-current EGL context and JNI exception state before querying the actual driver.
-Failed or recursive initialization stops with an explicit saved diagnostic
-instead of continuing into another NULL-string crash. Existing texture, touch,
-report saving and shared rendering-mode safety features remain.
+The old cache layout, JNI slots, Thumb addresses and argument handling were
+checked independently and by executing the original ARM instructions with a
+mock JNI table. Those checks found no static ABI error. This is a targeted
+replacement of the failing startup call; hardware startup is not yet verified.
 
-Checks passed: independent binary/JNI review, native sanitizer regressions for
-initialization/query ordering, recursion and failure cases, ARM compilation,
-relocation/import verification, asset/config checks and APK signatures. Actual
-Thor window creation and gameplay still need confirmation.
+Checks passed: native sanitizer regressions, original ARM dispatch/exception
+execution, Java wrapper and persistent-logging tests, 309-method static DEX
+analysis, ARM/import/relocation/asset verification and APK signatures.
 
 Test:
 
-1. Install over 0.1.3 without uninstalling or clearing data.
+1. Install over the current app without uninstalling or clearing data.
 2. Leave Original rendering (diagnostic mode) **unchecked**, then Start game.
-3. Check whether the menu loads. Check room/backgrounds/hair/eyes and swipe in
-   Create-a-Sim; if successful, proceed into the house and save/reopen.
-4. If it crashes or hangs, reopen the app icon and Save report again. The new
-   log records window-initialization state and EGL/JNI failures, and the report
-   includes additional AirplayGL/AirplayView/EGL error output.
+3. Check whether the menu loads, then backgrounds/hair/eyes and Create-a-Sim swipes.
+   If successful, enter the house and save/reopen.
+4. If startup fails, reopen the app icon and Save report. The report now includes
+   durable Java GL-entry/exit markers and initialization exception stacks.
 
 Same app ID, signing key and data location. ARM32 and 4 KiB requirements remain.
 No additional game-data import is required.

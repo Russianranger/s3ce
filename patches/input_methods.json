@@ -40,5 +40,11 @@
     "onPause()V",
     "58754ca35b5aa670c2ddd8c2d82caa434954473b4ed2c9755e2b54bef406023e",
     "bounded_pause_wait.smali"
+  ],
+  [
+    "smali/com/ideaworks3d/airplay/AirplayThread.smali",
+    "compatGlInit(I)V",
+    null,
+    "compat_gl_init.smali"
   ]
 ]

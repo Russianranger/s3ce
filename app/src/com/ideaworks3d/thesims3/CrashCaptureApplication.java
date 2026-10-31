@@ -20,7 +20,7 @@ public final class CrashCaptureApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler((thread, error) -> {
             try {
                 StringWriter text = new StringWriter();
-                text.append("S3CE 0.1.4 Java crash pid=" + Process.myPid()
+                text.append("S3CE 0.1.5 Java crash pid=" + Process.myPid()
                         + " time=" + System.currentTimeMillis() + " thread=" + thread.getName() + "\n");
                 error.printStackTrace(new PrintWriter(text));
                 Files.write(output.toPath(), text.toString().getBytes(StandardCharsets.UTF_8));

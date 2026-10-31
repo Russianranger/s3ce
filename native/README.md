@@ -40,45 +40,63 @@ original JNI version; a negative return is failure. Bootstrap must finish before
 starting the original game Activity. The original Activity's later library load
 then reuses the already loaded shim.
 
-## Real GL startup before capability queries (0.1.4)
+## Typed Java GL startup before capability queries (0.1.5)
 
 The Thor's first native tombstone identified `libGLESv1_CM.so glGetString+0x1c`,
 called from the original runtime at offset `0x33987` before an EGL context was
-current. The 0.1.3 guard prevented that driver access, but the next device trace
-showed that returning NULL was insufficient: the game's capability initializer
-passes its extension string to `strlen` at S3E code offset `0x1134` without a NULL
-check.
+current. Returning NULL in 0.1.3 exposed another assumption: the game passes its
+extension string to `strlen` at S3E code offset `0x1134` without a NULL check.
+In 0.1.4 the legacy window-start callback returned with no current context and no
+pending exception, but no Java `glInit` entry was logged.
 
-The mandatory guard now establishes the real window context before the query.
-It invokes the original `s3eGL_start` callback, which calls
-`AirplayThread.glInit(int)` on the engine thread. This reuses Airplay's existing
-engine-mutex release, UI GL-view creation, surface wait, mutex reacquisition,
-and same-thread `eglMakeCurrent` sequence. No temporary pbuffer, UI-thread GL
-context, or invented capability string is used. Textures uploaded immediately
-after capability detection belong to the actual rendering context.
+The old callback is no longer trusted as the initial Java dispatch. Actual Thumb
+execution under Unicorn confirms that its cached method mapping and JNI call
+branch are correct. It also confirms that the legacy `callMethod` helper invokes
+`ExceptionDescribe` and `ExceptionClear` on a Java failure, then returns normally.
+A zero pending-exception status after that helper is therefore insufficient to
+establish that Java initialization ran successfully. The exact device-side Java
+failure remains unconfirmed until the next report.
 
-Before calling the original initializer, the loader checks that the current JNI
-environment matches the environment saved by `runNative`, and that the original
-thread reference, `glInit` method ID, and engine lock exist. A thread-local guard
-prevents recursive initialization. After initialization, a real current EGL
-context is required before dispatching the original driver or PVRTC adapter.
-Initialization failure stops with a durable diagnostic and Android abort message
-containing the EGL error and pending-JNI-exception status; it does not pass NULL
-into the game's known string dereference.
+The mandatory string guard now invokes a typed starter on the engine thread:
 
-The original `wrap_glGetString` entry is `0x3397c`; its real dispatch slot is
-`0x55a64`. The verifier derives that slot from the Thumb LDR at `0x3397e`, its
-PC-relative literal at `0x339e4`, and table base `0x55a44 + 0x20`, then checks the
-unstripped `g_glGetString` symbol and writable ELF segment. These are separate
-from version globals at `0x55a04`.
+1. Retain a local reference to the current AirplayThread receiver. The original
+   `setViewNative` may delete and replace its global reference during GL-view creation.
+2. Resolve the receiver class and private `glInit(I)V` method afresh for cache
+   comparison. Resolve public `compatGlInit(I)V` afresh for invocation.
+3. Invoke that bridge with `CallVoidMethodA` and an explicit integer argument.
+   The Java bridge records entry, calls the unchanged private initializer, and
+   records either completion or the full thrown stack before rethrowing it.
+4. Require an actual current EGL context and no pending Java exception. Compare
+   the retained receiver with the new global receiver, then refresh the original
+   private-method cache using the fresh method ID.
+5. Run the original native callback afterward for its existing GL tracking and
+   version bookkeeping. The Java initializer now sees its existing GL view and
+   skips duplicate window work.
 
-The original window-start callback is Thumb entry `0x210a5`. Both its symbol and
-original instruction fingerprint are checked. Its private Android state is
-`g_s3eAndroidGlobals` at `0x53af0`, validated against the original literal at
-`0x210f0` and ELF symbol. The engine's Android-only
-`GLForceDLLVersion=0x0101` setting selects its existing GLES 1.1 path and avoids a
-recursive version probe during context startup. The original runtime's
-intentional `GL_OES_framebuffer_object` extension filter is preserved.
+This preserves Airplay's engine-mutex release, UI GL-view creation, surface wait,
+mutex reacquisition, and same-engine-thread `eglMakeCurrent` sequence. It creates
+no temporary pbuffer or UI-thread context and invents no capability strings.
+Textures created after capability detection belong to the real window context.
+
+Lookup and pre-entry exceptions are also persisted through the application-owned
+`GameDiagnostics.recordGlFailure(Throwable)` helper, whose class and static method
+are cached during UI bootstrap. A pending Throwable is temporarily cleared only
+to record it; any logging failure is discarded and the **same original Throwable**
+is restored before returning. Context initialization failure stops with a durable
+EGL/JNI diagnostic and abort message instead of continuing into the known NULL
+string dereference. A thread-local guard prevents recursive initialization.
+
+The original string wrapper entry is `0x3397c`; its real dispatch slot is
+`0x55a64`, derived from its Thumb LDR and checked against the ELF symbol. The
+original window-start callback is Thumb entry `0x210a5`, verified against its
+symbol, instruction fingerprint, and executable segment. Private Android state
+`g_s3eAndroidGlobals` at `0x53af0` is validated against its original literal and
+ELF symbol. Current JNI identity must match the environment saved by `runNative`.
+
+`GLForceDLLVersion=0x0101` pins the legacy engine's detected version and avoids
+recursive probing during startup; it does not itself choose a graphics driver.
+The application still uses its existing GLES 1.1 library/context route. The
+original intentional `GL_OES_framebuffer_object` extension filter is preserved.
 
 ## Graphics compatibility (0.1.1)
 
@@ -123,8 +141,21 @@ S3CE_SANITIZERS=1 native/test.sh
 ```
 
 These verify decoder colors, 2/4-bpp, alpha, small mip levels, invalid input and
-output guards, conditional GL fallback, native-driver pass-through, and preserved
-GL error behavior.
+output guards, conditional GL fallback, native-driver pass-through, context-start
+ordering and recursion, typed JNI arguments, stale-cache bypass, and preservation
+of the same Throwable even if the diagnostic helper fails. Set ANDROID_NDK_HOME
+for the typed JNI test; it uses a temporary copy of the NDK's real JNI header.
+
+The optional original-Thumb proof requires Unicorn 2.1.4:
+
+```sh
+python3 -m pip install -r native/tests/requirements-emulation.txt
+python3 native/tests/emulate_gl_start.py /path/to/source.apk
+```
+
+It executes original `setViewNative`, `s3eGL_start`, and `callMethod` instructions
+with mocked JNI/debug boundaries. Both GLES-version argument routes and injected
+Java-exception clearing are checked. No emulator or vendor tool is bundled.
 
 ## Behavior
 
@@ -165,7 +196,8 @@ verifies both allocator guards, audits all 131 used imports against API28 ARM ND
 system-library stubs plus the linked shim helpers, and checks the shim's ELF
 protections. The original 0.1.0 loader has reached game menus and Create-a-Sim on the Thor.
 The 0.1.1 and 0.1.2 candidates regressed startup on the Thor; 0.1.3 exposed the
-subsequent NULL-string assumption. The 0.1.4 real-window initialization passes
-host ordering, reentrancy, failure, and decoder tests. Its Android window startup
-and the PVRTC graphics path still require hardware confirmation. Validation must cover loading, graphics, audio, input, save/reload,
+subsequent NULL-string assumption, and 0.1.4 showed that the old JNI bridge had
+not established a context. The 0.1.5 typed bridge and durable exception reporting
+pass host checks. Android window startup and PVRTC rendering still require
+hardware confirmation. Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.
