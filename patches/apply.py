@@ -167,15 +167,16 @@ PATCHES = [('smali/com/ideaworks3d/airplay/AirplayThread.smali',
 # Input/lifecycle/diagnostic changes keep their reviewed method bodies separate.
 import json
 _PATCH_ROOT = Path(__file__).resolve().parent
-for _relative, _signature, _original_sha, _replacement_file in json.loads(
-        (_PATCH_ROOT / "input_methods.json").read_text(encoding="utf-8")):
-    PATCHES.append((_relative, _signature, _original_sha,
-                    (_PATCH_ROOT / "methods" / _replacement_file).read_text(encoding="utf-8").rstrip("\n")))
+for _manifest in ("input_methods.json", "audio_methods.json"):
+    for _relative, _signature, _original_sha, _replacement_file in json.loads(
+            (_PATCH_ROOT / _manifest).read_text(encoding="utf-8")):
+        PATCHES.append((_relative, _signature, _original_sha,
+                        (_PATCH_ROOT / "methods" / _replacement_file).read_text(encoding="utf-8").rstrip("\n")))
 METHOD_GUARDS = json.loads((_PATCH_ROOT / "method_guards.json").read_text(encoding="utf-8"))
 
 
 def method_matches(source: str, signature: str):
-    return list(re.finditer(r"^\.method [^\n]* " + re.escape(signature)
+    return list(re.finditer(r"^\.method (?:[^\n]* )?" + re.escape(signature)
                             + r"\n.*?^\.end method", source, re.M | re.S))
 
 

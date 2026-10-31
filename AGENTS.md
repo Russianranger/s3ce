@@ -15,6 +15,12 @@ cases and legacy dimensions before runtime acceptance. The current report also
 contains a later ImageIPhone/render-cache teardown crash; distinguish it from
 the earlier menu tap failure and avoid speculative NULL skips.
 
+Internal C2 run41212609908 completed a real Chair Sit through the visible action
+menu, but clean Quit correctly failed on a queued SoundPlayer callback after
+native Main returned. C3 adds guarded, serialized audio lifecycle ownership and
+retired-track rejection. Require a fresh real object action and fatal-free native
+Quit on the exact C3 APK before publication; C2 remains unreleased.
+
 # Historical 0.1.10 delivery gate — passed
 
 The user required autonomous correction of hidden UI and progression beyond

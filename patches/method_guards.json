@@ -3,5 +3,15 @@
     "smali/com/ideaworks3d/airplay/AirplayThread.smali",
     "glInit(I)V",
     "17ef3ed62cfc6ee197e42e86566be07b2f20bc44d32a5fda0669f9e01256e9fd"
+  ],
+  [
+    "smali/com/ideaworks3d/airplay/SoundPlayer.smali",
+    "init()V",
+    "b95d938eca18fc91404ae8d0ea31fcb8e240ef39d3a7ff458849f8e225f40533"
+  ],
+  [
+    "smali/com/ideaworks3d/airplay/SoundPlayer.smali",
+    "generateAudio([SI)V",
+    "da93b6e29d082fe4af9be5b76883d437cc7879701165c5cf7014ede04149d13e"
   ]
 ]

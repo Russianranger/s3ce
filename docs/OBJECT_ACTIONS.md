@@ -65,16 +65,29 @@ static type/register failures.
 
 ## Runtime delivery gate
 
-Active workflow: [41205174960](https://github.com/Russianranger/s3ce/actions/runs/41205174960),
-source `a1a9961792aaf29ca8ed6b4d133120ad564279bf`. Frozen internal C2 APK SHA256
+Internal C2 APK SHA256
 `a5a98513afa16520bc86b2aff67fda2b68d3505755d57e69e75cd6499453aa48`,
 76,762,457 bytes. Native SHA256
 `d0f375b7e74b8174f0f00472a3b3eb6f44f0b5d2f48ffcfa1f03e812b236cf68`.
-The exact bytes reconstruct from `.validation/object-actions`; this is not
-release staging. Do not publish until actual object completion and Quit pass.
+Run [41212609908](https://github.com/Russianranger/s3ce/actions/runs/41212609908),
+source `c49b2cdf62ee73b15a3dab3b90b79af40689e4a6`, completed the female creation,
+house gameplay, normal save and new-process load prefix. Ordinary frame-guided
+Android input then selected the visible Cheap Dining Chair **Sit** action at
+1235,353. Frame6 shows the standing Sim, empty chair and action menu; frame7
+shows the Sim seated at the table with the chair action icon. Root and two
+independent reviewers inspected the hash-verified raw frames. Frame7 PNG SHA256:
+`5aa234152451b1e36157433a166bcc4f9eaea0e11b4767e4c8379d5d886c3655`.
+This is actual Chair Sit execution through the shared context menu; Sofa itself
+was not exercised. No game-memory or save-file values were written.
 
-Pending: select a real object action through ordinary Android input and retain
-screenshots showing the Sim performing it. Verify continued UI and save/reload.
+Normal Save and Quit returned to the main menu. Native Quit returned from Main
+and requested Activity.finish, but a queued audio callback then caused a genuine
+Java fatal exception. The workflow correctly failed and C2 is **not accepted
+for release**. Artifact13047588702 is112,228,778 bytes, ZIP SHA256
+`e690ad48715216e3af370d33f4a0cb429c937c5016281fb1d2fa704b3bee24ab`.
+The follow-up C3 audio lifecycle correction must repeat actual interaction and
+clean Quit before publication; `.validation` is internal staging only.
+
 Do not publish a new APK based only on menu dismissal or the host ARM fixtures.
 The runtime environment is Android11/API30 with ARMv7 translation; physical Thor
 Android13 behavior for the new patch still needs to be distinguished precisely.
@@ -95,4 +108,17 @@ cleanup order, SP/LR, r4-r11 and d8-d15. Filesystem lookup, uploaded texture
 handles, GPU deletion and unrelated subsystem termination are fixture inputs or
 modeled boundaries. This identifies an original lifetime hazard consistent with
 the report; the report did not capture its precise cached DLC entry. Actual
-Android Quit verification remains a delivery gate.
+Android C2 execution reached native Main return without a native fatal signal.
+The separate Java failure below still blocks clean-Quit acceptance.
+
+## Queued audio callback after Quit
+
+C2 run41212609908 stopped sound at15:27:49.402, returned from native Main at
+15:27:49.440 and requested Activity.finish at15:27:49.441. At15:27:49.480, an
+already-queued AudioTrack position callback called generateAudio after native
+shutdown, then dereferenced the now-null track in
+`SoundPlayer.onPeriodicNotification` at15:27:49.481. The original stop already
+detaches the listener, which does not cancel callbacks already queued by its
+delegate. A targeted audio lifecycle correction is in progress; it must reject
+retired-track callbacks before JNI and coordinate an in-flight callback with
+stop/restart while preserving normal playback.
