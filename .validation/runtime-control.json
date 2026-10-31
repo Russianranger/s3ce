@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 3,
-  "frame_sha256": "7cc8b93840887a7cd1dafb89385c24af8366d3e0d7536fbae1c3d48bb5016eeb",
+  "seq": 4,
+  "frame_sha256": "90f86655da8f364c1388c12b5dd2fd90563039d2c684304319d79612d8c7ebd4",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 500,
-    "y": 362
+    "type": "swipe",
+    "x1": 1834,
+    "y1": 200,
+    "x2": 1834,
+    "y2": 765,
+    "duration_ms": 1250
   },
-  "note": "Close the visible Recipes information panel using its X."
+  "note": "Zoom out with the visible ladder after closing the information panel."
 }
