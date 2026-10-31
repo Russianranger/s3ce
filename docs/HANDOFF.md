@@ -40,9 +40,30 @@ Quit and Compat113 resume. Both full logs have zero fatal/ANR and late-audio
 warnings. Across both runs: four cold-menu tests, zero failures, plus two saved
 game restarts. Retain first run's red status and both original gate=false files.
 See [runtime receipt](CAMERA_INPUT_RUNTIME_ACCEPTANCE.md) and its evidence index.
-Exact signed bytes are accepted as a focused Thor candidate. Next: publish and
-verify public download, then deliver explicit install-over APK/test links. No
-rebuild or resign. Physical memory-pressure reliability/Home-return remain open.
+Exact signed bytes are accepted as a focused Thor candidate. No rebuild or
+resign. Physical memory-pressure reliability/Home-return remain open.
+
+## Publication verified — next action is the Thor camera test
+
+[Release v0.1.13-camera-input](https://github.com/Russianranger/s3ce/releases/tag/v0.1.13-camera-input)
+was published from `183461cbb38e3443ee90923c62139d5c0eb5656b` by green
+[run41243515898](https://github.com/Russianranger/s3ce/actions/runs/41243515898).
+The workflow reconstructs the exact tested bytes, verifies signing/package113/
+target28 and downloads/checks the published APK. Root independently downloaded
+the public APK: 76,770,649 bytes and SHA256ce8c54bffe5deeb00e6c81b3d942bfdd5f5480b63ef281d33b053cc255eb3a5e.
+Its v2/v3 signature verifies against the existing certificate
+3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4;
+package, name/code113, target28 and ARMv7 were rechecked. No signing or game assets
+were changed for publication. The evidence index records the public receipt.
+
+[Direct APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.13-camera-input/S3CE-0.1.13-camera-input-arm32.apk).
+Install over the existing app without uninstalling/clearing data; Original
+rendering unchecked. Load the user's existing save. Select the bottom-right
+jewel with camera mode off/on, pan/zoom, complete an object action, save/reload,
+then try three process-cold starts after saving. Export Home→app icon→Save report
+and Share report file; attach a tapped-location screenshot if interception remains.
+Current work is complete through release verification and user-facing APK handoff;
+next is the Thor feedback/test. Continue focused refinement from that evidence.
 
 # Historical takeover — 0.1.12 HUD/startup candidate
 

@@ -14,9 +14,11 @@ guard, all24 host tests pass. Run41240915455 is green for the same APK. Root and
 two reviewers accept its completed Bed Sit, advancing post-action save and clean
 native Quit; both new cold menus pass and full logs have zero fatal/ANR/audio
 warnings. Total four cold-menu tests, zero failures, plus two save restarts.
-See docs/CAMERA_INPUT_RUNTIME_ACCEPTANCE.md. Publish these frozen bytes and verify
-public download; no rebuild/resign. Retain first failure and both raw gate=false
-files. Deliver APK/test links, then continue from Thor feedback.
+See docs/CAMERA_INPUT_RUNTIME_ACCEPTANCE.md. Published these frozen bytes as
+v0.1.13-camera-input from183461cbb38e3443ee90923c62139d5c0eb5656b, green
+run41243515898. Independent public download/checksum/original-cert/package113/
+ARMv7/target28 verification passes. Retain first failure and both raw gate=false
+files. User-facing handoff includes APK/test links; next is Thor feedback.
 
 # Current continuation — camera pan steals bottom-right taps
 

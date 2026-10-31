@@ -1882,5 +1882,21 @@
       "cause of initial Bed Sit selection interruption; later explicit selection completed"
     ]
   },
-  "publication": null
+  "publication": {
+    "tag": "v0.1.13-camera-input",
+    "source": "183461cbb38e3443ee90923c62139d5c0eb5656b",
+    "run_id": 41243515898,
+    "conclusion": "success",
+    "published_at": "2026-10-31T21:25:39Z",
+    "apk_url": "https://github.com/Russianranger/s3ce/releases/download/v0.1.13-camera-input/S3CE-0.1.13-camera-input-arm32.apk",
+    "release_url": "https://github.com/Russianranger/s3ce/releases/tag/v0.1.13-camera-input",
+    "public_download_sha256": "ce8c54bffe5deeb00e6c81b3d942bfdd5f5480b63ef281d33b053cc255eb3a5e",
+    "bytes": 76770649,
+    "signature_v2_v3": true,
+    "certificate_sha256": "3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4",
+    "package": "io.github.russianranger.s3ce",
+    "version_code": 113,
+    "target_sdk": 28,
+    "abi": "armeabi-v7a"
+  }
 }
