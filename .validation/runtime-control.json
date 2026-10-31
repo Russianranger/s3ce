@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 4,
-  "frame_sha256": "14a4fa8b65099b4361b4832acd3902e90eb025eb41d6798dfe548649ec65b941",
+  "seq": 5,
+  "frame_sha256": "5f6b1c0066812b0e9ce9cbe15f2b563b50f05f77fb5fb9821d60e61a8ba7e70a",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1130,
-    "y": 792
+    "type": "wait",
+    "seconds": 3
   },
-  "note": "Select Sit on the now-visible bed menu after the timed wish transition; earlier menu disappearance was insufficient."
+  "note": "Observe the final Bed Sit pose following the visible approach/transition."
 }
