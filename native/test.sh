@@ -18,6 +18,8 @@ c++ -std=c++14 "${flags[@]}" "$test_dir/graphics.o" \
 cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \
     "$native_dir/tests/graphics_safety_test.c" -o "$test_dir/safety_test"
 "$test_dir/safety_test"
+cc -std=gnu11 "${flags[@]}" "$native_dir/tests/code_flush_test.c" -o "$test_dir/flush_test"
+"$test_dir/flush_test"
 c++ -std=c++14 "${flags[@]}" "$native_dir/pvrtc/test_bridge.cpp" \
     "$native_dir/pvrtc/PVRTDecompress.cpp" "$native_dir/pvrtc/pvrtc_bridge.cpp" \
     -o "$test_dir/decoder_test"
@@ -30,6 +32,11 @@ if [[ -n "${ANDROID_NDK_HOME:-}" ]]; then
     cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" -I "$test_dir/jni" \
         "$native_dir/tests/jni_gl_start_test.c" -o "$test_dir/jni_test"
     "$test_dir/jni_test"
+    cc -std=gnu11 "${flags[@]}" -DJNINativeInterface_=JNINativeInterface \
+        -I "$test_dir/jni" -I "$native_dir" \
+        "$native_dir/tests/exception_inspect_test.c" "$native_dir/exception_inspect.c" \
+        -pthread -o "$test_dir/exception_test"
+    "$test_dir/exception_test"
 else
     echo "SKIP typed JNI test: set ANDROID_NDK_HOME to run against its real JNI header"
 fi

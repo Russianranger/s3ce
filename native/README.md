@@ -40,6 +40,55 @@ original JNI version; a negative return is failure. Bootstrap must finish before
 starting the original game Activity. The original Activity's later library load
 then reuses the already loaded shim.
 
+## Restore the registered pthread stack for JNI (0.1.6)
+
+The preserved game always executes on an Airplay heap/fibre stack. Its
+`StackSwitch` setting controls native API veneers, not whether that game stack is
+created. In 0.1.5 both the typed Java initializer and the static exception logger
+failed before any Java entry. AOSP Android 13 checks a managed call's native frame
+against the thread's registered stack limit before entering Java; a foreign heap
+stack below that limit produces `StackOverflowError`. This fits the device trace,
+but the next report's native stack/type diagnostics are needed to establish the
+actual Throwable on the Thor.
+
+The Android configuration now enables the runtime's original `StackSwitch=1`
+mechanism before S3E imports are linked. Original API metadata selects its existing
+stack-switch veneers: `glGetString` uses the four-argument/32-bit-return fast
+wrapper, while `glTexImage2D` uses the generic void wrapper with stack arguments.
+No API metadata is changed.
+
+The lazy GL initializer also has an explicit fallback for a raw callback arriving
+on the heap stack. `stack_bridge.c` queries the **current** pthread's stack and
+guard bounds at call time. If already on that stack, it calls directly. Otherwise
+it validates the saved loader SP, alignment, and 64 KiB headroom above the guard,
+then supplies R12 and R0 to the original ARM void-return gateway at `0x3c7f0`.
+The original gateway performs all SP switching, argument copying, fibre-state
+bookkeeping, and restoration. The checked callback verifies its actual SP and
+pthread identity before any JNI work. Nested callbacks already on the OS stack
+never rewind an active frame. Integer and VFP/NEON caller-saved clobbers are
+explicitly declared; callee-saved registers are preserved.
+
+The gateway, its `g_LoaderStack` cell at `0x56758`, original code fingerprints,
+and relocated literal are checked against the original ELF. Device diagnostics
+record the actual StackSwitch flag, callback SP, current OS stack bounds, and
+saved loader SP. The operation remains on the same OS thread, preserving EGL and
+JNI thread-local identity.
+
+Enabling veneers also requires correct instruction-cache coverage. The original
+initial flush covered only the rounded core code extent and omitted most of the
+new veneer arena. The shim now expands any flush wholly inside a tracked S3E code
+allocation to its full mapped extent. It forwards to the validated original
+platform routine at `0x41021`, preserving both its `mprotect(...,7)` side effect
+and cache-flush operation and return value. Unknown ranges retain their original
+range. Generated import and dynamic callback veneers therefore remain writable,
+executable, and included in cache maintenance before use.
+
+`exception_inspect.c` caches public Throwable classes during bootstrap. On failure
+it can classify the pending error and read a bounded detail message through
+native-only JNI operations, without invoking Java on a possibly invalid stack.
+The same original pending exception is restored even if diagnostics fail. This
+runs before attempting the application-owned Java stack logger.
+
 ## Typed Java GL startup before capability queries (0.1.5)
 
 The Thor's first native tombstone identified `libGLESv1_CM.so glGetString+0x1c`,
@@ -142,8 +191,9 @@ S3CE_SANITIZERS=1 native/test.sh
 
 These verify decoder colors, 2/4-bpp, alpha, small mip levels, invalid input and
 output guards, conditional GL fallback, native-driver pass-through, context-start
-ordering and recursion, typed JNI arguments, stale-cache bypass, and preservation
-of the same Throwable even if the diagnostic helper fails. Set ANDROID_NDK_HOME
+ordering and recursion, complete generated-code flush ranges, typed JNI arguments,
+stale-cache bypass, native-only Throwable classification, and preservation of
+the same Throwable even if diagnostics fail. Set ANDROID_NDK_HOME
 for the typed JNI test; it uses a temporary copy of the NDK's real JNI header.
 
 The optional original-Thumb proof requires Unicorn 2.1.4:
@@ -151,11 +201,18 @@ The optional original-Thumb proof requires Unicorn 2.1.4:
 ```sh
 python3 -m pip install -r native/tests/requirements-emulation.txt
 python3 native/tests/emulate_gl_start.py /path/to/source.apk
+python3 native/tests/emulate_stack_bridge.py /path/to/source.apk --ndk "$ANDROID_NDK_HOME"
 ```
 
-It executes original `setViewNative`, `s3eGL_start`, and `callMethod` instructions
-with mocked JNI/debug boundaries. Both GLES-version argument routes and injected
-Java-exception clearing are checked. No emulator or vendor tool is bundled.
+The first script executes original `setViewNative`, `s3eGL_start`, and `callMethod`
+instructions with mocked JNI/debug boundaries, checking GLES-version arguments
+and injected Java-exception clearing. The second compiles the actual new bridge
+and executes its C/inline assembly with the original ARM gateway and original
+config/loader-stack setup. It checks raw heap-stack rejection, real OS-stack
+callback entry, nested reentry without rewinding active frames, disabled-switch
+refusal, invalid saved SP, headroom boundaries, pthread identity, fibre-state
+restoration, r4-r11, d8-d15, and SP/return continuation. No emulator or vendor tool
+is bundled.
 
 ## Behavior
 
@@ -196,8 +253,10 @@ verifies both allocator guards, audits all 131 used imports against API28 ARM ND
 system-library stubs plus the linked shim helpers, and checks the shim's ELF
 protections. The original 0.1.0 loader has reached game menus and Create-a-Sim on the Thor.
 The 0.1.1 and 0.1.2 candidates regressed startup on the Thor; 0.1.3 exposed the
-subsequent NULL-string assumption, and 0.1.4 showed that the old JNI bridge had
-not established a context. The 0.1.5 typed bridge and durable exception reporting
-pass host checks. Android window startup and PVRTC rendering still require
+NULL-string assumption, 0.1.4 showed that the old callback had not established a
+context, and 0.1.5 preserved a pre-entry Java failure that also blocked its logger.
+The 0.1.6 registered-stack bridge, original API stack switching, complete veneer
+cache maintenance, and native-only exception diagnostics pass host and ARM
+emulation checks. Android window startup and PVRTC rendering still require
 hardware confirmation. Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.

@@ -17,6 +17,10 @@ static jthrowable pending;
 static unsigned lookups, calls_a, calls_v, deleted_receivers, recorded, clears, restored;
 static jint expected_version;
 static int throw_on_call, fail_lookup, fail_logger;
+static unsigned inspected;
+void s3ce_describe_throwable(JNIEnv *env, jthrowable original, s3ce_exception_log logger) {
+    (void)env; (void)logger; assert(!pending && original == thrown); ++inspected;
+}
 static void log_message(int priority, const char *format, ...) { (void)priority; (void)format; }
 static jboolean check_exception(JNIEnv *env) { (void)env; return pending ? JNI_TRUE : JNI_FALSE; }
 static jthrowable exception_occurred(JNIEnv *env) { (void)env; return pending; }
@@ -110,6 +114,6 @@ int main(void) {
     fail_lookup = 1;
     assert(s3ce_call_java_gl_init(&environment, receiver, private_id, 2, &resolved, log_message) == -1);
     assert(pending == thrown && calls_a == 4 && deleted_receivers == 5 && resolved == NULL);
-    assert(recorded == 4 && restored == 4);
+    assert(recorded == 4 && restored == 4 && inspected == 4);
     puts("Typed JNI arguments/cache output and same-Throwable persistence/restoration: PASS");
 }

@@ -1,4 +1,33 @@
-# Development handoff — 0.1.5
+# Development handoff — 0.1.6
+
+0.1.5 still crashes on the Thor. Its fresh/cached method IDs match, but both
+CallVoidMethodA and the static Java logger throw before Java body entry. Do not
+continue blaming method identity or Java code inside glInit based on that report.
+
+The game always runs on a heap fibre: ExecStartGame1946c -> FibreCreate2e73c ->
+FibreSwitch_asm2e4a0(MOV SP,R0 at2e4b8). mymain194d0 records the original OS stack
+in g_LoaderStack56758. StackSwitch=0 only disables API/callback veneers. Exact
+ART13 source rejects managed entry below Thread::GetStackEnd; foreign-SP rejection
+fits both pre-entry failures, but the report did not capture the Throwable type.
+
+0.1.6 enables original StackSwitch=1 for Android and routes lazy GL initialization
+through the original generic stack thunk when necessary. Native thread identity,
+current EGL context, original Java lifecycle, app ID, signing key and data remain.
+The generated veneer arena is inside the dedicated executable allocation; ensure
+its full range is flushed because original rounded-core flushing misses its tail.
+Native-only Throwable classification and pthread stack bounds must stay available
+when calling a Java logger is impossible.
+
+Final native SHA500525a6fe3a2f382f8445aa1ed13b91cbc2b7fc9ff5478ff537f5bcdfb75025;
+APK SHA3b7b82da9ed56a8c0c2cf9afb0abd4c653eb1a1c63ebb04f774d5b0f7d726cd8.
+Six native sanitizer suites, eight compiled ARM bridge scenarios, independent
+review,309-method DEX analysis and build/package/reconstruction checks pass.
+Publication verification is recorded after completion. Actual Thor startup,
+textures, swipes and save/reopen remain the next hardware gate. Full reports and
+private signing material stay private.
+
+## Historical 0.1.5 handoff
+
 
 Published source `c508de5dacb8ee0a0c41eecf0a29926d63bd7447`.
 Publication/download verification run `41152986602` passed.

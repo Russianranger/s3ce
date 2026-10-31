@@ -1,4 +1,5 @@
 #include "jni_gl_start.h"
+#include "exception_inspect.h"
 #include <android/log.h>
 
 static jclass diagnostic_class;
@@ -34,6 +35,7 @@ void s3ce_record_pending_gl_exception(JNIEnv *env, s3ce_graphics_log logger) {
     /* Calling Java while an exception is pending is invalid JNI. Temporarily
      * clear only to persist it, discard any logging failure, then restore it. */
     (*env)->ExceptionClear(env);
+    s3ce_describe_throwable(env, original, logger);
     jvalue arguments[1] = {{.l = original}};
     (*env)->CallStaticVoidMethodA(env, diagnostic_class, record_failure, arguments);
     if ((*env)->ExceptionCheck(env)) {

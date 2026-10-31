@@ -1,34 +1,42 @@
-S3CE 0.1.5 — direct JNI graphics initialization.
+S3CE 0.1.6 — restore the Android thread stack for native service callbacks.
 
-0.1.4 still stopped during startup on the Thor: its original JNI callback returned
-without creating a context, and the Java GL initializer produced no entry log.
-The legacy dispatcher clears Java exceptions internally, so its clean exception
-status did not establish a successful Java call.
+The 0.1.5 report showed that both GL startup and its Java error logger failed
+before entering Java. The freshly resolved and cached method IDs matched, so
+that run did not support a stale-method-ID explanation.
 
-This update bypasses that dispatcher for initial window creation. It resolves a
-fresh Java wrapper and calls it with an explicit integer argument on the running
-engine thread. The wrapper invokes the original GL initializer directly, keeping
-its engine-lock release, UI view creation, surface wait and relock sequence.
-Java entry/exit markers and any full exception stack are saved in the report.
-A real current EGL context is still required before game GL queries.
+Binary inspection and ARM execution tests found the runtime always starts the
+game on an allocated fibre stack. Its supplied StackSwitch=0 setting disables
+the native service veneers that return callbacks to the Android thread stack.
+Android ART checks stack bounds before entering Java; the foreign stack explains
+why even the error logger can be rejected before its first line.
 
-The old cache layout, JNI slots, Thumb addresses and argument handling were
-checked independently and by executing the original ARM instructions with a
-mock JNI table. Those checks found no static ABI error. This is a targeted
-replacement of the failing startup call; hardware startup is not yet verified.
+This update enables the engine's existing stack-switch veneers and uses its
+original stack-switch mechanism for early GL initialization when entered from
+the game fibre. Java runs on the original Android thread stack, on the same OS
+thread. The game stack is restored afterward, and the actual window EGL context
+remains bound to that thread. No temporary context is used.
 
-Checks passed: native sanitizer regressions, original ARM dispatch/exception
-execution, Java wrapper and persistent-logging tests, 309-method static DEX
-analysis, ARM/import/relocation/asset verification and APK signatures.
+The full executable allocation is flushed through the original permission/cache
+routine before generated stack-switch stubs execute. The original flush covered
+only the rounded core code extent, leaving part of the enabled stub area outside
+its range; this update preserves its permission and return-value behavior.
+
+Native diagnostics also classify common Java failures without calling a Java
+method, and record the native stack bounds. This keeps a failed Java logger
+from hiding the exception type.
+
+Checks passed: compiled ARM bridge/original-trampoline execution with callback
+re-entry and register/stack restoration, six native sanitizer suites, native
+Throwable identity preservation, code/stub flush coverage, ARM import/relocation
+and asset/configuration checks, APK signatures, and exact release reconstruction.
 
 Test:
 
 1. Install over the current app without uninstalling or clearing data.
 2. Leave Original rendering (diagnostic mode) **unchecked**, then Start game.
-3. Check whether the menu loads, then backgrounds/hair/eyes and Create-a-Sim swipes.
-   If successful, enter the house and save/reopen.
-4. If startup fails, reopen the app icon and Save report. The report now includes
-   durable Java GL-entry/exit markers and initialization exception stacks.
+3. If the menu loads, check backgrounds/hair/eyes and Create-a-Sim swipes, then
+   enter the house and save/reopen.
+4. If startup fails, reopen the app icon and Save report.
 
 Same app ID, signing key and data location. ARM32 and 4 KiB requirements remain.
-No additional game-data import is required.
+Hardware startup and gameplay are still unverified for this update.

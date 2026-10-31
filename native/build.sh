@@ -13,12 +13,15 @@ common=(-fPIC -mthumb -O2 -Wall -Wextra -Werror -fvisibility=hidden -fstack-prot
 "$compiler" "${common[@]}" -c "$native_dir/graphics_diagnostics.c" -o "$object_dir/graphics.o"
 "$compiler" "${common[@]}" -c "$native_dir/graphics_safety.c" -o "$object_dir/safety.o"
 "$compiler" "${common[@]}" -c "$native_dir/jni_gl_start.c" -o "$object_dir/jni.o"
+"$compiler" "${common[@]}" -c "$native_dir/stack_bridge.c" -o "$object_dir/stack.o"
+"$compiler" "${common[@]}" -c "$native_dir/code_flush.c" -o "$object_dir/flush.o"
+"$compiler" "${common[@]}" -c "$native_dir/exception_inspect.c" -o "$object_dir/exception.o"
 "$cxx" "${common[@]}" -std=c++14 -fno-rtti -fexceptions -c \
     "$native_dir/pvrtc/PVRTDecompress.cpp" -o "$object_dir/pvrtc.o"
 "$cxx" "${common[@]}" -std=c++14 -fno-rtti -fexceptions -c \
     "$native_dir/pvrtc/pvrtc_bridge.cpp" -o "$object_dir/bridge.o"
 "$cxx" -shared -static-libstdc++ "${common[@]}" \
     -Wl,-z,relro,-z,now,-z,noexecstack -Wl,-soname,libairplay.so \
-    "$object_dir/loader.o" "$object_dir/graphics.o" "$object_dir/safety.o" "$object_dir/jni.o" "$object_dir/pvrtc.o" "$object_dir/bridge.o" \
+    "$object_dir/loader.o" "$object_dir/graphics.o" "$object_dir/safety.o" "$object_dir/jni.o" "$object_dir/stack.o" "$object_dir/flush.o" "$object_dir/exception.o" "$object_dir/pvrtc.o" "$object_dir/bridge.o" \
     -llog -landroid -ldl -lEGL -o "$output"
 echo "$output"

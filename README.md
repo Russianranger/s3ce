@@ -2,11 +2,11 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **Startup still fails on the Thor in 0.1.4. Version 0.1.5
-bypasses the old startup JNI dispatcher and records Java initialization failures.
-Its hardware result remains unverified.**
+Java/JNI bridge. **Version 0.1.6 restores the Android thread stack for native
+service callbacks. The game otherwise runs on a separate heap fibre stack,
+which conflicts with ART's Java-entry stack check. Thor validation is pending.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.5-jni-startup)
+[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.6-stack-startup)
 
 ## Supported candidate configuration
 
@@ -40,15 +40,16 @@ not a claim of successful gameplay on all four versions.
 
 ## Latest update and Thor test
 
-Version 0.1.5 resolves a fresh Java startup wrapper and calls it with an explicit
-integer argument on the engine thread. The wrapper enters the original private
-GL initializer directly and saves entry/exit markers and full exception stacks.
-The original mutex/UI/surface protocol and real-context guard remain.
+The 0.1.5 report showed both the fresh GL wrapper and its Java error logger
+failing before either Java method body ran. Matching fresh/cached method IDs
+excluded the suspected stale-method cache in that run.
 
-The 0.1.4 report returned without a context or Java GL-entry log. Binary execution
-checks confirm the old cache and ABI layout; they also show that the old JNI
-helper clears exceptions. The exact device failure inside that path is still
-unresolved, so this change bypasses it and makes failures observable.
+The supplied runtime always starts the game on a heap fibre. Its bundled
+StackSwitch=0 disables the native service veneers that return to the original
+Android thread stack. Version 0.1.6 enables those existing veneers and routes
+lazy GL startup through the original stack-switch mechanism when necessary.
+Thread identity and the real EGL context remain the same. Native diagnostics
+also report stack bounds and exception types without needing a Java callback.
 Install over the existing app, leave **Original rendering unchecked**, and press
 Start game. Check menu/backgrounds, Sim hair/eyes, room textures, and swipes.
 On failure, reopen the app icon and Save report. See

@@ -35,7 +35,7 @@ def verify(original, candidate):
             if kind == 2:
                 entries = [struct.unpack_from('<iI', shim, p) for p in range(offset, offset + size, 8)]
                 assert not any(tag == 22 or (tag == 30 and value & 4) for tag, value in entries), 'Shim text relocations'
-        print('PASS: ZIP CRC,', len(assets) - 1, 'unchanged assets + guarded GL-version config, all stored, legacy ELF identity, ARM32 shim, NX stack, no W+X load segments/text relocations.')
+        print('PASS: ZIP CRC,', len(assets) - 1, 'unchanged assets + guarded GL/native-stack config, all stored, legacy ELF identity, ARM32 shim, NX stack, no W+X load segments/text relocations.')
 
 if __name__ == '__main__':
     verify(Path(sys.argv[1]), Path(sys.argv[2]))

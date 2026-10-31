@@ -1,4 +1,60 @@
-# Candidate 0.1.5 validation
+# Candidate 0.1.6 validation
+
+Device evidence: 0.1.5 resolved matching fresh/cached private method IDs, then
+both its typed Java GL wrapper and static Java exception logger failed before
+entering their method bodies. No Java GL file was created. The exact Throwable
+type was unavailable in that report.
+
+Binary/source findings:
+
+- Game startup unconditionally creates and enters a heap fibre. StackSwitch=0
+  disables native import/callback switching, rather than that initial fibre.
+- Exact Android13 ART source checks native frame bounds before managed entry,
+  throwing StackOverflowError and returning before the Java method starts.
+  Foreign-stack rejection explains the observed pattern; the old report did not
+  establish the actual on-device exception type or native SP.
+- Original ARM trampoline execution moves the callback from a foreign SP onto
+  the saved native thread stack and restores the game SP afterward. The supplied
+  engine provides full callback/reentry bookkeeping for that route.
+- Enabled veneers occupy reserved space in the dedicated executable allocation,
+  not a non-executable malloc allocation. The original final flush covers the
+  rounded core code extent; part of the larger enabled veneer area lies beyond
+  it and requires explicit coverage before first execution.
+
+Completed verification:
+
+- Android-only StackSwitch=1 plus the existing GL version override passes exact
+  original-byte, idempotence and mutation-rejection checks. All other original
+  game assets stay unchanged and stored for file-descriptor playback.
+- The compiled production ARM bridge plus original ARM/Thumb gateway passes eight
+  emulated scenarios: raw foreign-stack rejection, native entry, nested callbacks,
+  disabled-swap refusal, invalid saved pointers, guard/headroom boundaries, thread
+  identity mismatch, and SP/register/fibre-state restoration. Callee-saved integer
+  and d8-d15 registers survive caller-saved VFP clobbers. pthread/ART predicates
+  are mocks; this is actual ARM instruction execution, not an Android VM.
+- Six ASan/UBSan native suites pass, including all generated-veneer flush coverage,
+  typed JNI, original Throwable preservation, partial diagnostic cache recovery
+  and no-Java-method exception classification. ARM warnings-as-errors build passes.
+- Full-allocation flushing retains original platform mprotect/cacheflush behavior
+  and return values; unknown ranges retain their original arguments. Binding,
+  Thumb fingerprints, globals and executable mappings are independently reviewed.
+- All309 final APK methods pass static DEX type/control-flow analysis against
+  SDK35. This is not ART execution. Original wrapper/lifecycle code is unchanged.
+- All4247 relocations,131 legacy imports, native ELF hardening, asset/configuration,
+  application identity, APK signatures and byte-exact release reconstruction pass.
+  Same certificate/app ID; versionCode106.
+
+APK SHA-256:
+`3b7b82da9ed56a8c0c2cf9afb0abd4c653eb1a1c63ebb04f774d5b0f7d726cd8`.
+
+Shim SHA-256:
+`500525a6fe3a2f382f8445aa1ed13b91cbc2b7fc9ff5478ff537f5bcdfb75025`.
+
+Publication verification is recorded after completion.
+Hardware startup/rendering/input/save results remain unverified.
+
+## Historical 0.1.5 checks
+
 
 Device evidence: 0.1.4 aborted after its original startup callback returned
 without a current context. No Java glInit/EGL entry appears in the report.

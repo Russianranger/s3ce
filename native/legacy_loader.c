@@ -22,6 +22,9 @@
 #include "graphics_diagnostics.h"
 #include "graphics_safety.h"
 #include "jni_gl_start.h"
+#include "stack_bridge.h"
+#include "exception_inspect.h"
+#include "code_flush.h"
 #include <EGL/egl.h>
 
 static char diagnostic_path[PATH_MAX];
@@ -69,6 +72,11 @@ static JavaVM *runtime_vm;
 static void (*original_gl_start)(void);
 static void **original_android_state;
 static uint32_t *original_gl_version;
+static const uintptr_t *original_loader_sp_slot;
+static void (*original_stack_gateway)(void);
+static int (*original_platform_cache_flush)(void *, uint32_t);
+static const uint8_t *original_stack_switch_flag;
+static unsigned expanded_flush_logs;
 static pthread_mutex_t load_lock = PTHREAD_MUTEX_INITIALIZER;
 
 struct code_allocation {
@@ -101,7 +109,8 @@ static void *allocate_game_code(uint32_t requested) {
     entry->next = code_allocations;
     code_allocations = entry;
     pthread_mutex_unlock(&code_lock);
-    LOGI("Allocated explicit S3E code region: %u bytes at %p", requested, result);
+    LOGI("Allocated explicit S3E code region: %u bytes at %p; StackSwitch=%d", requested, result,
+         original_stack_switch_flag ? *original_stack_switch_flag : -1);
     return result;
 }
 
@@ -118,6 +127,25 @@ static void free_game_code(void *address) {
     free(found);
 }
 
+static int flush_legacy_code(void *start, uint32_t length) {
+    pthread_mutex_lock(&code_lock);
+    struct code_allocation *entry = code_allocations;
+    uintptr_t address = (uintptr_t)start;
+    while (entry) {
+        uintptr_t base = (uintptr_t)entry->address;
+        if (address >= base && address - base < entry->length &&
+            length <= entry->length - (address - base)) break;
+        entry = entry->next;
+    }
+    int result = s3ce_flush_code_span(start, length, entry ? entry->address : NULL,
+        entry ? entry->length : 0, original_platform_cache_flush);
+    if (entry && expanded_flush_logs++ < 8)
+        LOGI("S3E cache flush expanded: request=%p+%u allocation=%p+%zu result=%d",
+             start, length, entry->address, entry->length, result);
+    pthread_mutex_unlock(&code_lock);
+    return result;
+}
+
 static int legacy_exception_status(void) {
     JNIEnv *env = NULL;
     if (!runtime_vm || (*runtime_vm)->GetEnv(runtime_vm, (void **)&env, JNI_VERSION_1_6) != JNI_OK)
@@ -127,7 +155,7 @@ static int legacy_exception_status(void) {
 
 /* This adapter is entered from a legacy capability query on the engine thread.
  * Reuse Airplay's existing mutex release/UI-view creation/relock protocol. */
-static void legacy_initialize_window_context(void) {
+static void legacy_initialize_window_context_on_thread_stack(void) {
     JNIEnv *env = NULL;
     int attached = runtime_vm && (*runtime_vm)->GetEnv(runtime_vm, (void **)&env, JNI_VERSION_1_6) == JNI_OK;
     int env_matches = attached && original_android_state && original_android_state[0] == (void *)env;
@@ -183,6 +211,15 @@ static void legacy_initialize_window_context(void) {
     LOGI("Original GL bookkeeping begin after typed initialization");
     original_gl_start();
     LOGI("Original GL bookkeeping returned");
+}
+
+static void legacy_initialize_window_context(void) {
+    if (s3ce_call_on_thread_stack(legacy_initialize_window_context_on_thread_stack,
+            original_loader_sp_slot, original_stack_gateway, diagnostic_log)) {
+        LOGE("GL startup refused an invalid current-thread/loader-stack transition");
+        android_set_abort_message("S3CE GL startup cannot enter the current pthread's native stack");
+        abort();
+    }
 }
 
 static void *legacy_dlsym(void *handle, const char *name) {
@@ -395,10 +432,26 @@ static jint load_legacy(JNIEnv *env, JavaVM *vm, jobject asset_manager) {
         !original_android_state) goto done;
     original_gl_version = image_pointer(&image, 0x55a04, sizeof(uint32_t));
     if (!original_gl_version) goto done;
+    static const uint8_t stack_gateway_code[12] = {
+        0x00,0x40,0x2d,0xe9,0x97,0xff,0xff,0xeb,0x00,0x40,0xbd,0xe8};
+    uint8_t *stack_gateway = image_pointer(&image, 0x3c7f0, sizeof(stack_gateway_code));
+    uint32_t *loader_literal = image_pointer(&image, 0x3c750, sizeof(uint32_t));
+    original_loader_sp_slot = image_pointer(&image, 0x56758, sizeof(uintptr_t));
+    if (!stack_gateway || memcmp(stack_gateway, stack_gateway_code, sizeof(stack_gateway_code)) ||
+        !loader_literal || *loader_literal != (uint32_t)(uintptr_t)(image.base + 0x56758) ||
+        !original_loader_sp_slot) goto done;
+    static const uint8_t platform_flush_code[8] = {0xf0,0xb5,0x05,0x1c,0x0e,0x1c,0x03,0x0b};
+    uint8_t *platform_flush = image_pointer(&image, 0x41020, sizeof(platform_flush_code));
+    if (!platform_flush || memcmp(platform_flush, platform_flush_code, sizeof(platform_flush_code))) goto done;
+    original_platform_cache_flush = (int (*)(void *, uint32_t))(uintptr_t)(image.base + 0x41021);
+    original_stack_switch_flag = image_pointer(&image, 0x54b68 + 0x18, 1);
+    original_stack_gateway = (void (*)(void))(uintptr_t)(image.base + 0x3c7f0);
     original_gl_start = (void (*)(void))(uintptr_t)(image.base + 0x210a5);
     s3ce_gl_safety_bind(get_string_slot, diagnostic_log,
         legacy_initialize_window_context, legacy_exception_status);
-    if (patch_thumb_function(&image, 0x37148, malloc_code, (void *)(uintptr_t)&allocate_game_code) ||
+    static const uint8_t cache_flush_code[8] = {0x2a,0xf0,0x2a,0xbb,0x42,0x18,0x03,0x4c};
+    if (patch_thumb_function(&image, 0x169c8, cache_flush_code, (void *)(uintptr_t)&flush_legacy_code) ||
+        patch_thumb_function(&image, 0x37148, malloc_code, (void *)(uintptr_t)&allocate_game_code) ||
         patch_thumb_function(&image, 0x36434, free_code, (void *)(uintptr_t)&free_game_code) ||
         patch_thumb_function(&image, 0x3397c, get_string_code, (void *)(uintptr_t)&s3ce_safe_gl_get_string)) goto done;
     phase = "protect legacy segments";
@@ -444,6 +497,10 @@ done:
         original_gl_start = NULL;
         original_android_state = NULL;
         original_gl_version = NULL;
+        original_loader_sp_slot = NULL;
+        original_stack_gateway = NULL;
+        original_platform_cache_flush = NULL;
+        original_stack_switch_flag = NULL;
         if (image.base) munmap(image.base, image.size);
         for (size_t i = 0; i < image.handle_count; ++i) dlclose(image.handles[i]);
     }
@@ -491,6 +548,8 @@ JNIEXPORT jint JNICALL Java_com_ideaworks3d_thesims3_GameBootActivity_nativeBoot
         if (fresh_log) fclose(fresh_log);
         LOGI("S3CE ARM32 compatibility loader starting; page size %zu; graphics mode=%s",
              page_size, graphics_enabled ? "PVRTC compatibility" : "original (no GL hooks)");
+        /* Native classification is diagnostic-only; a partial cache is usable. */
+        s3ce_exception_inspect_cache(env, diagnostic_log);
         if (s3ce_prepare_java_gl_diagnostics(env, diagnostic_log)) {
             LOGE("Could not prepare typed GL diagnostic Java helper");
             legacy_jni_version = JNI_ERR;

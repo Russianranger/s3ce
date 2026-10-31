@@ -52,3 +52,10 @@ logger's persistence/failure regression separately:
 ```bash
 python3 app/tests/verify_gl_log.py --jdk /path/full-jdk-17 --sdk /path/android-sdk
 ```
+
+`gl_version_config.py` also sets Android `[S3E] StackSwitch=1` in the exact
+hash-guarded app.icf override. The supplied engine creates a game fibre even with
+StackSwitch=0; this setting enables its existing import/callback veneers to
+return native services to the real Android thread stack. It does not resize the
+fibre or change thread identity. The native lazy GL initializer additionally
+uses the original stack-switch thunk when entered directly from a GL pointer.

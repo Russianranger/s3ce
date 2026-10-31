@@ -128,3 +128,53 @@ replicated in the compatibility layer.
 The exact device-side cause in the original dispatcher remains unresolved.
 This is a targeted route replacement with stronger diagnostics, not a verified
 hardware startup result. Full reports remain private.
+
+## 0.1.6 native fibre stack and ART entry
+
+Device 0.1.5 resolved matching fresh/private method IDs, then CallVoidMethodA
+left a Java exception without any compatGlInit entry. The already initialized
+static Java exception logger also threw before its first body marker. Thus the
+suspected method cache did not explain that run, and a Java logger cannot be
+the sole diagnostic mechanism for pre-entry runtime rejection.
+
+The source runtime always creates a fibre independently of StackSwitch:
+s3eExecExecute0x18d5c reads StackSize, s3eExecStartGame0x1946c calls
+s3eFibreCreate0x2e73c, and FibreSwitch_asm0x2e4a0 replaces SP at0x2e4b8.
+FibreCreate allocates storage and initializes a new aligned SP. mymain0x194d0
+stores the suspended original stack as g_LoaderStack0x56758 and enters the game.
+The game entry preserves/aligns that SP, rather than replacing it itself.
+Increasing StackSize cannot place a heap fibre inside ART's registered stack.
+
+Android13 primary source ArtMethod::Invoke checks the native frame against
+Thread::GetStackEnd before entering the Java method, throwing StackOverflowError
+and returning if below it. The exact on-device Throwable type is not established
+by the 0.1.5 report; foreign-SP rejection is supported by the binary path and
+pre-entry failure pattern. References:
+https://android.googlesource.com/platform/art/+/refs/tags/android-13.0.0_r1/runtime/art_method.cc
+https://android.googlesource.com/platform/art/+/refs/tags/android-13.0.0_r1/runtime/reflection.cc
+
+StackSwitchReadConfig0x3c944 defaults to0. The supplied global s3e.icf explicitly
+disables it as a temporary development measure. External relocation branches
+0x173e2/0x17572 select the existing native stack veneers when enabled.
+0.1.6 adds Android StackSwitch=1 alongside the existing GL version override.
+The lazy GL callback also uses the original generic thunk if its current stack
+is outside the registered native thread bounds, preserving callback bookkeeping
+and restoring the game stack afterward. EGL stays on the same thread.
+
+A native-only exception classifier and stack-bound markers complement Java
+logging. No ART private internals or hidden fields are modified. Hardware startup
+is not established by the host ARM/stack regressions.
+
+Enabled glGetString import slot133 has metadata0x34 and selects the original
+Fast_Int32Ret3c78c stack thunk; glTexImage2D slot218 metadata0x20 selects generic
+Void handling with eight stack words copied. Configuration files are loaded at
+190ac before StackSwitchReadConfig1910a; global s3e.icf precedes app.icf, so the
+app's Android override is present before external import veneers are generated.
+
+Initial code extent0x166ad8 plus508*16+1024 enabled-veneer bytes reaches0x168e98,
+inside the page-rounded0x169000 dedicated executable allocation. The original
+rounded-core flush ends at0x167000. The guarded s3eExecICacheFlush169c9 replacement
+expands known tracked allocation spans and forwards to original platform41021,
+preserving mprotect7/cacheflush and return semantics. Unknown ranges keep their
+original arguments. This covers initial and dynamic veneers without introducing
+another executable allocator.
