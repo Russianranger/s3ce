@@ -1,14 +1,19 @@
 {
   "schema": 1,
-  "run_id": "41212609908",
-  "seq": 14,
-  "frame_sha256": "557dd38760b35e9ed9eea1443a0f0e4c5ce3e0551b6e75d720c8ecbfcdf2e2be",
+  "run_id": "41215805134",
+  "seq": 1,
+  "frame_sha256": "b263dddb6ad7acfcd6864d767f7f14e0c605c3aceaa4d2bb3304c3aa52a1adf1",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "finish"
+    "type": "swipe",
+    "x1": 1834,
+    "y1": 200,
+    "x2": 1834,
+    "y2": 765,
+    "duration_ms": 1250
   },
-  "note": "Collect the complete run evidence after native Quit returned; fatal count requires investigation and is not accepted."
+  "note": "Zoom out from saved Sim gameplay."
 }
