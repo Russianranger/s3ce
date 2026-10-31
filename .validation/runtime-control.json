@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 6,
-  "frame_sha256": "3e546dd15704b9d685da1e8bd5263dfa8e378969ef844b82dca97a6a3cf3ae83",
+  "seq": 7,
+  "frame_sha256": "1c2f0dadabd395665d681ddc5869d4661b13956942d2f31843b39a3032a1fca9",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 277,
-    "y": 220
+    "x": 780,
+    "y": 735
   },
-  "note": "Close the visible Status panel; the lower sofa area overlaps HUD input."
+  "note": "Select the unobstructed dining chair at the table."
 }
