@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 15,
-  "frame_sha256": "fb251e3d73ac22806629ff8228fa2a05e115a535964117969e83123a1dac9c31",
+  "seq": 16,
+  "frame_sha256": "ede149930f09e9f8d05e92b5807770b805852ef4e1dcf2fd738eb82a95801b57",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 707,
-    "y": 798
+    "x": 1122,
+    "y": 735
   },
-  "note": "Select the normal main-menu Quit button after saving."
+  "note": "Confirm normal native Quit using the visible green check."
 }
