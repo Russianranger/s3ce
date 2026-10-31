@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 18,
-  "frame_sha256": "2c15c61c2415d1f049f1d26b47e71270d1b21eed2828816b090a541757087084",
+  "seq": 19,
+  "frame_sha256": "d81915c5ca21fe74710814f54837184fcfdf50b11a60e557d88206d0f31d8e16",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 113,
-    "y": 965
+    "x": 960,
+    "y": 797
   },
-  "note": "Open the visible Pause control after the completed Bed Sit."
+  "note": "Choose the visible Save and Quit to menu after completing the object action."
 }
