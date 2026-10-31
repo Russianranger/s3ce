@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 5,
-  "frame_sha256": "5f6b1c0066812b0e9ce9cbe15f2b563b50f05f77fb5fb9821d60e61a8ba7e70a",
+  "seq": 6,
+  "frame_sha256": "8cd7f6af0e4c85c2bf79372618161907b1c35b357f22c32fc179cf4c5d85925e",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 3
+    "type": "tap",
+    "x": 113,
+    "y": 965
   },
-  "note": "Observe the final Bed Sit pose following the visible approach/transition."
+  "note": "Open Pause after the unobstructed completed seated pose."
 }
