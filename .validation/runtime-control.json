@@ -1,14 +1,16 @@
 {
   "schema": 1,
-  "run_id": "41215805134",
-  "seq": 17,
-  "frame_sha256": "192f2addd7ba2aa193f4c1f3b3d4f10bc6141bb08f2a91865416663ffd7ee5f4",
+  "run_id": "41230641948",
+  "seq": 1,
+  "frame_sha256": "c84af66776aec1febe8380c1311a6583d6d76ea0d36a4603032115abe99860a6",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "finish"
+    "type": "tap",
+    "x": 95,
+    "y": 330
   },
-  "note": "Collect complete evidence after actual Sit, save, normal native Quit and fatal-free Compat return."
+  "note": "Select the visible right edge of the collapsed status panel, previously rejected outside raw X45."
 }
