@@ -1,16 +1,19 @@
 {
   "schema": 1,
-  "run_id": "41209904800",
-  "seq": 3,
-  "frame_sha256": "aad3e92cdf50dca222fe41164545ac96b6544b6615f46197ba48716be0b6c177",
+  "run_id": "41212609908",
+  "seq": 1,
+  "frame_sha256": "fa4d248f191821223aeaf8372ed63d1e48bdf3d6de2071ed40daafcf5f5bf2d9",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1250,
-    "y": 170
+    "type": "swipe",
+    "x1": 1834,
+    "y1": 200,
+    "x2": 1834,
+    "y2": 765,
+    "duration_ms": 1250
   },
-  "note": "Select the visible lit bedside lamp after accepting the Wish."
+  "note": "Zoom out using the visible right-hand camera ladder to select the sofa from the whole house."
 }
