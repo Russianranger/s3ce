@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41209904800",
-  "seq": 1,
-  "frame_sha256": "a88a35537b3e2d16a3daa79d1decab4fb25eeeffc6a00ffb563f4169a927b721",
+  "seq": 2,
+  "frame_sha256": "ff4029c1282114e8ce1a3c9c0ccd993bb9ba339b66178335c38ada1b63c92b40",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1250,
-    "y": 170
+    "x": 1122,
+    "y": 854
   },
-  "note": "Select the visible lit floor lamp beside the bed on frame0."
+  "note": "Accept the visible New Wish dialog on frame1 before selecting the lamp."
 }
