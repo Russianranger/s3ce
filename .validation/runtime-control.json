@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 15,
-  "frame_sha256": "ca26d6892ffa43449d2c5617099b28f766ec18f58ad84ca942947db95f1e7aa3",
+  "seq": 16,
+  "frame_sha256": "b104d095b764005c4bc4912804cc28c120cf189d10f455c96a13721ed0142181",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 25
+    "type": "tap",
+    "x": 450,
+    "y": 600
   },
-  "note": "Observe queued Bed Sit through travel and final pose without modifying game state."
+  "note": "Select clear bedroom floor for a nearby world-target walking regression."
 }
