@@ -900,5 +900,20 @@
     "initial_mtime_utc": "2026-10-31 18:55",
     "post_action_mtime_utc": "2026-10-31 19:18"
   },
-  "warnings": "Four nonfatal original surface-cleanup not-initialised JNI warnings after normal native return; no corresponding fatal or late-audio warning."
+  "warnings": "Four nonfatal original surface-cleanup not-initialised JNI warnings after normal native return; no corresponding fatal or late-audio warning.",
+  "publication": {
+    "tag": "v0.1.12-hud-startup",
+    "source": "a448fa22123e1a0bd5cd0e46ce046a17d9696a95",
+    "workflow_run": 41234504645,
+    "conclusion": "success",
+    "direct_apk": "https://github.com/Russianranger/s3ce/releases/download/v0.1.12-hud-startup/S3CE-0.1.12-hud-startup-arm32.apk",
+    "release_page": "https://github.com/Russianranger/s3ce/releases/tag/v0.1.12-hud-startup",
+    "independent_public_download": {
+      "bytes": 76770649,
+      "sha256": "b73c15341acbb61e7fa85173eb440650c665a65df57ce1ac46caf0e2d7325b64",
+      "original_certificate_sha256": "3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4",
+      "v2_v3_verified": true,
+      "package_version_abi_verified": true
+    }
+  }
 }

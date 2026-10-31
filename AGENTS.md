@@ -11,7 +11,9 @@ Publish only these frozen signed bytes; no rebuild/resign. Automated gate=false
 is retained; separate manual decision authorizes this focused Thor test release.
 Wishes-strip activation, prior0.1.11 save install-over, new Home/return and
 physical LOW_MEMORY reliability remain unconfirmed. Do not claim those passed.
-Next is publication verification and explicit APK/test handoff, then Thor feedback.
+Published exact bytes as v0.1.12-hud-startup from a448fa22123e1a0bd5cd0e46ce046a17d9696a95;
+run41234504645 and independent public download/signature/checksum verification pass.
+Next is the user Thor test/report; see current handoff. Continue from new feedback.
 Future APK edits require fresh affected checks. Keep private reports/keys out.
 
 # Current assignment — Thor HUD refinement and startup attribution

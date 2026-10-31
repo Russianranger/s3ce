@@ -45,8 +45,28 @@ repair remains, but runtime reached original tutorial gating/Go to Town hint.
 New Home/return and physical memory-pressure reliability remain unconfirmed.
 This is API30 x86/ARMv7 translation, not physical ARM or Android13–16 acceptance.
 
-Next: publish the frozen bytes, verify the download/signature/checksum, explicitly
-deliver APK/test links, then wait for the user's existing-save/HUD/startup report.
+## Publication verified — next action is the Thor test
+
+[Release v0.1.12-hud-startup](https://github.com/Russianranger/s3ce/releases/tag/v0.1.12-hud-startup)
+was published from `a448fa22123e1a0bd5cd0e46ce046a17d9696a95` by
+[run41234504645](https://github.com/Russianranger/s3ce/actions/runs/41234504645).
+Reconstruction, original certificate, package/code112/target28, publication and
+download checksum checks passed. An independent public download also matches
+76,770,649 bytes and SHA256
+`b73c15341acbb61e7fa85173eb440650c665a65df57ce1ac46caf0e2d7325b64`;
+its v2/v3 signature, original certificate, ARMv7 and version name were rechecked.
+These are the exact tested signed bytes; no rebuild or resign occurred.
+
+[Direct APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.12-hud-startup/S3CE-0.1.12-hud-startup-arm32.apk).
+Install over the existing app; do not uninstall or clear data; Original rendering
+unchecked. Use existing Thor save; test status/Buy/wishes/plumbob/Pause, one real
+object action, walking/camera, save/reload, three additional force-stop/restarts
+and Home/return. Export Home→app icon→Save report after a failure and retry.
+
+The user-facing delivery includes direct APK, alternate release route, identity,
+checksum, implementation/validation limits and short test. Work is now waiting
+for the user's Thor report/screenshot; continue refinement from this source.
+
 
 # Development handoff — 0.1.11
 
