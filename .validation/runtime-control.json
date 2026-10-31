@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 18,
-  "frame_sha256": "1cbcc776ae4db777a0bacdb8653357e671defc4dfea6b04445fa425daff49b0a",
+  "seq": 19,
+  "frame_sha256": "fd2c8504da124c5310225e1c85d10930a3de5a9d8df70b45bd241c1a151d02c2",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 797,
-    "y": 854
+    "x": 113,
+    "y": 965
   },
-  "note": "Decline the visible timed New Wish popup before saving."
+  "note": "Select Pause at its visible HUD target to begin normal Save and Quit."
 }
