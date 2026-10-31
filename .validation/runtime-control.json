@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 10,
-  "frame_sha256": "6e26278e5fcfc5230f78de42deb3713487334a7ba3f6099828cf0d87d8b14ddf",
+  "seq": 11,
+  "frame_sha256": "efd0755916a0cda8dd150f1c0cbbeb0de3fec04b207abc6363adca1227a8a311",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 279,
-    "y": 220
+    "x": 1685,
+    "y": 793
   },
-  "note": "Close actual Wishes panel after successful jewel activation with camera enabled."
+  "note": "Disable camera mode using its visible icon."
 }
