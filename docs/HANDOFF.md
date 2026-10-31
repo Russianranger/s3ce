@@ -1,97 +1,50 @@
-# Internal development handoff — 0.1.10
+# Development handoff — 0.1.10
 
-User delivery gate: visible UI and actual Android progression through character
-creation into gameplay before another APK is presented. Investigate the female
-customization crash and exercise save/resume. No new APK has been published.
-AGENTS.md records this requirement for future agents.
+The user delivery gate PASSED for the exact frozen release APK. Actual Android
+execution shows restored UI, female customization with three hairstyle changes,
+Home/reopen in the same process, five traits, name Alex, confirmation into
+SceneGame, a rendered house/full HUD, normal onboarding dismissal, Save & Quit,
+and loading the existing saved female Sim in a new process with live input.
 
-Confirmed UI cause from0.1.9 device GPU snapshots: projection m22=-.03375 and
-modelview z≈-50 put zero-depth HUD vertices at NDCz≈1.6875, outside clipping.
-Display scale3.375 affected Z as well as XY. The final projection wrapper135d50,
-not just the initial Display.begin scale, applies this multiplication. Native
-ui_depth.c changes only135d80 fromMOVr2,r0 toMOVr2,#float1 with a full116-byte
-fingerprint, tracked-allocation lock/bounds, and original full instruction-cache
-flush. Outside-UI/legacy scale1 behavior and all XY/input values are preserved.
+APK: S3CE-0.1.10-character-creation-arm32.apk, 76,762,457 bytes,
+SHA256 45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb.
+VersionCode110; package io.github.russianranger.s3ce; same signing certificate
+and private-data location as previous releases. Original rendering stays off.
 
-Twelve sanitizer suites,32 actual ARM combinations and replay of the captured
-GPU matrices with original sprite art pass. Native SHA:
-19c6bf2c89800590a316c2eaa8245159a021be3df6ac2dcc4d35037cf166330c.
-The source-proven mechanism is strong; those helper tests are not the full
-Android playthrough acceptance gate. Restore original res.dz: ui_indices is
-retained only as historical experiment code and no longer applied/accepted.
+[Durable runtime evidence](RUNTIME_ACCEPTANCE.md) records screenshots/hashes,
+source revisions, process IDs4210→15467, persistent sim3dat0/settings files,
+and zero fatal/ANR log matches. Runtime: Android11/API30 Google APIs x86 with
+ARMv7 native translation, Emulator31.1.4/KVM/SwiftShader, 4KiB pages,1920×1080.
+No physical Thor or new Android13–16 gameplay claim. The CI11 workflow remains
+red from a redundant final Tesseract timeout after all required save/reload/live
+interaction checkpoints; root and two independent reviewers accepted those
+actual checkpoints. Preserve the automated failure and manual acceptance.
 
-The fresh crash is PC13b784, an LDR through vtable+34 in Group/World cast13b774.
-The previous instruction loaded the vtable from the object; fault38 implies a
-vtable word4, not a simple null input. r4 retains the object. LR was overwritten
-inside the helper; the original caller return is atSP+4. Both female/male asset
-hierarchies and exact explicit-TSA parser allocation/canary checks are valid.
-Origin remains unproven; do not hide it with a generic NULL skip.
+UI cause: captured Thor GPU matrices put HUD vertices at NDCz≈1.6875 because
+scale3.375 affected Z. Native ui_depth.c changes only game+0x135d80 from
+MOVr2,r0 to MOVr2,#float1 within final projection wrapper135d50. A116-byte
+fingerprint, tracked allocation lock/bounds and original full instruction-cache
+flush guard the patch. XY/input and outside-UI/legacy scale1 are unchanged.
+Native SHA19c6bf2c89800590a316c2eaa8245159a021be3df6ac2dcc4d35037cf166330c.
+Original assets are restored; historical ui_indices experiment is not applied.
 
-NativeTombstoneSummary now includes bounded crash-thread registers using the
-pinned Android13 schema.61 host regression checks pass; the internal APK has310
-executable DEX methods with zero static type/register errors. Saved stack memory
-is not extracted by this change.
+The permanent Report overlay was removed because it overlapped the real CAS
+control. Reports remain available through Home→app icon→Save report. Existing
+PVRTC, RAM saturation, native-stack/code-flush/input/lifecycle fixes remain.
+NativeTombstoneSummary adds bounded crash-thread registers (61 regressions).
+Twelve sanitizer suites,32 original ARM projection cases, sprite replay, actual
+assembled touch/lifecycle/GL regressions and310-method DEX analysis passed.
 
-Validated INTERNAL candidate for the Android runtime (not a deliverable):
-analysis/internal-candidates-3/S3CE-0.1.10-character-creation-arm32.apk
-size76762457, SHA45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb.
-Fresh isolated build passed all source/config/native/signature/identity checks.
-The permanent Report overlay is removed because it overlaps the native upper-
-right CAS control. Logs/watchdog remain; Home then the app icon opens reports.
-Use --build-dir and --dist-dir; an earlier default-directory artifact failed
-manifest/config guards and was quarantined, never presented or installed.
+The original female-selection crash at13b784 dereferences a corrupted vtable
+word4 in Group/World cast13b774; actual caller return is atSP+4. Exact male and
+female parsing/clone/destruction/replacement/skinning and RNG fixtures do not
+reproduce it. No generic NULL skip/model replacement was applied. It did not
+recur in the tested female path; its underlying origin is unresolved. See
+CHARACTER_CREATION_CRASH.md for proof boundaries and exact source references.
 
-Runtime setup: Android11 Google APIs x86 image advertises ARMv7 translation.
-There is noKVM; use one persistent emulator+ADB controller because individual
-exec tool calls have isolated network namespaces. Guest CPU needs SSSE3/SSE4/
-POPCNT. Preserve the original3,232,759,808-byte system.img/GPT: default partition
-resizing previously truncated it. The runtime agent is restoring/pinning its
-size. Backup older emulator31.1.4 is prepared. The Android-runtime GitHub workflow
-uses KVM and assembles the internal candidate from .validation without publishing
-an APK. Only screenshots/logs are uploaded. Run41169033872 on Emulator31.1.4
-passes real Android11 startup and shows the complete native UI. Female gender,
-three hairstyle changes and Home/reopen in the same PID pass. It reaches Traits,
-but four traits were selected: the last tap replaced Genius with Absent-Minded.
-Actual scrolling did not land at the helper fixture's assumed offset. Correct
-the automated selection before the next run; no app behavior fix is justified.
-Run41170153789 repeats that automation failure at a different scroll offset;
-the live game has four checks and remains animated. Mesa/Xvfb run41169739245
-failed to clear logcat before app installation and is not app evidence.
-Source978fa9c uses screenshot OCR for Neat/Absent-Minded/Neurotic after the
-initial Shy/Good-Humor pair. Every tap must show the corresponding check and a
-count increment; completion requires five checks/Next and actual phase16.
-The helper passes20 real recorded frames with12 independent row assertions.
-Run41171698028 then proves five real checks, visible Next and phase16. Its
-artifact13031308914 SHA915c4c5334d37ecfea0ad0ee2ac504abf5ad5c41875126f50d5edd06532e2e7d
-shows Alex entered, but Gboard fullscreen extract UI covers the dialog: the
-automation's OK tap hits the keyboard. It also selects the small APPLICATION
-dialog frame instead of the1920×1080 BASE_APPLICATION canvas. The next harness
-revision hides the visible IME once before OK and selects the actual base canvas.
-Run41173056487 verifies the canvas/IME correction and accepts Alex, reaching
-phase19. Its red Cancel is left and green Confirm right; the test clicked Cancel
-and returned to16. Correct NewGameYes/SaveYes to1122,745 and TutorialNo to798,745.
-The earlier action fixture seeded Hint+9C/+A0 backwards; execute real constructor
-caller arguments when proving popup semantics. No game crash was observed.
-Use alternating forward/backward pointer-probe swipes for sparse native observer
-checkpoints; taps can need over240seconds to reach the next power-of-two sample.
-Run41174263077 completes creation into actual SceneGame and shows the female
-Sim's house with the complete HUD. Native SceneGame and floor interaction pass,
-with no fatal crash lines. A timed New Wish then blocks Pause, and accepting it
-queues Recipes; the test had not opened the Save menu. Next automation drains
-only recognized onboarding cards using their rendered controls, requires clear
-HUD frames, and verifies actual Paused/SaveQuit text before selecting the row.
-Run41176188587 clears the random New Wish and reaches the real four-row pause
-menu; all buttons are visible. Broad scene OCR recognized only Help/About and
-stopped before Save. The next helper reads the four observed row crops directly
-(all10 recorded pause frames pass), with a dedicated type2 body crop for the
-Save confirmation. APK bytes remain unchanged. Save/resume remains pending.
-Native-bridge float diagnostic
-records are unreliable in this emulator; use actual PNGs/integer phase/PID
-observations and the separate original device/source projection proof.
-
-CAS flow: close hint12→13, appearance Next→persona14, choose persona/Next→traits15,
-five traits/Next→name16, nonempty name/confirm→confirmation19, Yes→SceneGame.
-Require live gameplay plus save/resume and retain runtime screenshots/logs.
+Build in isolated --build-dir/--dist-dir paths. The release transport reconstructs
+the exact tested signed APK from the pinned0.1.0 base and485945 literal bytes;
+no rebuild or re-sign is involved. Keep keys and complete user reports private.
 
 ## Historical 0.1.9 handoff
 

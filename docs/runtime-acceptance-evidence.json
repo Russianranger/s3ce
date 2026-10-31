@@ -1,0 +1,497 @@
+{
+  "manual_acceptance": {
+    "status": "accepted",
+    "date_utc": "2026-10-31",
+    "decision": "Root agent accepted the required checks after reviewing raw screenshots. Two independent reviewing agents (android_runtime_backup and java_compat) concurred.",
+    "scope": "Visible female customization and same-process reopen; actual character creation into gameplay; normal Save and Quit; process restart; saved Alex loaded into live gameplay.",
+    "limitations": "Android 11/API30 emulator with ARMv7 translation only. Physical Thor/Retroid, native ARM execution, and Android13\u201316 are not validated by this run."
+  },
+  "tested_apk": {
+    "package": "io.github.russianranger.s3ce",
+    "version_name": "0.1.10-character-creation",
+    "version_code": 110,
+    "sha256": "45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb",
+    "bytes": 76762457,
+    "abi": "armeabi-v7a",
+    "min_sdk": 26,
+    "target_sdk": 28
+  },
+  "archives": {
+    "ci4": {
+      "run_id": 41169033872,
+      "artifact_id": 13030945223,
+      "sha256": "2dba7def459d7e4a9a0c29049bdcaf1763241ccf0772e02a0d9534caf266e98f",
+      "bytes": 29698051,
+      "run_url": "https://github.com/Russianranger/s3ce/actions/runs/41169033872",
+      "artifact_url": "https://github.com/Russianranger/s3ce/actions/runs/41169033872/artifacts/13030945223"
+    },
+    "ci11": {
+      "run_id": 41177712451,
+      "artifact_id": 13034306878,
+      "sha256": "023886bf57225b276a261d3a447a125f2fe2129e8c08219712a7c7c24dfae30e",
+      "bytes": 75708026,
+      "run_url": "https://github.com/Russianranger/s3ce/actions/runs/41177712451",
+      "artifact_url": "https://github.com/Russianranger/s3ce/actions/runs/41177712451/artifacts/13034306878"
+    }
+  },
+  "ci11_source_commit": "296998918ae895b7dea2c33771847bfa7158819d",
+  "environment": {
+    "host": "GitHub-hosted ubuntu-latest",
+    "android": "Android 11 / API30 Google APIs x86 revision16",
+    "abi_list": "x86,armeabi-v7a,armeabi",
+    "native_bridge": "libndk_translation.so",
+    "page_size_bytes": 4096,
+    "emulator": "31.1.4.0 build7920983",
+    "acceleration": "KVM version12",
+    "gpu": "swiftshader_indirect",
+    "guest_ram_mib": 3072,
+    "guest_cores": 4,
+    "native_viewport": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "system_image_bytes": 3232759808,
+    "system_image_sha256": "48e9d853b2ab892222889225629ad17cd53c0239c7db32798d134d10870a78fe"
+  },
+  "original_automation_result": {
+    "workflow_conclusion": "failure",
+    "status": "blocked",
+    "gate_passed": false,
+    "checkpoints": {},
+    "error": "TimeoutExpired: Command '['tesseract', 'stdin', 'stdout', '--psm', '6', 'tsv']' timed out after 30 seconds",
+    "explanation": "The final optional onboarding OCR timed out after all required Save/restart/load/interaction observations. The last screen is a valid Alex/Edit Appearance context menu. Manual acceptance is separate; original results are preserved."
+  },
+  "log_checks": {
+    "source": "ci11:logcat-live.txt",
+    "sha256": "1504f2a1d56ee78513975581e0e8feed1f9c1f7ed6b37d98b6468b8f2fd62723",
+    "pattern_counts": {
+      "FATAL EXCEPTION": 0,
+      "Fatal signal": 0,
+      "SIGSEGV": 0,
+      "SIGABRT": 0,
+      "ANR in": 0,
+      "am_crash": 0,
+      "am_anr": 0
+    }
+  },
+  "persistence": {
+    "pid_before_restart": 4210,
+    "pid_after_restart": 15467,
+    "sim3dat0_bytes": 2562,
+    "sim3set_bytes": 90,
+    "save_mtime_before_utc": "2026-10-31 06:52",
+    "save_mtime_after_utc": "2026-10-31 06:58",
+    "resumed_clock_observed": [
+      "Mon. 09:10",
+      "Mon. 09:21",
+      "Mon. 09:43"
+    ]
+  },
+  "evidence": [
+    {
+      "archive": "ci4",
+      "path": "candidate-05-toggle-female-appearance/screen.png",
+      "raw_png_sha256": "5a11323cf98f02fe26cb1fa6fa06df1677bb5f321c76263b990156a5622cfcd4",
+      "raw_png_bytes": 922668,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-05-toggle-female-appearance/observation.json",
+      "time_utc": "2026-10-31T04:36:35.731614+00:00",
+      "game_pid": "4148",
+      "scene": "SceneMenu",
+      "menu_state": 13,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "documentation_preview": {
+        "path": "screenshots/ci4-female-controls-preview.jpg",
+        "dimensions": [
+          1280,
+          720
+        ],
+        "jpeg_quality": 90,
+        "bytes": 160471,
+        "sha256": "ae36983345f6881575e5b394acdf5776f89bc4a94020875d4a690a0213432f6d",
+        "raw_png_sha256": "5a11323cf98f02fe26cb1fa6fa06df1677bb5f321c76263b990156a5622cfcd4"
+      },
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167    86 2026-10-31 04:35 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-09-female-hairstyle-cycle-3/screen.png",
+      "raw_png_sha256": "9849fdb8d28ef639c6bc67289cf2041338ac9ef6b62b340cb4b4004fe9d9dd55",
+      "raw_png_bytes": 716690,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-09-female-hairstyle-cycle-3/observation.json",
+      "time_utc": "2026-10-31T06:47:33.050584+00:00",
+      "game_pid": "4210",
+      "scene": "SceneMenu",
+      "menu_state": 13,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167     86 2026-10-31 06:45 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-11-reopen-female-customization-same-process/screen.png",
+      "raw_png_sha256": "70043ba7dce0fc812d2decee3ef7db2018b8f71d68a4bfed083409224c7e8dca",
+      "raw_png_bytes": 709928,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-11-reopen-female-customization-same-process/observation.json",
+      "time_utc": "2026-10-31T06:48:20.270411+00:00",
+      "game_pid": "4210",
+      "scene": "SceneMenu",
+      "menu_state": 13,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167     86 2026-10-31 06:45 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-18-five-traits-next/screen.png",
+      "raw_png_sha256": "fc1d4362dee5e80d76c479116a7949ae9f2ee2ddf0cffd0d0f7e72c9e82692b0",
+      "raw_png_bytes": 530239,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-18-five-traits-next/observation.json",
+      "time_utc": "2026-10-31T06:51:50.494363+00:00",
+      "game_pid": "4210",
+      "scene": "SceneMenu",
+      "menu_state": 16,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167     86 2026-10-31 06:45 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-23-confirm-name/screen.png",
+      "raw_png_sha256": "e53154ed5a43c47ae357f74d6679701b1bd58231b07ec48a738192cef3ccd54d",
+      "raw_png_bytes": 500444,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-23-confirm-name/observation.json",
+      "time_utc": "2026-10-31T06:52:40.925004+00:00",
+      "game_pid": "4210",
+      "scene": "SceneMenu",
+      "menu_state": 19,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167     86 2026-10-31 06:45 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-24-new-game-confirmation-yes/screen.png",
+      "raw_png_sha256": "5a957db0a434910c137a45197f7f2b414d57dd6dddea78734a2692c7c1ce984d",
+      "raw_png_bytes": 1116362,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-24-new-game-confirmation-yes/observation.json",
+      "time_utc": "2026-10-31T06:54:44.910210+00:00",
+      "game_pid": "4210",
+      "scene": "SceneGame",
+      "menu_state": null,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167   2562 2026-10-31 06:52 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167     90 2026-10-31 06:52 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-28-clear-gameplay-onboarding-popups/screen.png",
+      "raw_png_sha256": "cddcb2047f3246514e857a2d194749d617299ee308ea7286ad6c46a3e1df26d3",
+      "raw_png_bytes": 1412680,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-28-clear-gameplay-onboarding-popups/observation.json",
+      "time_utc": "2026-10-31T06:57:22.568201+00:00",
+      "game_pid": "4210",
+      "scene": "SceneGame",
+      "menu_state": null,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167   2562 2026-10-31 06:52 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167     90 2026-10-31 06:52 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-29-open-gameplay-pause-menu/screen.png",
+      "raw_png_sha256": "ba6e7c177d5a9c3d07fa68610762f7df42427efb6730d06e19783d810f05a5ef",
+      "raw_png_bytes": 869009,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-29-open-gameplay-pause-menu/observation.json",
+      "time_utc": "2026-10-31T06:58:00.223943+00:00",
+      "game_pid": "4210",
+      "scene": "SceneGame",
+      "menu_state": null,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167   2562 2026-10-31 06:52 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167     90 2026-10-31 06:52 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-31-confirm-save-and-quit-verified/screen.png",
+      "raw_png_sha256": "49070cc65653a16bfa88014b99a439bed706c6f0beb395cf750420096254caca",
+      "raw_png_bytes": 1058480,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-31-confirm-save-and-quit-verified/observation.json",
+      "time_utc": "2026-10-31T06:58:24.996471+00:00",
+      "game_pid": "4210",
+      "scene": "SceneGame",
+      "menu_state": null,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167   2562 2026-10-31 06:52 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167     90 2026-10-31 06:52 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-31-confirm-save-and-quit/screen.png",
+      "raw_png_sha256": "4e91fa7c407ec6bf05d772c60364de8dc10d262f44e32449b1844fc7f9c711da",
+      "raw_png_bytes": 721831,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-31-confirm-save-and-quit/observation.json",
+      "time_utc": "2026-10-31T07:02:19.615039+00:00",
+      "game_pid": "4210",
+      "scene": "SceneMenu",
+      "menu_state": 5,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167   2562 2026-10-31 06:58 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167     90 2026-10-31 06:58 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-32-restart-from-saved-game/screen.png",
+      "raw_png_sha256": "d13ca948d04265200335e0a95dbfa41db84e743968c385f48922127499648f83",
+      "raw_png_bytes": 716953,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-32-restart-from-saved-game/observation.json",
+      "time_utc": "2026-10-31T07:03:02.519750+00:00",
+      "game_pid": "15467",
+      "scene": "SceneMenu",
+      "menu_state": 5,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167  2562 2026-10-31 06:58 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167    90 2026-10-31 06:58 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-33-reopened-main-menu-start/screen.png",
+      "raw_png_sha256": "c2f8662e3cf4a2470755a1684228f07c7e3e7e9b6201216f2f0e8744ec428f99",
+      "raw_png_bytes": 453439,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-33-reopened-main-menu-start/observation.json",
+      "time_utc": "2026-10-31T07:03:16.447707+00:00",
+      "game_pid": "15467",
+      "scene": "SceneMenu",
+      "menu_state": 9,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "documentation_preview": {
+        "path": "screenshots/ci11-saved-alex-preview.jpg",
+        "dimensions": [
+          1280,
+          720
+        ],
+        "jpeg_quality": 90,
+        "bytes": 105933,
+        "sha256": "0618695e968a57fe5bf0e1dcf3f8cf65c876bc89f0e2bb174310798e10ec24b2",
+        "raw_png_sha256": "c2f8662e3cf4a2470755a1684228f07c7e3e7e9b6201216f2f0e8744ec428f99"
+      },
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167  2562 2026-10-31 06:58 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167    90 2026-10-31 06:58 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-34-load-existing-saved-female-sim/screen.png",
+      "raw_png_sha256": "609613680abf5cf62ec2a12f0a5831843f0d6590cd614de91ff8769e72cdadbd",
+      "raw_png_bytes": 1398196,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-34-load-existing-saved-female-sim/observation.json",
+      "time_utc": "2026-10-31T07:03:57.801497+00:00",
+      "game_pid": "15467",
+      "scene": "SceneGame",
+      "menu_state": null,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "documentation_preview": {
+        "path": "screenshots/ci11-resumed-house-preview.jpg",
+        "dimensions": [
+          1280,
+          720
+        ],
+        "jpeg_quality": 90,
+        "bytes": 209555,
+        "sha256": "d1cf880b40657832625bf9efabdccf165ab8c94e2263361c41868f0340bdc5c4",
+        "raw_png_sha256": "609613680abf5cf62ec2a12f0a5831843f0d6590cd614de91ff8769e72cdadbd"
+      },
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167  2562 2026-10-31 06:58 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167    90 2026-10-31 06:58 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "candidate-35-resumed-gameplay-floor-interaction/screen.png",
+      "raw_png_sha256": "ed280f802f3247cf0d99e443fc2f7d4673a4dab743444825bf21a5be88ca90c3",
+      "raw_png_bytes": 1501786,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "candidate-35-resumed-gameplay-floor-interaction/observation.json",
+      "time_utc": "2026-10-31T07:04:12.528358+00:00",
+      "game_pid": "15467",
+      "scene": "SceneGame",
+      "menu_state": null,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167  2562 2026-10-31 06:58 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167    90 2026-10-31 06:58 sim3set"
+      ]
+    },
+    {
+      "archive": "ci11",
+      "path": "failure/screen.png",
+      "raw_png_sha256": "85eb4fcc1b2ff8f9938b2c6f6ad2aa421bfbba30e9692a046f8358fdd6e3a224",
+      "raw_png_bytes": 1505549,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "observation_path": "failure/observation.json",
+      "time_utc": "2026-10-31T07:04:54.914079+00:00",
+      "game_pid": "15467",
+      "scene": "SceneGame",
+      "menu_state": null,
+      "native_viewport": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "save_file_listing": [
+        "-rw------- 1 u0_a167 u0_a167  2562 2026-10-31 06:58 sim3dat0",
+        "-rw------- 1 u0_a167 u0_a167    90 2026-10-31 06:58 sim3set"
+      ]
+    }
+  ]
+}

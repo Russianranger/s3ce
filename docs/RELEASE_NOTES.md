@@ -1,28 +1,31 @@
-S3CE 0.1.9 — indexed HUD rendering candidate.
+S3CE 0.1.10 — visible UI and verified character creation
 
-Startup, reopening, hint dismissal, rotation and character-option changes now
-work on the Thor. The remaining problem is missing HUD panels and controls.
+Restores the missing character-creation panels, tabs, icons and buttons. A guarded
+native correction prevents high-resolution scaling from clipping UI projection
+depth; XY rendering and touch coordinates stay unchanged. Original game assets
+are restored after the unsuccessful 0.1.9 indexed-quad experiment.
 
-This update changes the shared HUD quad to explicit indices 0, 1, 2, 3. It preserves
-the original vertices, texture coordinates, textures, shapes and hit targets,
-while using the indexed draw API already used by visible 3D models. All other
-archive payloads remain byte-identical. Host ARM execution and pixel comparisons
-pass; whether this restores the Thor's UI still needs a device test.
+The exact APK completed an actual Android run with female gender, three hairstyle
+changes, five traits, name Alex, confirmation into the house with full HUD, Save &
+Quit, a full process restart and loading the saved female Sim with responsive
+input. No fatal crash or ANR appeared in the captured run. The previous female
+crash did not recur in that path; its original invalid-object cause is unresolved.
 
-Reports also capture bounded GPU state around matching quad draws. The working
-RAM, stack, PVRTC and input behavior remains.
+Validation used Android 11/API 30 Google APIs x86 with ARMv7 translation,
+Emulator 31.1.4/KVM/SwiftShader, 1920×1080 and 4 KiB pages. This is not physical
+Thor or Android 13–16 gameplay certification. The final automated run remains
+red because a redundant final OCR step timed out after the required checkpoints;
+those screenshots/logs passed manual review. Details: docs/RUNTIME_ACCEPTANCE.md.
 
-Test:
+Install over the existing S3CE app without uninstalling or clearing data. Leave
+**Original rendering (diagnostic mode) unchecked** and start the game. Same package,
+signing key and private-data location preserve update compatibility. The Report
+overlay was removed because it covered an original control; use **Home → app icon
+→ Save report** to access diagnostics.
 
-1. Install over 0.1.8 without uninstalling or clearing app data.
-2. Leave Original rendering (diagnostic mode) **unchecked**, then Start game.
-3. Check whether the welcome hint has a visible panel and close control. Dismiss
-   it and check the appearance tabs, clothing buttons and traits controls.
-4. If anything is still missing, save the report from that run and send it with
-   a screenshot. The report now records the live GPU state for these draw shapes.
+Requires a device supporting 32-bit ARM applications and 4 KiB pages. ARM64-only
+and 16 KiB-page devices remain unsupported. Android 13–16 are compatibility
+targets, not four separately verified gameplay environments.
 
-If the welcome control is still invisible, the previous tap near (500, 370) on the
-1920×1080 screen can still be used; release and wait one second before swiping.
-
-Same application ID, signing key and data location. Requires ARM32 application
-support and 4 KiB memory pages. No hardware UI recovery is claimed yet.
+APK SHA256:
+45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb

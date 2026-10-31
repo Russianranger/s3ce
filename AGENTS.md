@@ -1,20 +1,24 @@
-# Current delivery gate
+# Current delivery gate — passed for the frozen 0.1.10 APK
 
-The user requires autonomous correction of the hidden UI and the crash observed
-during female Sim customization. Do not present or publish another APK until a
-full Android run shows visible UI controls and progresses through character
-creation into gameplay. Isolated phase writes, static checks, ARM instruction
-fixtures and headless sprite rendering alone do not satisfy this gate.
+The user required autonomous correction of hidden UI and progression beyond
+character creation before another APK. That requirement is satisfied for SHA256
+45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb.
+Actual Android execution verified visible UI, female customization, five traits,
+name Alex, SceneGame/house/HUD, Save & Quit, a new-process saved-Sim load and live
+interaction. See docs/RUNTIME_ACCEPTANCE.md and its evidence index/screenshots.
 
-Record the tested APK hash, Android environment, screenshots and progression
-evidence. Exercise female customization and investigate the reported native
-crash; do not substitute a blanket null-pointer skip. Check gameplay and
-save/resume after creation. State any emulator-versus-Thor limitations precisely.
+Run 41177712451 remains red only because a redundant final OCR step timed out
+after the required checkpoints. Root and two independent reviewers accepted
+the actual screenshots/logs. Preserve that distinction; do not claim the whole
+workflow passed. The test environment was API30 x86/ARMv7 translation, not a
+physical Thor or an Android13–16 gameplay certification. The old female crash
+was investigated without a generic NULL skip and did not recur in this path;
+its invalid-object origin remains unproven.
 
-Source checkpoints may be pushed to main within the existing authorization.
-Keep release staging and APK publication unchanged until acceptance passes.
-If a real runtime is blocked, keep the gate pending and report the blocker
-honestly instead of sending another diagnostic APK for the user to test.
+Publication of these exact tested bytes is authorized. Future APK changes need
+fresh evidence for affected behavior. Never substitute phase writes, static
+checks or headless sprite fixtures for required actual gameplay acceptance.
+Source checkpoints and release publication are within the existing authorization.
 
 # Build and preservation
 

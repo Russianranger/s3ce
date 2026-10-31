@@ -1,32 +1,41 @@
-# Internal 0.1.10 acceptance status
+# 0.1.10 acceptance — required runtime gate passed
 
-The user requires visible UI and actual Android progression beyond character
-creation before another APK is presented. This gate is PENDING. No new release
-staging or APK publication is authorized before it passes.
+The exact release APK passed manual review of actual Android UI, female
+character creation, house gameplay, Save & Quit, process restart and saved-Sim
+load. [Runtime acceptance](RUNTIME_ACCEPTANCE.md) includes source/run identifiers,
+raw screenshot hashes, preview images, process/save evidence and limitations.
 
-| Check | Current evidence |
+| Check | Evidence |
 | --- | --- |
-| UI clipping cause | Confirmed from live GPU matrices: scaled projection places HUD outside depth range |
-| Projection correction | 32 original ARM cases and captured-state pixel replay pass; XY/input and legacy scale1 remain identical |
-| Native safety | 12 ASan/UBSan suites, fingerprint/allocation bounds/cache flush and ARM hardening checks pass |
-| App reporting | 61 crash-summary regressions pass; bounded registers added |
-| Internal APK | Signature, package/launcher/version, original assets/config and native checks pass |
-| Java bytecode | 310 methods, zero static type/register errors; assembled touch/lifecycle/GL regressions pass |
-| Native-control overlap | Permanent Report overlay removed; reports remain accessible from the launcher |
-| Full Android UI | Run41169033872 screenshots confirm panels/icons/buttons at1920×1080 on Android11 x86/ARMv7 translation, Emulator31.1.4/KVM/SwiftShader |
-| Female-Sim crash | Three female hairstyle changes and same-process Home/reopen plus30seconds pass in that run; the reported13b784 cause remains unresolved |
-| Character creation into gameplay | Run41174263077 completes female creation and observes real SceneGame with rendered house/HUD |
-| Gameplay and save/resume | House/HUD and onboarding controls confirmed; run41176188587 opens real Pause menu, with row OCR correction pending before Save/reopen |
+| Hidden UI cause/correction | Captured device depth matrices,32 original ARM cases and before/after sprite replay; XY/input unchanged |
+| Native safety |12 ASan/UBSan suites, full fingerprint/allocation bounds/cache flush and ARM hardening checks |
+| App/DEX |61 crash-summary checks;310 implemented methods with zero static type/register errors; assembled touch/lifecycle/GL regressions |
+| Actual Android UI |Visible panels/icons/buttons at1920×1080 on API30 x86/ARMv7 translation, Emulator31.1.4/KVM/SwiftShader |
+| Female creation |Female gender,3 hairstyle changes, same-process Home/reopen,5 compatible traits, Alex name, real Confirm→SceneGame |
+| Gameplay |Rendered female Sim/house/full HUD; ordinary interaction after loading; game clock advances |
+| Save/reopen |Real Pause→Save & Quit confirmation; PID4210→15467; existing Alex slot loads same female appearance |
+| Data/logs |sim3dat0 2562B, sim3set90B, save mtime updated then persisted; no Fatal signal/FATAL EXCEPTION/SIGSEGV/SIGABRT/ANR |
+| Report access |Home→app icon opens launcher reports; obstructing permanent Report overlay removed |
+| Prior female crash |Did not recur in the tested path; original invalid-object root cause is not established |
 
-Internal candidate SHA256:
+Run [41177712451](https://github.com/Russianranger/s3ce/actions/runs/41177712451)
+is still red: its redundant final Tesseract OCR drain timed out on an already
+valid resumed interaction-menu screenshot. All required creation/gameplay/save/
+reload checkpoints occurred earlier and passed root plus two independent manual
+reviews. The helper now omits only that redundant drain; no game state or APK
+bytes were changed for acceptance. Do not describe the entire CI run as green.
+
+APK size76,762,457; SHA256:
 `45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb`.
-
 Native SHA256:
 `19c6bf2c89800590a316c2eaa8245159a021be3df6ac2dcc4d35037cf166330c`.
-
-This internal APK restores original res.dz and all other assets except the
-existing guarded Android configuration. The0.1.9 indexed-strip experiment is
-not applied. It is not a user deliverable until the runtime gate passes.
+Original resource archive SHA256:
+`3bbb04b058f245b1784370270f26a547ac36d124ef26d09fbadac05ee2dfcf82`.
+The original assets are restored except the guarded Android GL/stack config;
+the failed0.1.9 indexed-strip experiment is not applied. Package/key/data location
+are unchanged, versionCode110, targetSDK28. Requires ARM32 app support and4KiB
+pages. The actual runtime was Android11/API30; no new physical Thor/Android13–16
+or ARM64-only/16KiB-page compatibility is established.
 
 ## Historical 0.1.9 checks
 

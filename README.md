@@ -2,10 +2,15 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **Release 0.1.9 still hides the HUD and a later female-Sim
-interaction crashed. An unreleased correction now fixes the source-proven UI
-projection-depth error. The next APK is withheld until visible controls and
-progression through character creation into gameplay pass a full Android run.**
+Java/JNI bridge. **0.1.10 restores the missing UI and has completed a real Android
+playthrough of female character creation, the playable house, Save & Quit and
+loading the saved Sim after a full process restart.**
+
+[Download the tested APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.10-character-creation/S3CE-0.1.10-character-creation-arm32.apk).
+Install over the existing S3CE app without clearing data. Leave **Original
+rendering (diagnostic mode) unchecked**. To access reports, press Home and open
+the app icon, then choose Save report. The permanent Report overlay was removed
+because it covered an original character-creation control.
 
 Current source work and acceptance requirements are recorded in
 [AGENTS.md](AGENTS.md) and [the handoff](docs/HANDOFF.md).
@@ -42,22 +47,27 @@ not a claim of successful gameplay on all four versions.
   a fingerprinted native instruction correction preserves UI projection depth.
   Assets stay uncompressed for the original `AssetManager.openFd` audio path.
 
-## Latest update and Thor test
+## Verified progression and limits
 
-The latest device GPU trace shows the UI being clipped: high-resolution screen
-scaling multiplies projection depth by3.375, putting HUD sprites at normalized
-Z1.6875 outside the visible range. The guarded correction changes only the
-projection scale's Z argument to1. Captured device matrices and original sprite
-art reproduce blank output before the correction and visible sprites afterward;
-XY/input coordinates remain identical.
+The device GPU trace identified high-resolution scaling that multiplied UI
+projection depth by 3.375, placing sprites outside the visible depth range.
+The guarded native correction fixes the projection Z scale at 1 and preserves
+XY rendering and input coordinates. Original game assets are restored after the
+unsuccessful 0.1.9 indexed-quad experiment.
 
-The unsuccessful indexed-quad experiment is removed from the build; original
-assets are restored. A separate crash at game offset13b784 involves an invalid
-Group/World cast object. Its origin is still under investigation. Internal
-Android screenshots now confirm visible controls, female hairstyle changes,
-same-process reopening, complete character creation and the playable house/HUD.
-Save/reopen testing is continuing through the normal onboarding popups before
-APK publication.
+The exact release APK was tested on Android 11/API 30 Google APIs x86 with ARMv7
+translation, Emulator 31.1.4/KVM/SwiftShader, 4 KiB pages and 1920×1080. Actual
+screenshots show appearance controls, female hairstyle changes, five traits,
+name Alex, the house with full HUD, Save & Quit, and the saved female Sim loaded
+in a new process with responsive gameplay. The earlier female-customization
+crash did not recur in this tested path; its original invalid-object cause is
+not established. No new physical Thor or Android 13–16 playthrough is claimed.
+
+[Runtime evidence and screenshots](docs/RUNTIME_ACCEPTANCE.md) records the
+required acceptance checkpoints. The final automated run remains red because a
+redundant OCR step timed out after the successful save/load and interaction
+checkpoints; those checkpoints passed manual screenshot/log review. This is
+not an all-green automation claim.
 
 ## Build
 
