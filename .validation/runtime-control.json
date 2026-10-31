@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 14,
-  "frame_sha256": "d9ff47c9f57659ad2a310c8d97cf55716fc1d10de7a1670c98499df3103be5db",
+  "seq": 15,
+  "frame_sha256": "71ef61e8a2ac7efe5c0edea18614fb47f96be588ce2db55a5b55b817154ad0c3",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1350,
-    "y": 260
+    "x": 1129,
+    "y": 794
   },
-  "note": "Select the visible bed through ordinary gameplay for an object-action regression."
+  "note": "Choose the actual visible Cheap Bed / Sit action and inspect the Sim pose."
 }
