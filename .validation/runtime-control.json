@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "run_id": "0",
+  "seq": 0,
+  "frame_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "coordinate_size": [
+    1920,
+    1080
+  ],
+  "command": {
+    "type": "wait",
+    "seconds": 0
+  },
+  "note": "Idle until a frame from the active Android acceptance run is reviewed."
+}
