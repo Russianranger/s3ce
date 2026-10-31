@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 10,
-  "frame_sha256": "ea82975dd928e9ae1270937bb9b0fd70d732abe85d0809b7dac7072f16778bdf",
+  "seq": 11,
+  "frame_sha256": "95e8fadf72094d046e7c84542e964dd227eb0bd69ac9d0afc58b74e927631a00",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 799,
-    "y": 854
+    "x": 113,
+    "y": 965
   },
-  "note": "Dismiss the visible optional Wish with its red X to inspect the completed Sit pose."
+  "note": "Open Pause after visually confirming Alex is seated on the selected chair."
 }
