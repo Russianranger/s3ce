@@ -263,28 +263,28 @@
       "capture": true
     },
     {
-      "name": "trait-13",
+      "name": "trait-12-slob",
       "tap": [
         1449,
-        371
+        430
       ],
       "wait": 2,
       "capture": true
     },
     {
-      "name": "trait-15",
+      "name": "trait-15-absent-minded",
       "tap": [
         1449,
-        641
+        810
       ],
       "wait": 2,
       "capture": true
     },
     {
-      "name": "trait-16",
+      "name": "trait-11-active",
       "tap": [
         1449,
-        776
+        293
       ],
       "wait": 2,
       "capture": true
@@ -494,7 +494,7 @@
       "capture": true
     }
   ],
-  "trait_source": "Original SimsData constructor/parser: NPC0 starts with no traits; opposites are 0/1,2/3,4/5,6/7,8/9,10/11,12/13,14/15; trait16 has no opposite. Select0,2,13,15,16. Original ARM list scrolling clamps at\u2212510 logical.",
+  "trait_source": "CI4 actual Android screenshots establish post-four-swipe visible rows Active293, Slob430, Neat565, Genius700, Absent-Minded835 (scroll approximately\u2212453 logical, not the assumed\u2212510 clamp). Keep initial Shy0 and GoodSenseOfHumor2; then select Slob12 at430, Absent-Minded15 at810 inside the visible row, and Active11 at293. Final IDs0,2,12,15,11; opposites1,3,13,14,10 are absent. The original UI only draws Next once five traits are selected; actual state16 remains required.",
   "run_baseline": false,
   "appearance_source": "Original ARM camera/FOV/look-at/orientation/projection helpers and real model anchor hierarchy prove gender category118,449/leftarrow646,540 and hair category1802,263/rightarrow1274,581 at full1920x1080 native canvas. One gender arrow toggles the default male NPC0 to female.",
   "save_resume_source": "Actual original ARM pause-icon hit103178\u2192104014\u2192107254 at113,965; pause-list65030 draw/64E7C hit places SaveQuit resource0x831 at960,797. ConfirmationYes uses original1089EC\u219288904+88E44 persistence, then SceneMenu. Existing-slot11AA58\u219211AB90\u219212F770nonzero selects pendingScene2; empty slot instead enters CAS."

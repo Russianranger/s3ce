@@ -48,9 +48,14 @@ POPCNT. Preserve the original3,232,759,808-byte system.img/GPT: default partitio
 resizing previously truncated it. The runtime agent is restoring/pinning its
 size. Backup older emulator31.1.4 is prepared. The Android-runtime GitHub workflow
 uses KVM and assembles the internal candidate from .validation without publishing
-an APK. Only screenshots/logs are uploaded. Initial run41168243704 failed before
-boot because the runner's AVD directory differs from the default; infrastructure
-repair is in progress. No Android UI/playthrough result has been claimed yet.
+an APK. Only screenshots/logs are uploaded. Run41169033872 on Emulator31.1.4
+passes real Android11 startup and shows the complete native UI. Female gender,
+three hairstyle changes and Home/reopen in the same PID pass. It reaches Traits,
+but four traits were selected: the last tap replaced Genius with Absent-Minded.
+Actual scrolling did not land at the helper fixture's assumed offset. Correct
+the automated selection before the next run; no app behavior fix is justified.
+Mesa/Xvfb run41169739245 is queued/running with the full save/resume path but the
+same trait-selection error. No gameplay/save/resume acceptance claim yet.
 
 CAS flow: close hint12→13, appearance Next→persona14, choose persona/Next→traits15,
 five traits/Next→name16, nonempty name/confirm→confirmation19, Yes→SceneGame.

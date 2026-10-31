@@ -13,9 +13,9 @@ staging or APK publication is authorized before it passes.
 | Internal APK | Signature, package/launcher/version, original assets/config and native checks pass |
 | Java bytecode | 310 methods, zero static type/register errors; assembled touch/lifecycle/GL regressions pass |
 | Native-control overlap | Permanent Report overlay removed; reports remain accessible from the launcher |
-| Full Android UI | Runtime is online; private app installation/playthrough pending |
-| Female-Sim crash | Invalid Group/World cast at13b784 confirmed; origin remains under investigation |
-| Character creation into gameplay | Pending real Android execution |
+| Full Android UI | Run41169033872 screenshots confirm panels/icons/buttons at1920×1080 on Android11 x86/ARMv7 translation, Emulator31.1.4/KVM/SwiftShader |
+| Female-Sim crash | Three female hairstyle changes and same-process Home/reopen plus30seconds pass in that run; the reported13b784 cause remains unresolved |
+| Character creation into gameplay | Reached Traits on real Android; automation selected four traits, so progression gate remains pending |
 | Gameplay and save/resume | Pending |
 
 Internal candidate SHA256:
