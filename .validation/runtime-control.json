@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 8,
-  "frame_sha256": "14fe8a66404663f297735414ec785cb2362fe4e8b01340162fa8a62e5124ef1e",
+  "seq": 9,
+  "frame_sha256": "19d7542b86e662b83b8f0a937336b17e30ae6a515347a76fa389e63abc8e3ce9",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1235,
-    "y": 353
+    "type": "wait",
+    "seconds": 5
   },
-  "note": "Select the actual visible dining-chair Sit action."
+  "note": "Observe the queued Sit action through completion; menu dismissal alone is not sufficient."
 }
