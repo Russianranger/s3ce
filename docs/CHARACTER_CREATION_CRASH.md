@@ -111,3 +111,25 @@ Validation still requires real Android progression past CAS, including a fresh
 process, female/style selection, and a separate focus/surface recreation path.
 Any reproduced failure should retain the object/register state and saved caller
 needed to locate the invalid reference before changing game behavior.
+
+## Bounded Randomize audit
+
+Randomize `0x11aec0` chooses gender in 0–1, then rebuilds the available-options
+list through `0x115bbc` before each attribute 1–12. It draws an index in
+0–count−1, loads that list's value, and stores it through `0xce6ac`; it does not
+derive model/resource IDs from a libc random number.
+
+The range helper `0xed0e8` calls original `0xba0ac`, a 48-bit LCG with multiplier
+`0x5deece66d` and increment 11. Its shift (`0x5f8`) and quotient/remainder
+(`0x133c`) are original source instructions. Neither the S3E named-import table
+nor the legacy ELF imports `rand`, `srand` or `random`; this path does not use
+Bionic `RAND_MAX` or replacement EABI division helpers.
+
+Executing that original RNG/range code at preferred and high addresses passes
+6,744 cases, including small/power-of-two/large bounds and signed inclusive
+ranges. All results and 48-bit states match an independent reference; 266 rejection
+retries execute, and SP plus r4–r11 are preserved. No arithmetic or RNG outputs
+are mocked. This analysis does not execute the full Randomize option-builder,
+controller, model replacement or Android lifecycle. It rules out the proposed
+libc RNG/division mismatch on this specific path; it does not establish that
+Randomize is crash-free.

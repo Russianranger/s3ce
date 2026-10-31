@@ -353,7 +353,6 @@
       "expect_scene": "SceneGame",
       "probe_interval": 0.2,
       "timeout": 240,
-      "checkpoint": "gameplay",
       "probe_swipe": [
         20,
         540,
@@ -364,29 +363,27 @@
       "probe_return": true
     },
     {
+      "name": "clear-gameplay-onboarding-popups",
+      "clear_gameplay_overlays": true,
+      "wait": 1,
+      "capture": true,
+      "expect_scene": "SceneGame",
+      "checkpoint": "gameplay"
+    },
+    {
       "name": "open-gameplay-pause-menu",
-      "tap": [
-        113,
-        965
-      ],
       "wait": 3,
-      "capture": true
+      "capture": true,
+      "open_pause_visually": true
     },
     {
       "name": "choose-save-and-quit-to-menu",
-      "tap": [
-        960,
-        797
-      ],
       "wait": 3,
-      "capture": true
+      "capture": true,
+      "choose_save_visually": true
     },
     {
       "name": "confirm-save-and-quit",
-      "tap": [
-        1122,
-        745
-      ],
       "wait": 30,
       "capture": true,
       "expect_scene": "SceneMenu",
@@ -400,7 +397,8 @@
         540,
         1000
       ],
-      "probe_return": true
+      "probe_return": true,
+      "confirm_save_visually": true
     },
     {
       "name": "restart-from-saved-game",
@@ -470,11 +468,20 @@
       ],
       "wait": 8,
       "capture": true
+    },
+    {
+      "name": "clear-resumed-gameplay-popups",
+      "clear_gameplay_overlays": true,
+      "wait": 1,
+      "capture": true,
+      "expect_scene": "SceneGame",
+      "checkpoint": "resume"
     }
   ],
   "trait_source": "Keep initial source-proven Shy0 and GoodSenseOfHumor2 taps. Read actual PNG labels and green checkmarks to select only unchecked Neat13, Absent-Minded15, and Neurotic16; bounded ordinary scrolling finds rows regardless of gesture distance. Require each visible checkbox/count increment, all five bottom green checks, visible Next, then actual phase16. No game memory or save data is written by validation.",
   "run_baseline": false,
   "appearance_source": "Original ARM camera/FOV/look-at/orientation/projection helpers and real model anchor hierarchy prove gender category118,449/leftarrow646,540 and hair category1802,263/rightarrow1274,581 at full1920x1080 native canvas. One gender arrow toggles the default male NPC0 to female.",
   "save_resume_source": "Actual original ARM pause-icon hit103178\u2192104014\u2192107254 at113,965; pause-list65030 draw/64E7C hit places SaveQuit resource0x831 at960,797. ConfirmationYes uses original1089EC\u219288904+88E44 persistence, then SceneMenu. Existing-slot11AA58\u219211AB90\u219212F770nonzero selects pendingScene2; empty slot instead enters CAS.",
-  "popup_source": "Actual CI8 NewGame PNG shows red Cancel/X on left798 and green Confirm/check on right1122. Original BD764 sets r3=0x40 and stackarg=0x20; constructor7FA6C stores leftAction at Hint+9C fromr3 and rightAction at+A0 fromstack, so left is Cancel/No40 and right Confirm/Yes20. Apply same type2 mapping to NewGame, TutorialNo and SaveQuitYes."
+  "popup_source": "Actual CI8 NewGame PNG shows red Cancel/X on left798 and green Confirm/check on right1122. Original BD764 sets r3=0x40 and stackarg=0x20; constructor7FA6C stores leftAction at Hint+9C fromr3 and rightAction at+A0 fromstack, so left is Cancel/No40 and right Confirm/Yes20. Apply same type2 mapping to NewGame, TutorialNo and SaveQuitYes.",
+  "onboarding_source": "Actual CI9 reaches rendered house/HUD, then a timed New Wish dialog can block Pause. PNG/OCR recognizes only New Wish, Edit Appearance and Recipes; rendered green-check/blue-X pixels determine taps. Require two clear frames, then verify visible Paused + Save and Quit to menu row and actual save-confirmation body before selecting. Unknown panels fail closed; only ordinary UI touches occur."
 }

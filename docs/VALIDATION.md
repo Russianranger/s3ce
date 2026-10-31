@@ -15,8 +15,8 @@ staging or APK publication is authorized before it passes.
 | Native-control overlap | Permanent Report overlay removed; reports remain accessible from the launcher |
 | Full Android UI | Run41169033872 screenshots confirm panels/icons/buttons at1920×1080 on Android11 x86/ARMv7 translation, Emulator31.1.4/KVM/SwiftShader |
 | Female-Sim crash | Three female hairstyle changes and same-process Home/reopen plus30seconds pass in that run; the reported13b784 cause remains unresolved |
-| Character creation into gameplay | Run41173056487 accepts Alex and reaches final confirmation19; correcting test's Cancel/Confirm selection before gameplay |
-| Gameplay and save/resume | Pending |
+| Character creation into gameplay | Run41174263077 completes female creation and observes real SceneGame with rendered house/HUD |
+| Gameplay and save/resume | Initial gameplay interaction passes; timed New Wish/Recipes cards blocked test's Save menu, so save/reopen is pending |
 
 Internal candidate SHA256:
 `45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb`.

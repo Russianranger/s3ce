@@ -261,6 +261,52 @@ class Android:
             observation = inspect(f'scrolled-{attempt + 1}')
         raise RuntimeError('Visual trait selection did not find all desired rows: ' + ', '.join(set(targets) - chosen))
 
+    def gameplay_overlay(self, name):
+        from android_runtime_visual import analyze_gameplay_overlay
+        self.snapshot(name)
+        directory = self.output / re.sub(r'[^A-Za-z0-9_-]', '-', name)
+        overlay = analyze_gameplay_overlay(directory / 'screen.png', directory / 'overlay-ocr', self.viewport)
+        print(json.dumps({'gameplay_overlay': name, 'kind': overlay['kind'],
+                          'point': overlay['point'], 'text': overlay['text']}), flush=True)
+        return overlay
+
+    def tap_visible_point(self, point):
+        self.assert_native_canvas()
+        self.shell('input', 'tap', *[round(value) for value in point])
+
+    def clear_gameplay_overlays(self, prefix, open_pause=False):
+        clear_frames = 0
+        for attempt in range(10):
+            overlay = self.gameplay_overlay(f'{prefix}-overlay-{attempt:02d}')
+            kind = overlay['kind']
+            if kind in ('new-wish', 'recipes', 'edit-appearance'):
+                self.tap_visible_point(overlay['point'])
+                clear_frames = 0
+            elif kind == 'pause-menu':
+                if open_pause:
+                    return
+                raise RuntimeError('Unexpected pause menu while clearing onboarding dialogs')
+            elif kind == 'none':
+                if open_pause:
+                    self.tap([113, 965], [1920, 1080])
+                else:
+                    clear_frames += 1
+                    if clear_frames >= 2:
+                        return
+            else:
+                # A panel may be between its 400ms animation and text draw.
+                # Unknown dialogs are never dismissed by guessed coordinates.
+                clear_frames = 0
+            time.sleep(2)
+        raise RuntimeError('Known onboarding dialogs did not settle into ' + ('Paused menu' if open_pause else 'unobstructed gameplay'))
+
+    def choose_save_visually(self, prefix, confirmation=False):
+        expected = 'save-confirmation' if confirmation else 'pause-menu'
+        overlay = self.gameplay_overlay(prefix + '-verified')
+        if overlay['kind'] != expected:
+            raise RuntimeError(f'Expected visible {expected}, observed {overlay["kind"]}')
+        self.tap_visible_point(overlay['point'])
+
     def run_plan(self, plan, prefix, limit=None):
         checkpoints = {}
         for index, step in enumerate(plan['steps'][:limit]):
@@ -287,6 +333,14 @@ class Android:
                 self.select_traits_visually(name, step['select_traits'], step.get('max_scrolls', 12))
             elif step.get('hide_keyboard'):
                 self.hide_keyboard()
+            elif step.get('clear_gameplay_overlays'):
+                self.clear_gameplay_overlays(name)
+            elif step.get('open_pause_visually'):
+                self.clear_gameplay_overlays(name, open_pause=True)
+            elif step.get('choose_save_visually'):
+                self.choose_save_visually(name)
+            elif step.get('confirm_save_visually'):
+                self.choose_save_visually(name, confirmation=True)
             elif step.get('relaunch'):
                 self.shell('am', 'force-stop', PACKAGE)
                 self.launch()

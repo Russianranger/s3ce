@@ -54,10 +54,10 @@ XY/input coordinates remain identical.
 The unsuccessful indexed-quad experiment is removed from the build; original
 assets are restored. A separate crash at game offset13b784 involves an invalid
 Group/World cast object. Its origin is still under investigation. Internal
-Android screenshots now confirm visible controls, female hairstyle changes and
-same-process reopening. Trait-selection automation is being corrected using
-the visible labels; gameplay/save testing remains pending. No new APK is ready
-for presentation.
+Android screenshots now confirm visible controls, female hairstyle changes,
+same-process reopening, complete character creation and the playable house/HUD.
+Save/reopen testing is continuing through the normal onboarding popups before
+APK publication.
 
 ## Build
 

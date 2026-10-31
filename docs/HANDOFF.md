@@ -74,7 +74,13 @@ The earlier action fixture seeded Hint+9C/+A0 backwards; execute real constructo
 caller arguments when proving popup semantics. No game crash was observed.
 Use alternating forward/backward pointer-probe swipes for sparse native observer
 checkpoints; taps can need over240seconds to reach the next power-of-two sample.
-No gameplay/save/resume acceptance claim yet. Native-bridge float diagnostic
+Run41174263077 completes creation into actual SceneGame and shows the female
+Sim's house with the complete HUD. Native SceneGame and floor interaction pass,
+with no fatal crash lines. A timed New Wish then blocks Pause, and accepting it
+queues Recipes; the test had not opened the Save menu. Next automation drains
+only recognized onboarding cards using their rendered controls, requires clear
+HUD frames, and verifies actual Paused/SaveQuit text before selecting the row.
+Save/resume remains pending. Native-bridge float diagnostic
 records are unreliable in this emulator; use actual PNGs/integer phase/PID
 observations and the separate original device/source projection proof.
 
