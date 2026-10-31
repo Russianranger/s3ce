@@ -49,8 +49,8 @@ def main():
     data = metadata.read_text()
     data = data.replace('minSdkVersion: 3\n', 'minSdkVersion: 26\n')
     data = data.replace('targetSdkVersion: 7\n', 'targetSdkVersion: 28\n')
-    data = data.replace('versionCode: 1\n', 'versionCode: 110\n')
-    data = data.replace('versionName: 1.0\n', 'versionName: 0.1.10-character-creation\n')
+    data = data.replace('versionCode: 1\n', 'versionCode: 111\n')
+    data = data.replace('versionName: 1.0\n', 'versionName: 0.1.11-object-actions\n')
     metadata.write_text(data)
     legacy = decoded / 'assets/compat/libairplay-legacy.so'
     legacy.parent.mkdir(parents=True, exist_ok=True)
@@ -92,14 +92,14 @@ def main():
             '-alias', signing['alias'], '-dname', 'CN=S3CE Compatibility',
             '-keyalg', 'RSA', '-keysize', '3072', '-validity', '10000')
         a.keystore.chmod(0o600)
-    final = dist / 'S3CE-0.1.10-character-creation-arm32.apk'
+    final = dist / 'S3CE-0.1.11-object-actions-arm32.apk'
     run(bt / 'apksigner', 'sign', '--ks', a.keystore, '--ks-key-alias', signing['alias'],
         '--ks-pass', 'env:S3CE_STORE_PASS', '--key-pass', 'env:S3CE_STORE_PASS',
         '--out', final, aligned)
     run(bt / 'apksigner', 'verify', '--verbose', '--print-certs', final)
     badging = subprocess.check_output([str(bt / 'aapt'), 'dump', 'badging', str(final)], env=env, text=True)
-    for expected in ("package: name='io.github.russianranger.s3ce' versionCode='110'",
-                     "versionName='0.1.10-character-creation'", "targetSdkVersion:'28'",
+    for expected in ("package: name='io.github.russianranger.s3ce' versionCode='111'",
+                     "versionName='0.1.11-object-actions'", "targetSdkVersion:'28'",
                      "launchable-activity: name='com.ideaworks3d.thesims3.CompatActivity'"):
         if expected not in badging:
             raise SystemExit('Unexpected APK identity or launcher: ' + expected)

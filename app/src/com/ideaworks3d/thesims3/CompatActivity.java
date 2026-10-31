@@ -47,7 +47,7 @@ public final class CompatActivity extends Activity {
         status = new TextView(this);
         status.setTextColor(0xffeeeeee);
         status.setTextSize(18);
-        status.setText("The Sims 3 CE\nCompatibility build 0.1.10\n\n"
+        status.setText("The Sims 3 CE\nCompatibility build 0.1.11\n\n"
                 + "Touch controls. Saves stay on this device.\n"
                 + "For reports during play, press Home and reopen this app icon.\n"
                 + "Save a report before retrying a crashed game.\n");
@@ -190,7 +190,7 @@ public final class CompatActivity extends Activity {
     }
 
     private String report() {
-        StringBuilder text = new StringBuilder("S3CE 0.1.10 diagnostic report\n");
+        StringBuilder text = new StringBuilder("S3CE 0.1.11 diagnostic report\n");
         text.append("Android: ").append(Build.VERSION.RELEASE).append(" API ")
                 .append(Build.VERSION.SDK_INT).append("\nDevice: ")
                 .append(Build.MANUFACTURER).append(' ').append(Build.MODEL)

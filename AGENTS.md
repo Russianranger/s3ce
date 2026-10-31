@@ -1,4 +1,21 @@
-# Current delivery gate — passed for the frozen 0.1.10 APK
+# Current work — object-action selection (0.1.11 pending)
+
+The user physically verified 0.1.10 on the Thor: UI, character creation, house,
+walking, saving, camera zoom and pan work. Visible object-action buttons do not
+accept taps. Preserve those working behaviors. Do not present or publish a new
+APK until normal Android UI input selects an object action and the Sim completes
+it; retain actual screenshots, logs, exact APK hash and environment limitations.
+
+Source analysis identifies UIContextMenu's coarse rectangle Y=0,H=320 while
+visible anchored rows move into logical Y380..700 at1920x1080/scale3.375.
+Correct only its rectangle origin using the original Display Y transform;
+retain original rendering, input transforms, action selection and game logic.
+Verify the compiled helper and ARM thunk, source fingerprints, all row/negative
+cases and legacy dimensions before runtime acceptance. The current report also
+contains a later ImageIPhone/render-cache teardown crash; distinguish it from
+the earlier menu tap failure and avoid speculative NULL skips.
+
+# Historical 0.1.10 delivery gate — passed
 
 The user required autonomous correction of hidden UI and progression beyond
 character creation before another APK. That requirement is satisfied for SHA256

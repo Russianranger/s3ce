@@ -16,6 +16,8 @@ common=(-fPIC -mthumb -O2 -Wall -Wextra -Werror -fvisibility=hidden -fstack-prot
 "$compiler" "${common[@]}" -c "$native_dir/stack_bridge.c" -o "$object_dir/stack.o"
 "$compiler" "${common[@]}" -c "$native_dir/code_flush.c" -o "$object_dir/flush.o"
 "$compiler" "${common[@]}" -c "$native_dir/ui_depth.c" -o "$object_dir/depth.o"
+"$compiler" "${common[@]}" -c "$native_dir/context_menu.c" -o "$object_dir/context.o"
+"$compiler" "${common[@]}" -c "$native_dir/shutdown_order.c" -o "$object_dir/shutdown.o"
 "$compiler" "${common[@]}" -c "$native_dir/memory_compat.c" -o "$object_dir/memory.o"
 "$compiler" "${common[@]}" -c "$native_dir/input_trace.c" -o "$object_dir/input.o"
 "$compiler" "${common[@]}" -c "$native_dir/pointer_callbacks.c" -o "$object_dir/pointer.o"
@@ -28,6 +30,6 @@ common=(-fPIC -mthumb -O2 -Wall -Wextra -Werror -fvisibility=hidden -fstack-prot
     "$native_dir/pvrtc/pvrtc_bridge.cpp" -o "$object_dir/bridge.o"
 "$cxx" -shared -static-libstdc++ "${common[@]}" \
     -Wl,-z,relro,-z,now,-z,noexecstack -Wl,-soname,libairplay.so \
-    "$object_dir/loader.o" "$object_dir/graphics.o" "$object_dir/safety.o" "$object_dir/jni.o" "$object_dir/stack.o" "$object_dir/flush.o" "$object_dir/depth.o" "$object_dir/memory.o" "$object_dir/input.o" "$object_dir/pointer.o" "$object_dir/observer.o" "$object_dir/mapped.o" "$object_dir/exception.o" "$object_dir/pvrtc.o" "$object_dir/bridge.o" \
+    "$object_dir/loader.o" "$object_dir/graphics.o" "$object_dir/safety.o" "$object_dir/jni.o" "$object_dir/stack.o" "$object_dir/flush.o" "$object_dir/depth.o" "$object_dir/context.o" "$object_dir/shutdown.o" "$object_dir/memory.o" "$object_dir/input.o" "$object_dir/pointer.o" "$object_dir/observer.o" "$object_dir/mapped.o" "$object_dir/exception.o" "$object_dir/pvrtc.o" "$object_dir/bridge.o" \
     -llog -landroid -ldl -lEGL -o "$output"
 echo "$output"

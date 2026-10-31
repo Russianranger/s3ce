@@ -26,6 +26,8 @@
 #include "exception_inspect.h"
 #include "code_flush.h"
 #include "ui_depth.h"
+#include "context_menu.h"
+#include "shutdown_order.h"
 #include "memory_compat.h"
 #include "input_trace.h"
 #include "pointer_callbacks.h"
@@ -95,6 +97,8 @@ struct code_allocation {
     void *address;
     size_t length;
     int ui_depth_status;
+    int context_menu_status;
+    int shutdown_order_status;
 };
 static struct code_allocation *code_allocations;
 static pthread_mutex_t code_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -118,6 +122,8 @@ static void *allocate_game_code(uint32_t requested) {
     entry->address = result;
     entry->length = length;
     entry->ui_depth_status = 0;
+    entry->context_menu_status = 0;
+    entry->shutdown_order_status = 0;
     pthread_mutex_lock(&code_lock);
     entry->next = code_allocations;
     code_allocations = entry;
@@ -159,6 +165,30 @@ static int flush_legacy_code(void *start, uint32_t length) {
                      entry->address, patched == 1 ? "patched" : "already patched");
             else
                 LOGE("UI depth scale patch refused: unexpected projection-wrapper fingerprint at %p", entry->address);
+        }
+    }
+    if (entry && !entry->context_menu_status) {
+        int patched = s3ce_patch_context_menu(entry->address, entry->length, start, length,
+            (uintptr_t)&s3ce_context_menu_bounds);
+        if (patched) {
+            entry->context_menu_status = patched;
+            if (patched > 0)
+                LOGI("Context menu hit bounds fixed: %p+0x86310 anchors Y to visible rows (%s)",
+                     entry->address, patched == 1 ? "patched" : "already patched");
+            else
+                LOGE("Context menu bounds patch refused: unexpected source fingerprint at %p", entry->address);
+        }
+    }
+    if (entry && !entry->shutdown_order_status) {
+        int patched = s3ce_patch_shutdown_order(entry->address, entry->length, start, length,
+            (uintptr_t)&s3ce_finish_shutdown);
+        if (patched) {
+            entry->shutdown_order_status = patched;
+            if (patched > 0)
+                LOGI("Shutdown order fixed: %p defers renderer until cached DLC images are released (%s)",
+                     entry->address, patched == 1 ? "patched" : "already patched");
+            else
+                LOGE("Shutdown order patch refused: unexpected source fingerprint at %p", entry->address);
         }
     }
     int result = s3ce_flush_code_span(start, length, entry ? entry->address : NULL,

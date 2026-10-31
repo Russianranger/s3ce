@@ -84,6 +84,9 @@ class Android:
         self.latest_native = ''
         self.screen_size = (1920, 1080)
         self.viewport, self.viewport_source = None, None
+        self.checkpoints = {}
+        self.object_actions = []
+        self.quit_observation = {}
 
     def adb(self, *args, timeout=45, check=True):
         result = subprocess.run([self.adb_path, '-s', self.serial, *map(str, args)],
@@ -307,8 +310,129 @@ class Android:
             raise RuntimeError(f'Expected visible {expected}, observed {overlay["kind"]}')
         self.tap_visible_point(overlay['point'])
 
+    def context_menu(self, name):
+        from android_runtime_visual import analyze_context_menu
+        self.snapshot(name)
+        directory = self.output / re.sub(r'[^A-Za-z0-9_-]', '-', name)
+        menu = analyze_context_menu(directory / 'screen.png', directory / 'context-ocr', self.viewport)
+        print(json.dumps({'context_menu': name, 'title': menu['title']['text'],
+                          'actions': [{'text': a['text'], 'point': a['point']} for a in menu['actions']]}), flush=True)
+        return menu
+
+    def context_action(self, prefix, config, menu=None):
+        from android_runtime_visual import normalized
+        menu = menu or self.context_menu(prefix + '-before')
+        title = menu['title']['text']
+        if not title or (config.get('title') and normalized(title) != normalized(config['title'])):
+            raise RuntimeError('Visible context-menu title does not match the intended object')
+        options = [a for a in menu['actions'] if normalized(a['text']) == normalized(config['action'])]
+        if len(options) != 1:
+            raise RuntimeError('Cannot locate exactly one visible ' + config['action'] + ' action')
+        point = options[0]['point']
+        event = {'name': prefix, 'title': title, 'action': config['action'], 'point': point,
+                 'status': 'touch-sent-awaiting-observation', 'captures': [],
+                 'completion': 'manual review of queue and Sim pose required'}
+        self.object_actions.append(event)
+        self.tap_visible_point(point)
+        started = time.monotonic()
+        for seconds in config.get('capture_seconds', [2, 8, 20, 45]):
+            time.sleep(max(0, started + seconds - time.monotonic()))
+            elapsed = time.monotonic() - started
+            label = f'{prefix}-after-{seconds:02d}s'
+            if len(event['captures']) == 0:
+                after = self.context_menu(label)
+                persisted = (normalized(after['title']['text']) == normalized(title)
+                             and any(normalized(a['text']) == normalized(config['action']) for a in after['actions']))
+                event['status'] = 'menu-remained' if persisted else 'menu-closed-awaiting-pose-review'
+            else:
+                self.snapshot(label)
+            event['captures'].append({'name': label, 'requested_seconds': seconds,
+                                      'elapsed_seconds_at_capture_start': elapsed})
+        (self.output / (prefix + '-action-observation.json')).write_text(json.dumps(event, indent=2) + '\n')
+        if event['status'] == 'menu-remained':
+            raise RuntimeError('Visible action menu remained after tapping its actual action text')
+
+    def find_context_action(self, prefix, config):
+        from android_runtime_visual import normalized
+        tried = []
+        menu = self.context_menu(prefix + '-initial')
+        for index, target in enumerate(config['targets']):
+            if menu['actions']:
+                if not menu['title']['text']:
+                    raise RuntimeError('Cannot safely close an unidentified action panel')
+                self.tap([254, 142], [1920, 1080])
+                time.sleep(1)
+            self.tap(target, [1920, 1080])
+            time.sleep(2)
+            menu = self.context_menu(f'{prefix}-target-{index:02d}')
+            tried.append({'target': target, 'title': menu['title']['text'],
+                          'actions': [a['text'] for a in menu['actions']]})
+            if (menu['title']['text'] and (not config.get('title')
+                    or normalized(menu['title']['text']) == normalized(config['title']))
+                    and any(normalized(a['text']) == normalized(config['action']) for a in menu['actions'])):
+                self.context_action(prefix + '-selected', config, menu)
+                return
+        description = config.get('title') or config.get('description', config['action'] + ' object')
+        outcome = {'name': prefix, 'title': description, 'action': config['action'],
+                   'status': 'object-not-found', 'tried': tried,
+                   'completion': 'No action was selected without the required visible title and label'}
+        self.object_actions.append(outcome)
+        (self.output / (prefix + '-search-observation.json')).write_text(json.dumps(outcome, indent=2) + '\n')
+        if config.get('required', True):
+            raise RuntimeError('Bounded normal-touch search did not find ' + description)
+
+    def close_context_if_visible(self, prefix):
+        menu = self.context_menu(prefix + '-before')
+        if menu['actions']:
+            if not menu['title']['text']:
+                raise RuntimeError('Cannot safely close an unidentified action panel')
+            self.tap([254, 142], [1920, 1080])
+
+    def main_quit_visually(self, prefix):
+        from android_runtime_visual import analyze_context_menu
+        self.snapshot(prefix + '-before')
+        directory = self.output / (prefix + '-before')
+        menu = analyze_context_menu(directory / 'screen.png', directory / 'main-menu-ocr',
+                                    self.viewport, layout='main')
+        if menu['kind'] != 'main-menu' or not menu['point']:
+            raise RuntimeError('Cannot verify visible main-menu Options/Help/Quit controls')
+        self.tap_visible_point(menu['point'])
+
+    def confirm_quit_visually(self, prefix):
+        dialog = self.gameplay_overlay(prefix + '-before')
+        if dialog['kind'] != 'quit-confirmation':
+            raise RuntimeError('Cannot verify the normal Quit question and green confirmation')
+        self.tap_visible_point(dialog['point'])
+
+    def verify_native_quit(self, prefix):
+        def finished():
+            logs = self.adb('logcat', '-d', '-v', 'threadtime').decode(errors='replace')
+            activity = self.shell('dumpsys', 'activity', 'activities', check=False)
+            resumed = [line.strip() for line in activity.splitlines()
+                       if 'mResumedActivity' in line or 'topResumedActivity' in line]
+            self.quit_observation = {
+                'native_main_returned': bool(re.search(r'Native code done\.\s+Shutting down', logs)),
+                'activity_finish_requested': 'calling finish on activity' in logs,
+                'resumed_activity_lines': resumed,
+                'game_main_resumed': any('com.ideaworks3d.thesims3.Main' in line for line in resumed),
+                'compat_launcher_resumed': any('com.ideaworks3d.thesims3.CompatActivity' in line for line in resumed),
+                'retained_package_pid': self.shell('pidof', PACKAGE, check=False).strip(),
+                'fatal_or_anr_lines': [line for line in logs.splitlines()
+                                      if re.search(r'Fatal signal|FATAL EXCEPTION|SIGSEGV|SIGABRT|ANR in|am_crash|am_anr', line)]}
+            return (self.quit_observation['native_main_returned']
+                    and self.quit_observation['activity_finish_requested'] and resumed
+                    and not self.quit_observation['game_main_resumed']
+                    and self.quit_observation['compat_launcher_resumed'])
+        self.wait_for('native Main returned and game Activity finished', finished, 60)
+        time.sleep(2)
+        if not finished() or self.quit_observation['fatal_or_anr_lines']:
+            raise RuntimeError('Normal native Quit did not finish without fatal/ANR evidence')
+        (self.output / (prefix + '-shutdown-observation.json')).write_text(
+            json.dumps(self.quit_observation, indent=2) + '\n')
+
     def run_plan(self, plan, prefix, limit=None):
         checkpoints = {}
+        self.checkpoints = checkpoints
         for index, step in enumerate(plan['steps'][:limit]):
             name = f'{prefix}-{index:02d}-{step["name"]}'
             previous_pid = next((event['game_pid'] for event in reversed(self.events) if event.get('game_pid')), None)
@@ -341,6 +465,18 @@ class Android:
                 self.choose_save_visually(name)
             elif step.get('confirm_save_visually'):
                 self.choose_save_visually(name, confirmation=True)
+            elif step.get('context_action'):
+                self.context_action(name, step['context_action'])
+            elif step.get('find_context_action'):
+                self.find_context_action(name, step['find_context_action'])
+            elif step.get('close_context_if_visible'):
+                self.close_context_if_visible(name)
+            elif step.get('main_quit_visually'):
+                self.main_quit_visually(name)
+            elif step.get('confirm_quit_visually'):
+                self.confirm_quit_visually(name)
+            elif step.get('verify_native_quit'):
+                self.verify_native_quit(name)
             elif step.get('relaunch'):
                 self.shell('am', 'force-stop', PACKAGE)
                 self.launch()
@@ -499,6 +635,9 @@ def main():
         raise
     finally:
         result['events'] = android.events
+        result['checkpoints'] = android.checkpoints
+        result['object_actions'] = android.object_actions
+        result['native_quit'] = android.quit_observation
         result['environment']['emulator_exit_before_cleanup'] = emulator.poll() if emulator else None
         result['environment']['live_logcat_exit_before_cleanup'] = logcat.poll() if logcat else None
         for name, command in [('host-kernel.txt', ['dmesg', '-T']),

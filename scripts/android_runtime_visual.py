@@ -4,6 +4,7 @@ import argparse
 import csv
 import io
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -208,6 +209,8 @@ def analyze_gameplay_overlay(image_path, evidence_prefix=None, viewport=None):
         result.update(kind='edit-appearance', control=blue_x)
     elif 'savegameprogress' in compact and 'mainmenu' in compact:
         result.update(kind='save-confirmation', control=control((1020, 600, 1230, 960), 'green'))
+    elif 'areyousureyouwanttoquitthegame' in compact:
+        result.update(kind='quit-confirmation', control=control((1020, 600, 1230, 960), 'green'))
     elif result['kind'] == 'unknown':
         body = image.crop(rectangle(viewport, (560, 410, 1360, 630)))
         body = body.resize((body.width * 2, body.height * 2), Image.Resampling.LANCZOS)
@@ -220,6 +223,8 @@ def analyze_gameplay_overlay(image_path, evidence_prefix=None, viewport=None):
         result['body_text'] = body_text
         if 'savegameprogress' in normalized(body_text) and 'mainmenu' in normalized(body_text):
             result.update(kind='save-confirmation', control=control((1020, 600, 1230, 960), 'green'))
+        elif 'areyousureyouwanttoquitthegame' in normalized(body_text):
+            result.update(kind='quit-confirmation', control=control((1020, 600, 1230, 960), 'green'))
         if evidence_prefix:
             body.save(str(evidence_prefix) + '-body.png')
             Path(str(evidence_prefix) + '-body.txt').write_text(body_text + '\n')
@@ -233,6 +238,75 @@ def analyze_gameplay_overlay(image_path, evidence_prefix=None, viewport=None):
         crop.save(str(prefix) + '.png')
         Path(str(prefix) + '.tsv').write_text(tsv)
         Path(str(prefix) + '.json').write_text(json.dumps(result, indent=2) + '\n')
+    return result
+
+
+def analyze_context_menu(image_path, evidence_prefix=None, viewport=None, layout='context'):
+    """Locate real context-menu text and capsule rows in a captured frame."""
+    original = Image.open(image_path).convert('RGB')
+    viewport = viewport or (0, 0, *original.size)
+    image = original.crop(tuple(viewport)).resize((1920, 1080), Image.Resampling.LANCZOS)
+    sx, sy = (viewport[2] - viewport[0]) / 1920, (viewport[3] - viewport[1]) / 1080
+
+    def read(box, suffix, confidence=60):
+        crop = image.crop(box)
+        crop = crop.resize((crop.width * 2, crop.height * 2), Image.Resampling.LANCZOS)
+        encoded = io.BytesIO()
+        crop.save(encoded, format='PNG')
+        run = subprocess.run(['tesseract', 'stdin', 'stdout', '--psm', '7', 'tsv'],
+                             input=encoded.getvalue(), stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, timeout=10, check=True,
+                             env={**os.environ, 'OMP_THREAD_LIMIT': '1'})
+        tsv = run.stdout.decode(errors='replace')
+        words = []
+        for row in csv.DictReader(io.StringIO(tsv), delimiter='\t'):
+            if (row.get('level') != '5' or not normalized(row.get('text', ''))
+                    or float(row['conf']) < confidence):
+                continue
+            x, y, w, h = (int(row[k]) for k in ('left', 'top', 'width', 'height'))
+            words.append({'text': row['text'], 'confidence': float(row['conf']),
+                          'box': [box[0] + x / 2, box[1] + y / 2,
+                                  box[0] + (x + w) / 2, box[1] + (y + h) / 2]})
+        result = {'text': ' '.join(w['text'] for w in words), 'words': words}
+        if words:
+            x = (min(w['box'][0] for w in words) + max(w['box'][2] for w in words)) / 2
+            y = (min(w['box'][1] for w in words) + max(w['box'][3] for w in words)) / 2
+            result['point'] = [viewport[0] + x * sx, viewport[1] + y * sy]
+        if evidence_prefix:
+            prefix = Path(evidence_prefix)
+            prefix.parent.mkdir(parents=True, exist_ok=True)
+            crop.save(f'{prefix}-{suffix}.png')
+            Path(f'{prefix}-{suffix}.tsv').write_text(tsv)
+        return result
+
+    if layout not in ('context', 'main'):
+        raise ValueError('Unknown native menu layout')
+    title = read((380, 70, 760, 135), 'title', confidence=50) if layout == 'context' else {'text': '', 'words': []}
+    left, right, top, bottom, text_left, text_right = ((810, 1590, 40, 880, 940, 1480)
+                                                  if layout == 'context' else (340, 1080, 200, 1000, 420, 1000))
+    bands = []
+    for y in range(top, bottom):
+        count = sum(b > 180 and g > 150 and b > r + 30 and g > r + 20
+                    for r, g, b in image.crop((left, y, right, y + 1)).getdata())
+        if count > 260:
+            if not bands or y > bands[-1][-1] + 1:
+                bands.append([y])
+            else:
+                bands[-1].append(y)
+    actions = []
+    for band in bands:
+        if 45 < len(band) < 180:
+            row = read((text_left, band[0] + 20, text_right, band[-1] - 20), f'row-{len(actions)}')
+            if row.get('point'):
+                row['capsule_y'] = [band[0], band[-1]]
+                actions.append(row)
+    result = {'title': title, 'actions': actions, 'viewport': list(viewport)}
+    if layout == 'main':
+        labels = {normalized(a['text']) for a in actions}
+        result['kind'] = 'main-menu' if {'options', 'helpabout', 'quit'} <= labels else 'unknown'
+        result['point'] = next((a['point'] for a in actions if normalized(a['text']) == 'quit'), None)
+    if evidence_prefix:
+        Path(str(evidence_prefix) + '.json').write_text(json.dumps(result, indent=2) + '\n')
     return result
 
 

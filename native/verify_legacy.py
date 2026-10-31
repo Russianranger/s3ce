@@ -10,6 +10,7 @@ import hashlib
 import json
 import lzma
 import pathlib
+import re
 import struct
 import subprocess
 import zipfile
@@ -81,6 +82,25 @@ def main():
     game_code = game[0xd2a0:0xd2a0 + 0x166ad8]
     assert game_code[0xae180:0xae1bc] == EXPECTED_UI_SCALE, "UI scale fingerprint mismatch"
     assert game_code[0x135d50:0x135dc4] == EXPECTED_UI_PROJECTION, "UI projection fingerprint mismatch"
+    for filename, profiles in [
+        ('context_menu.c', [('render_head', 0x857ac, 68), ('render_tail', 0x86310, 40),
+                            ('display_y', 0xae458, 152), ('convert_int', 0x1494a0, 16),
+                            ('set_bounds', 0x81bc4, 16), ('render_return', 0x86338, 12)]),
+        ('shutdown_order.c', [('display_cleanup', 0x33f74, 64),
+                              ('main_cleanup', 0x139260, 184),
+                              ('dlc_cleanup', 0x5c52c, 28),
+                              ('pack_image_release', 0xc3f44, 80)])]:
+        source = pathlib.Path(__file__).with_name(filename).read_text()
+        for name, offset, size in profiles:
+            array = re.search(r'static const uint32_t ' + name + r'\[\] = \{([^}]+)\}', source)
+            assert array, 'Missing game instruction guard: ' + filename + ':' + name
+            words = [int(value, 16) for value in re.findall(r'(0x[0-9a-f]+)u', array[1])]
+            expected = struct.pack('<' + 'I' * len(words), *words)
+            assert len(expected) == size and game_code[offset:offset + size] == expected, \
+                'Game instruction fingerprint mismatch: ' + filename + ':' + name
+    for offset in (0x33fb4, 0xb1490, 0xb14a0):
+        assert struct.unpack_from('<I', game_code, offset)[0] == 0x4a166b9c, \
+            'Shutdown renderer global alias mismatch'
     # Resolve this function's tail branch against the original named import
     # table, rather than assuming offset0x27c is a particular GL operation.
     names = game[0x52:0xd2a0].split(b"\0")[:struct.unpack_from("<H", game, 0x50)[0]]
@@ -229,7 +249,11 @@ def main():
                "allocator_guards": "pass", "gl_context_guard": "pass", "gl_dispatch_slot": hex(dispatch_slot), "jni_onload": hex(onload[0]),
                "ui_depth_profile": {"s3e_sha256": EXPECTED_S3E_SHA256,
                    "function": "0x135d50", "z_argument": "0x135d80",
-                   "scale_import": ui_projection_import, "fingerprint": "pass"}}
+                   "scale_import": ui_projection_import, "fingerprint": "pass"},
+               "context_menu_profile": {"function": "0x857ac", "tail": "0x86310",
+                   "rectangle": "0x81bc4", "anchor_y": "0xae458", "fingerprints": "pass"},
+               "shutdown_order_profile": {"early": "0x33f94", "late": "0x1392d8",
+                   "dlc_images": "0x5c52c", "fingerprints": "pass"}}
     if args.shim:
         shim_data = args.shim.read_bytes()
         _, shim_programs = parse_elf(shim_data)

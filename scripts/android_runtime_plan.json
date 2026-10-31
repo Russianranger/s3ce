@@ -6,7 +6,7 @@
   "launch_wait": 30,
   "baseline_steps": 3,
   "visual_review": "required: controls, panels, Sim appearance, and eventual gameplay screenshots must be inspected; native state alone does not prove visible UI",
-  "scope": "Candidate-only real Android capture exercises visible UI, female gender and three hairstyles, Home/reopen in the same process, all character creation pages, normal Skip Tutorial, gameplay interaction, Save and Quit through the real UI, process restart, loading the existing saved Sim, and resumed gameplay. Native observations support progression; screenshot review remains mandatory.",
+  "scope": "Real Android complete creation/save/reload prefix followed by object-action acceptance: choose the visible bed Sleep label, capture queue/Sim pose over45s; reload the existing pre-action save through normal menus; zoom out with the original camera ladder; attempt Retro Sofa/Sit through a bounded title-and-action-guarded ordinary-touch search. An accepted touch or disappearing menu does not prove completed interaction; manual pose/queue review remains mandatory. If Sofa is not found, report that explicitly and preserve the primary Bed evidence. Finally save normally, select main-menu Quit through actual visible text, confirm the actual Quit question, and verify nativeMain/Activity termination without asserting PID disappearance.",
   "source": "Pinned original game SHA256 8198558b93316a963c2106f172fde53015063955af16d2aa13ee51a89a1e114a; original ARM layout/display helpers at scale3.375. The first two taps were also observed in device JNI trace 4409685594089518444.",
   "steps": [
     {
@@ -468,6 +468,247 @@
       ],
       "wait": 8,
       "capture": true
+    },
+    {
+      "name": "close-alex-context-before-object-test",
+      "tap": [
+        254,
+        142
+      ],
+      "wait": 2,
+      "capture": true
+    },
+    {
+      "name": "find-visible-bed-and-select-sleep",
+      "find_context_action": {
+        "description": "visible bed",
+        "action": "Sleep",
+        "targets": [
+          [
+            1560,
+            150
+          ],
+          [
+            1250,
+            170
+          ],
+          [
+            1350,
+            150
+          ],
+          [
+            1450,
+            200
+          ],
+          [
+            1600,
+            130
+          ],
+          [
+            1150,
+            200
+          ]
+        ],
+        "capture_seconds": [
+          2,
+          8,
+          20,
+          45
+        ],
+        "required": true
+      },
+      "wait": 1,
+      "capture": true
+    },
+    {
+      "name": "reload-pre-action-save-main-menu",
+      "relaunch": true,
+      "wait": 30,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 5,
+      "probe_interval": 0.2,
+      "timeout": 180,
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
+    },
+    {
+      "name": "reload-pre-action-save-slot-list",
+      "tap": [
+        1356,
+        683
+      ],
+      "wait": 4,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "expect_menu_state": 9,
+      "probe_interval": 0.2,
+      "timeout": 180,
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
+    },
+    {
+      "name": "reload-pre-action-world-before-sofa",
+      "tap": [
+        643,
+        577
+      ],
+      "wait": 30,
+      "capture": true,
+      "expect_scene": "SceneGame",
+      "probe_interval": 0.2,
+      "timeout": 240,
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true
+    },
+    {
+      "name": "zoom-out-through-normal-camera-ladder",
+      "swipe": [
+        1834,
+        200,
+        1834,
+        765,
+        1250
+      ],
+      "wait": 4,
+      "capture": true
+    },
+    {
+      "name": "find-retro-sofa-and-select-sit",
+      "find_context_action": {
+        "title": "Retro Sofa",
+        "action": "Sit",
+        "targets": [
+          [
+            1200,
+            650
+          ],
+          [
+            1300,
+            600
+          ],
+          [
+            1150,
+            600
+          ],
+          [
+            1250,
+            700
+          ],
+          [
+            1000,
+            650
+          ],
+          [
+            1350,
+            650
+          ],
+          [
+            1100,
+            750
+          ],
+          [
+            1450,
+            600
+          ],
+          [
+            900,
+            650
+          ],
+          [
+            750,
+            600
+          ],
+          [
+            600,
+            500
+          ],
+          [
+            500,
+            450
+          ]
+        ],
+        "capture_seconds": [
+          2,
+          8,
+          20,
+          45
+        ],
+        "required": false
+      },
+      "wait": 1,
+      "capture": true
+    },
+    {
+      "name": "close-object-context-before-final-save",
+      "close_context_if_visible": true,
+      "wait": 2,
+      "capture": true
+    },
+    {
+      "name": "final-save-open-pause",
+      "wait": 3,
+      "capture": true,
+      "open_pause_visually": true
+    },
+    {
+      "name": "final-save-select-save-quit",
+      "wait": 3,
+      "capture": true,
+      "choose_save_visually": true
+    },
+    {
+      "name": "final-save-confirm-to-main-menu",
+      "wait": 30,
+      "capture": true,
+      "expect_scene": "SceneMenu",
+      "probe_interval": 0.2,
+      "timeout": 240,
+      "probe_swipe": [
+        20,
+        540,
+        80,
+        540,
+        1000
+      ],
+      "probe_return": true,
+      "confirm_save_visually": true
+    },
+    {
+      "name": "select-visible-main-menu-quit",
+      "main_quit_visually": true,
+      "wait": 3,
+      "capture": true
+    },
+    {
+      "name": "confirm-visible-native-quit",
+      "confirm_quit_visually": true,
+      "wait": 2,
+      "capture": true
+    },
+    {
+      "name": "verify-clean-native-main-and-activity-finish",
+      "verify_native_quit": true,
+      "wait": 1,
+      "capture": true
     }
   ],
   "trait_source": "Keep initial source-proven Shy0 and GoodSenseOfHumor2 taps. Read actual PNG labels and green checkmarks to select only unchecked Neat13, Absent-Minded15, and Neurotic16; bounded ordinary scrolling finds rows regardless of gesture distance. Require each visible checkbox/count increment, all five bottom green checks, visible Next, then actual phase16. No game memory or save data is written by validation.",
@@ -475,5 +716,7 @@
   "appearance_source": "Original ARM camera/FOV/look-at/orientation/projection helpers and real model anchor hierarchy prove gender category118,449/leftarrow646,540 and hair category1802,263/rightarrow1274,581 at full1920x1080 native canvas. One gender arrow toggles the default male NPC0 to female.",
   "save_resume_source": "Actual original ARM pause-icon hit103178\u2192104014\u2192107254 at113,965; pause-list65030 draw/64E7C hit places SaveQuit resource0x831 at960,797. ConfirmationYes uses original1089EC\u219288904+88E44 persistence, then SceneMenu. Existing-slot11AA58\u219211AB90\u219212F770nonzero selects pendingScene2; empty slot instead enters CAS.",
   "popup_source": "Actual CI8 NewGame PNG shows red Cancel/X on left798 and green Confirm/check on right1122. Original BD764 sets r3=0x40 and stackarg=0x20; constructor7FA6C stores leftAction at Hint+9C fromr3 and rightAction at+A0 fromstack, so left is Cancel/No40 and right Confirm/Yes20. Apply same type2 mapping to NewGame, TutorialNo and SaveQuitYes.",
-  "onboarding_source": "Actual CI9 reaches rendered house/HUD, then a timed New Wish dialog can block Pause. PNG/OCR recognizes only New Wish, Edit Appearance and Recipes; rendered green-check/blue-X pixels determine taps. Require two clear frames. Actual CI10 pause image has four button labels and no title: read Options, Help & About, Save and Continue, Save and Quit to menu with tight per-row OCR, then use the observed last-label center. Verify the exact save-confirmation body and rendered green check before confirming. Unknown panels fail closed; only ordinary UI touches occur. After loading the saved Sim, the final ordinary interaction can open the valid Alex/Edit Appearance context menu; retain that gameplay evidence without applying the onboarding-only dialog classifier."
+  "onboarding_source": "Actual CI9 reaches rendered house/HUD, then a timed New Wish dialog can block Pause. PNG/OCR recognizes only New Wish, Edit Appearance and Recipes; rendered green-check/blue-X pixels determine taps. Require two clear frames. Actual CI10 pause image has four button labels and no title: read Options, Help & About, Save and Continue, Save and Quit to menu with tight per-row OCR, then use the observed last-label center. Verify the exact save-confirmation body and rendered green check before confirming. Unknown panels fail closed; only ordinary UI touches occur. After loading the saved Sim, the final ordinary interaction can open the valid Alex/Edit Appearance context menu; retain that gameplay evidence without applying the onboarding-only dialog classifier.",
+  "object_action_source": "Original UIContextMenu actual rendered centers match the device screenshot, and the pre-fix clipping rectangle excludes all4action rows. Context OCR is calibrated against the actual user RetroSofa and CI12 Alex menus. Camera ladder source10F8B4/10FA34 accepts a downstroke inside rawX1746..1922,Y152..803; activezoomY169..786 increases distance200\u2192750. Sofa scan coordinates are bounded exploratory UI touches, never assumed object locations: only exact Retro Sofa title plus Sit text authorizes selectingSit. No game memory or save values are written.",
+  "shutdown_source": "Original main-menu Quit may be row4or5, so read visible Options/Help/Quit text and click Quit glyph center. Original SceneMenu20 right green action20 calls s3eDeviceRequestQuit. Quit body is Are you sure you want to quit the game?; require body and actual green pixels. AirplayThread.run after runNative logs Native code done. Shutting down, then calling finish on activity and Activity.finish; no System.exit or processkill. Require both log markers, game Main no longer resumed, and no fatal/ANR lines; an idle launcher PID is allowed."
 }
