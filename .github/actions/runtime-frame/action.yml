@@ -1,0 +1,27 @@
+name: Upload one live Android frame
+description: Wait for the persistent emulator controller and upload raw PNG plus frame metadata.
+inputs:
+  frame:
+    description: Zero-based frame index
+    required: true
+  timeout:
+    description: Maximum seconds to wait
+    default: '900'
+runs:
+  using: composite
+  steps:
+    - name: Wait for live frame
+      id: ready
+      shell: bash
+      env:
+        FRAME_INDEX: ${{ inputs.frame }}
+        FRAME_TIMEOUT: ${{ inputs.timeout }}
+      run: /usr/bin/python3 scripts/android_runtime_frame.py --frame "$FRAME_INDEX" --timeout "$FRAME_TIMEOUT"
+    - name: Upload raw screenshot and metadata
+      if: steps.ready.outputs.available == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: runtime-live-${{ github.run_id }}-${{ github.run_attempt }}-frame-${{ inputs.frame }}
+        path: ${{ steps.ready.outputs.frame_path }}/
+        if-no-files-found: error
+        retention-days: 14

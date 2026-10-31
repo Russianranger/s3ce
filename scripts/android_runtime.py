@@ -12,9 +12,13 @@ import math
 import os
 from pathlib import Path
 import re
+import signal
 import struct
 import subprocess
 import time
+import shutil
+import urllib.error
+import urllib.request
 import xml.etree.ElementTree as ET
 
 PACKAGE = 'io.github.russianranger.s3ce'
@@ -22,6 +26,7 @@ LAUNCHER = PACKAGE + '/com.ideaworks3d.thesims3.CompatActivity'
 SCENE = re.compile(r'Scene=(SceneMenu|SceneGame)(?:@[^\s]+)?')
 MENU = re.compile(r'menuState=(\d+)')
 BOUNDS = re.compile(r'\[(-?\d+),\s*(-?\d+)\]\[(-?\d+),\s*(-?\d+)\]')
+CONTROL_URL = 'https://raw.githubusercontent.com/Russianranger/s3ce/qa/object-actions-ui/.validation/runtime-control.json'
 
 
 def sha(path):
@@ -87,6 +92,7 @@ class Android:
         self.checkpoints = {}
         self.object_actions = []
         self.quit_observation = {}
+        self.interactive_observation = {'commands': [], 'frames': [], 'finish_requested': False}
 
     def adb(self, *args, timeout=45, check=True):
         result = subprocess.run([self.adb_path, '-s', self.serial, *map(str, args)],
@@ -469,6 +475,87 @@ class Android:
         (self.output / (prefix + '-shutdown-observation.json')).write_text(
             json.dumps(self.quit_observation, indent=2) + '\n')
 
+    def interactive_loop(self, run_id, max_commands=24):
+        from android_runtime_control import ControlError, validate_control
+        if not re.fullmatch(r'[1-9][0-9]*', run_id) or not 1 <= max_commands <= 24:
+            raise ValueError('Interactive mode requires a real run ID and at most24commands')
+        live = self.output / 'live'
+        live.mkdir(parents=True, exist_ok=True)
+        deadline = time.monotonic() + 3600
+        seen_rejections = set()
+        for frame_index in range(max_commands):
+            label = f'live-frame-{frame_index:03d}'
+            self.snapshot(label)
+            source = self.output / label
+            frame = live / f'frame-{frame_index:03d}'
+            frame.mkdir(exist_ok=True)
+            shutil.copyfile(source / 'screen.png', frame / 'screen.png')
+            log = (source / 'logcat.txt').read_text(errors='replace')
+            activity = (source / 'activity.txt').read_text(errors='replace')
+            observation = self.events[-1]
+            metadata = {'schema': 1, 'run_id': run_id, 'frame': frame_index,
+                        'seq': frame_index + 1, 'frame_sha256': sha(frame / 'screen.png'),
+                        'coordinate_size': list(self.screen_size), 'viewport': self.viewport,
+                        'scene': observation['scene'], 'menu_state': observation['menu_state'],
+                        'game_pid': observation['game_pid'], 'time': time.time(),
+                        'resumed_activity_lines': [line.strip() for line in activity.splitlines()
+                                                  if 'mResumedActivity' in line or 'topResumedActivity' in line],
+                        'native_main_returned': bool(re.search(r'Native code done\.\s+Shutting down', log)),
+                        'activity_finish_requested': 'calling finish on activity' in log,
+                        'fatal_or_anr_count': len(re.findall(r'Fatal signal|FATAL EXCEPTION|SIGSEGV|SIGABRT|ANR in|am_crash|am_anr', log))}
+            (frame / 'frame.json').write_text(json.dumps(metadata, indent=2) + '\n')
+            ready = live / f'ready-{frame_index:03d}.json'
+            temporary = ready.with_suffix('.tmp')
+            temporary.write_text(json.dumps(metadata, indent=2) + '\n')
+            temporary.replace(ready)
+            self.interactive_observation['frames'].append(metadata)
+            print(json.dumps({'interactive_frame_ready': frame_index, **metadata}), flush=True)
+            command = None
+            while time.monotonic() < deadline:
+                try:
+                    request = urllib.request.Request(CONTROL_URL + '?t=' + str(time.time_ns()),
+                        headers={'Cache-Control': 'no-cache', 'User-Agent': 'S3CE-runtime-validation'})
+                    with urllib.request.urlopen(request, timeout=15) as response:
+                        raw = response.read(4097)
+                    command = validate_control(raw, run_id, frame_index + 1,
+                        metadata['frame_sha256'], self.screen_size, viewport=self.viewport)
+                    document = json.loads(raw)
+                    break
+                except (ControlError, urllib.error.URLError, TimeoutError) as error:
+                    rejection = type(error).__name__ + ': ' + str(error)
+                    if rejection not in seen_rejections:
+                        seen_rejections.add(rejection)
+                        print('Interactive control waiting: ' + rejection, flush=True)
+                    time.sleep(5)
+            if command is None:
+                raise TimeoutError('Interactive UI control deadline expired')
+            record = {'seq': frame_index + 1, 'frame_sha256': metadata['frame_sha256'],
+                      'command': command, 'note': document.get('note'), 'time': time.time()}
+            (live / f'accepted-command-{frame_index + 1:03d}.json').write_text(json.dumps(record, indent=2) + '\n')
+            self.interactive_observation['commands'].append(record)
+            print(json.dumps({'interactive_command': record}), flush=True)
+            kind = command['type']
+            if kind == 'finish':
+                self.interactive_observation['finish_requested'] = True
+                self.verify_native_quit('interactive-finish')
+                return
+            if kind == 'tap':
+                self.tap_visible_point([command['x'], command['y']])
+            elif kind == 'swipe':
+                self.assert_native_canvas()
+                self.shell('input', 'swipe', command['x1'], command['y1'], command['x2'], command['y2'], command['duration_ms'])
+            elif kind == 'key':
+                self.shell('input', 'keyevent', command['code'])
+            elif kind == 'wait':
+                time.sleep(command['seconds'])
+            elif kind == 'relaunch':
+                self.shell('am', 'force-stop', PACKAGE)
+                self.launch()
+                time.sleep(30)
+            if kind != 'wait':
+                time.sleep(2)
+        raise RuntimeError('Interactive frame budget exhausted without finish')
+
     def run_plan(self, plan, prefix, limit=None):
         checkpoints = {}
         self.checkpoints = checkpoints
@@ -565,7 +652,12 @@ def main():
     parser.add_argument('--baseline', required=True, type=Path)
     parser.add_argument('--plan', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--interactive', action='store_true')
+    parser.add_argument('--interactive-after', default='close-alex-context-before-object-test')
     args = parser.parse_args()
+    def terminate_controller(signum, frame):
+        raise RuntimeError('Runtime controller received termination signal')
+    signal.signal(signal.SIGTERM, terminate_controller)
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     sdk = Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
@@ -658,12 +750,20 @@ def main():
                     android.snapshot('baseline-final')
                 android.shell('am', 'force-stop', PACKAGE)
             else:
-                result['checkpoints'] = android.run_plan(plan, label)
+                limit = None
+                if args.interactive:
+                    matches = [i for i, step in enumerate(plan['steps']) if step['name'] == args.interactive_after]
+                    if len(matches) != 1:
+                        raise RuntimeError('Interactive prefix endpoint is missing or ambiguous')
+                    limit = matches[0] + 1
+                result['checkpoints'] = android.run_plan(plan, label, limit=limit)
                 result['events'] = android.events
                 for checkpoint in ['gameplay', 'resume']:
                     observation = result['checkpoints'].get(checkpoint, {})
                     if observation.get('scene') != 'SceneGame' or not observation.get('game_pid'):
                         raise RuntimeError('No observed real SceneGame at ' + checkpoint)
+                if args.interactive:
+                    android.interactive_loop(os.environ.get('GITHUB_RUN_ID', ''))
                 result['status'] = 'runtime-progression-observed-awaiting-visual-review'
         android.snapshot('candidate-final')
     except Exception as error:
@@ -679,6 +779,7 @@ def main():
         result['checkpoints'] = android.checkpoints
         result['object_actions'] = android.object_actions
         result['native_quit'] = android.quit_observation
+        result['interactive'] = android.interactive_observation
         result['environment']['emulator_exit_before_cleanup'] = emulator.poll() if emulator else None
         result['environment']['live_logcat_exit_before_cleanup'] = logcat.poll() if logcat else None
         for name, command in [('host-kernel.txt', ['dmesg', '-T']),
@@ -706,6 +807,13 @@ def main():
                 logcat.wait()
             live_log.close()
         emulator_log.close()
+        live = output / 'live'
+        live.mkdir(exist_ok=True)
+        marker = live / 'controller-exit.json'
+        temporary = marker.with_suffix('.tmp')
+        temporary.write_text(json.dumps({'status': result['status'], 'error': result.get('error'),
+                                         'exit_code': 0 if result['status'] == 'runtime-progression-observed-awaiting-visual-review' else 1}, indent=2) + '\n')
+        temporary.replace(marker)
 
 
 if __name__ == '__main__':

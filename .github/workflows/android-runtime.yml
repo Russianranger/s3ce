@@ -6,9 +6,15 @@ on:
     paths:
       - '.validation/**'
       - '.github/workflows/android-runtime.yml'
+      - '.github/actions/runtime-frame/**'
       - 'scripts/android_runtime*.py'
       - 'scripts/android_runtime_plan.json'
   workflow_dispatch:
+    inputs:
+      interactive:
+        description: Use the frame-guided UI controller
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -20,16 +26,30 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - name: Initialize validation diagnostics
         shell: bash
+        env:
+          WORKFLOW_EVENT: ${{ github.event_name }}
+          DISPATCH_INTERACTIVE: ${{ inputs.interactive }}
         run: |
           export ANDROID_AVD_HOME="$RUNNER_TEMP/s3ce-validation-avd"
           printf 'ANDROID_AVD_HOME=%s\n' "$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
           mkdir -p build/runtime-evidence "$ANDROID_AVD_HOME"
           printf 'ANDROID_HOME=%s\nANDROID_AVD_HOME=%s\n' "$ANDROID_HOME" "$ANDROID_AVD_HOME" > build/runtime-evidence/setup.txt
+          python3 - <<'PYMODE'
+          import json, os
+          from pathlib import Path
+          plan = json.loads(Path('scripts/android_runtime_plan.json').read_text())
+          enabled = (os.environ.get('DISPATCH_INTERACTIVE', '').lower() == 'true'
+                     if os.environ['WORKFLOW_EVENT'] == 'workflow_dispatch'
+                     else bool(plan.get('interactive_control_enabled', False)))
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write('S3CE_RUNTIME_INTERACTIVE=' + str(enabled).lower() + '\n')
+          print('Interactive frame controller:', enabled)
+          PYMODE
       - name: Prepare byte-exact internal APKs
         id: apks
         env:
@@ -108,11 +128,154 @@ jobs:
           /usr/bin/python3 -c 'import PIL; print("Pillow", PIL.__version__)'
           tesseract --version
       - name: Exercise baseline and candidate through real Android input
+        if: env.S3CE_RUNTIME_INTERACTIVE != 'true'
         env:
           CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}
           BASELINE_APK: ${{ steps.apks.outputs.baseline }}
         run: |
           /usr/bin/python3 scripts/android_runtime.py --avd S3CE_VALIDATION --candidate "$CANDIDATE_APK" --baseline "$BASELINE_APK" --plan scripts/android_runtime_plan.json --output build/runtime-evidence
+      - name: Start persistent frame-guided Android runtime
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        env:
+          CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}
+          BASELINE_APK: ${{ steps.apks.outputs.baseline }}
+        run: |
+          mkdir -p build/runtime-evidence/live
+          nohup /usr/bin/python3 scripts/android_runtime.py --avd S3CE_VALIDATION --candidate "$CANDIDATE_APK" --baseline "$BASELINE_APK" --plan scripts/android_runtime_plan.json --output build/runtime-evidence --interactive > build/runtime-evidence/controller.log 2>&1 < /dev/null &
+          printf '%s\n' "$!" > "$RUNNER_TEMP/s3ce-runtime-controller.pid"
+      - name: Live Android frame 00
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '0'
+          timeout: '2700'
+      - name: Live Android frame 01
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '1'
+      - name: Live Android frame 02
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '2'
+      - name: Live Android frame 03
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '3'
+      - name: Live Android frame 04
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '4'
+      - name: Live Android frame 05
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '5'
+      - name: Live Android frame 06
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '6'
+      - name: Live Android frame 07
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '7'
+      - name: Live Android frame 08
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '8'
+      - name: Live Android frame 09
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '9'
+      - name: Live Android frame 10
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '10'
+      - name: Live Android frame 11
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '11'
+      - name: Live Android frame 12
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '12'
+      - name: Live Android frame 13
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '13'
+      - name: Live Android frame 14
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '14'
+      - name: Live Android frame 15
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '15'
+      - name: Live Android frame 16
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '16'
+      - name: Live Android frame 17
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '17'
+      - name: Live Android frame 18
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '18'
+      - name: Live Android frame 19
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '19'
+      - name: Live Android frame 20
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '20'
+      - name: Live Android frame 21
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '21'
+      - name: Live Android frame 22
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '22'
+      - name: Live Android frame 23
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '23'
+      - name: Collect persistent runtime result
+        if: always() && env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        env:
+          PRIOR_JOB_STATUS: ${{ job.status }}
+        run: |
+          if [ "$PRIOR_JOB_STATUS" != "success" ] && [ -f "$RUNNER_TEMP/s3ce-runtime-controller.pid" ]; then
+            read -r controller_pid < "$RUNNER_TEMP/s3ce-runtime-controller.pid"
+            if [[ "$controller_pid" =~ ^[0-9]+$ ]]; then
+              kill -TERM "$controller_pid" 2>/dev/null || true
+            fi
+          fi
+          /usr/bin/python3 scripts/android_runtime_frame.py --finish --timeout 120
       - name: Upload screenshots and runtime evidence only
         if: always()
         uses: actions/upload-artifact@v4
