@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 17,
-  "frame_sha256": "2228fdb5ae96c28ea0bbf79718c2f4ed55134ee491336d05aa81ae6e9d19f2fb",
+  "seq": 18,
+  "frame_sha256": "2c15c61c2415d1f049f1d26b47e71270d1b21eed2828816b090a541757087084",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 500,
-    "y": 245
+    "x": 113,
+    "y": 965
   },
-  "note": "Close the visible full-slot Wish notice to inspect the completed seated pose."
+  "note": "Open the visible Pause control after the completed Bed Sit."
 }
