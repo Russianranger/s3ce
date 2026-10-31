@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41212609908",
-  "seq": 5,
-  "frame_sha256": "0c42f1d8d62ea71287e3e08abc6621eae4c7de21d2aadfa12065d4ea53988b94",
+  "seq": 6,
+  "frame_sha256": "cf950b178c2199b400e6b4b8cbe5922f5a872de77e0a48802e336ca2c5cd5411",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1235,
-    "y": 353
+    "x": 1122,
+    "y": 854
   },
-  "note": "Select the actual rendered Sit action on the dining chair."
+  "note": "Accept the visible timed wish dialog before checking the selected interaction."
 }
