@@ -70,7 +70,7 @@ class Android:
         (directory / 'screen.png').write_bytes(png)
         (directory / 'logcat.txt').write_bytes(self.adb('logcat', '-d', '-v', 'threadtime'))
         try:
-            self.shell('uiautomator', 'dump', '/data/local/tmp/s3ce-window.xml', timeout=15, check=False)
+            self.shell('uiautomator', 'dump', '/data/local/tmp/s3ce-window.xml', timeout=5, check=False)
             hierarchy = self.adb('exec-out', 'cat', '/data/local/tmp/s3ce-window.xml', check=False)
         except subprocess.TimeoutExpired:
             hierarchy = b'<!-- UI hierarchy unavailable: animated native surface did not idle. -->\n'

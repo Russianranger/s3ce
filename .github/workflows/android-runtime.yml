@@ -21,13 +21,13 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 35
-    env:
-      ANDROID_AVD_HOME: ${{ runner.temp }}/s3ce-validation-avd
     steps:
       - uses: actions/checkout@v4
       - name: Initialize validation diagnostics
         shell: bash
         run: |
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/s3ce-validation-avd"
+          printf 'ANDROID_AVD_HOME=%s\n' "$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
           mkdir -p build/runtime-evidence "$ANDROID_AVD_HOME"
           printf 'ANDROID_HOME=%s\nANDROID_AVD_HOME=%s\n' "$ANDROID_HOME" "$ANDROID_AVD_HOME" > build/runtime-evidence/setup.txt
       - name: Prepare byte-exact internal APKs
