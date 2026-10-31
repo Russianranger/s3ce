@@ -1,0 +1,963 @@
+{
+  "schema": 1,
+  "title": "Object action runtime receipt",
+  "current_acceptance": "C2 not released: Chair Sit passed, clean Quit failed. C3 attempt1 aborted in ARM translation before UI; exact-byte attempt2 pending.",
+  "recorded_date_utc": "2026-10-31",
+  "runs": [
+    {
+      "candidate": "C2",
+      "release_status": "not released",
+      "run_id": "41212609908",
+      "source_commit": "c49b2cdf62ee73b15a3dab3b90b79af40689e4a6",
+      "workflow_conclusion": "failure",
+      "original_acceptance_status": "blocked",
+      "original_gate_passed": false,
+      "original_error": "RuntimeError: Normal native Quit did not finish without fatal/ANR evidence",
+      "apk": {
+        "package": "io.github.russianranger.s3ce",
+        "version_name": "0.1.11-object-actions",
+        "version_code": 111,
+        "bytes": 76762457,
+        "sha256": "a5a98513afa16520bc86b2aff67fda2b68d3505755d57e69e75cd6499453aa48",
+        "native_shim_sha256": "d0f375b7e74b8174f0f00472a3b3eb6f44f0b5d2f48ffcfa1f03e812b236cf68",
+        "min_sdk": 26,
+        "target_sdk": 28,
+        "abi": "armeabi-v7a"
+      },
+      "baseline_apk_sha256": "45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb",
+      "artifact": {
+        "id": 13047588702,
+        "name": "android-runtime-41212609908-1",
+        "bytes": 112228778,
+        "sha256": "e690ad48715216e3af370d33f4a0cb429c937c5016281fb1d2fa704b3bee24ab",
+        "url": "https://github.com/Russianranger/s3ce/actions/runs/41212609908/artifacts/13047588702"
+      },
+      "environment": {
+        "emulator_command": [
+          "/home/runner/work/_temp/s3ce-emulator-31.1.4/emulator/emulator",
+          "-avd",
+          "S3CE_VALIDATION",
+          "-port",
+          "5554",
+          "-accel",
+          "on",
+          "-gpu",
+          "swiftshader_indirect",
+          "-no-window",
+          "-no-audio",
+          "-no-boot-anim",
+          "-no-snapshot",
+          "-skip-adb-auth",
+          "-verbose",
+          "-memory",
+          "3072",
+          "-cores",
+          "4",
+          "-feature",
+          "-Vulkan,DynamicPartition",
+          "-show-kernel",
+          "-prop",
+          "qemu.hw.mainkeys=1",
+          "-partition-size",
+          "3083"
+        ],
+        "emulator_version": "Android emulator version 31.1.4.0 (build_id 7920983) (CL:N/A)\nCopyright (C) 2006-2017 The Android Open Source Project and many others.\nThis program is a derivative of the QEMU CPU emulator (www.qemu.org).\n\n  This software is licensed under the terms of the GNU General Public\n  License version 2, as published by the Free Software Foundation, and\n  may be copied, distributed, and modified under those terms.\n\n  This program is distributed in the hope that it will be useful,\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n  GNU General Public License for more details.\n\n",
+        "image_properties": "Pkg.Desc=System Image x86 with Google APIs.\nPkg.Revision=16\nPkg.Dependencies=emulator#30.8.0\nAndroidVersion.ApiLevel=30\nSystemImage.Abi=x86\nSystemImage.TagId=google_apis\nSystemImage.TagDisplay=Google APIs\nSystemImage.GpuSupport=true\nAddon.VendorId=google\nAddon.VendorDisplay=Google Inc.\n\n",
+        "system_image_bytes": 3232759808,
+        "system_image_sha256": "48e9d853b2ab892222889225629ad17cd53c0239c7db32798d134d10870a78fe",
+        "abi_list": "x86,armeabi-v7a,armeabi",
+        "native_bridge": "libndk_translation.so",
+        "page_size": "4096",
+        "kernel": "Linux localhost 5.4.249-android11-2-00004-g212a7aaded26-ab10688362 #1 SMP PREEMPT Mon Aug 21 12:17:45 UTC 2023 i686",
+        "candidate_native_viewport": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "emulator_exit_before_cleanup": null,
+        "live_logcat_exit_before_cleanup": null,
+        "host": "GitHub-hosted ubuntu-latest",
+        "acceleration": "KVM version12; emulator command contains -enable-kvm",
+        "native_canvas": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      },
+      "results": {
+        "normal_creation_save_restart_reload": "passed",
+        "object_action": {
+          "status": "passed by direct screenshot review",
+          "object": "Cheap Dining Chair",
+          "action": "Sit",
+          "before_frame": 6,
+          "after_frame": 7,
+          "before_clock": "Mon. 12:17",
+          "after_clock": "Mon. 12:41",
+          "before_pose": "Standing beside empty chair; visible Sit control",
+          "after_pose": "Seated on chair at table, bent knees, matching chair queue icon",
+          "pid": "12153",
+          "reviewers": [
+            "Root agent",
+            "Android runtime agent",
+            "Independent image reviewing agent"
+          ],
+          "sofa_directly_exercised": false
+        },
+        "clean_quit": {
+          "status": "failed",
+          "native_main_returned": true,
+          "activity_finish_requested": true,
+          "compat_launcher_resumed": true,
+          "package_pid_after_quit": "",
+          "fatal_type": "java.lang.NullPointerException",
+          "fatal_method": "com.ideaworks3d.airplay.SoundPlayer.onPeriodicNotification(SoundPlayer.java:91)",
+          "fatal_message": "Attempt to invoke virtual method int android.media.AudioTrack.write(short[], int, int) on a null object reference",
+          "timeline_utc": [
+            {
+              "time": "15:27:49.440",
+              "event": "Native code done.  Shutting down"
+            },
+            {
+              "time": "15:27:49.441",
+              "event": "calling finish on activity"
+            },
+            {
+              "time": "15:27:49.480",
+              "event": "JNI method generateAudio called when airplay not initialised"
+            },
+            {
+              "time": "15:27:49.481",
+              "event": "FATAL EXCEPTION: main / late AudioTrack callback NPE"
+            }
+          ]
+        },
+        "full_log_counts": {
+          "FATAL EXCEPTION": 1,
+          "Fatal signal": 0,
+          "SIGSEGV": 0,
+          "SIGABRT": 0,
+          "ANR in": 0,
+          "am_crash": 0,
+          "am_anr": 0
+        }
+      },
+      "normal_prefix_checkpoints": {
+        "gameplay": {
+          "name": "candidate-21-clear-gameplay-onboarding-popups",
+          "time": 1793459358.9410245,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "4099",
+          "observer": "Pointer callback EXIT #2048 timeMs=466619 event=1 result=-528923232 Game input AppEngine=0xe0792f20 active=0 counts=7,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xe0a568e8 gesture=0 primary=0 origin=1000,700 current=1000,700"
+        },
+        "saved-to-menu": {
+          "name": "candidate-24-confirm-save-and-quit",
+          "time": 1793459571.1004531,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneMenu",
+          "menu_state": 5,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "4099",
+          "observer": "Pointer callback EXIT #3925 timeMs=731881 event=0 result=-528923232 Game input AppEngine=0xe0792f20 active=0 counts=5,0 engine420=0 engine430=0 transition424=0x00ffffff direction428=-1 speed42c=197379 Scene=SceneMenu@0xe0aeeae0 gesture=3 primary=0 origin=683,540 current=683,540 menuState=5 menuRoute=-1 menu1bc=0 angleBits=0x00000000 angle=0"
+        },
+        "resume": {
+          "name": "candidate-27-load-existing-saved-female-sim",
+          "time": 1793459667.414089,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "12153",
+          "observer": "Pointer callback EXIT #257 timeMs=828582 event=0 result=-527870320 Game input AppEngine=0xe0893f20 active=1 counts=0,2 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xe09a5070 gesture=3 primary=0 origin=27,540 current=27,540"
+        }
+      },
+      "save_metadata": {
+        "sim3dat0_bytes": 2562,
+        "sim3set_bytes": 90,
+        "mtime_before_object_action_utc": "2026-10-31 15:10",
+        "mtime_after_post_action_save_utc": "2026-10-31 15:26",
+        "created_game_pid": "4099",
+        "reloaded_game_pid": "12153",
+        "access": "read-only directory listing; save contents were not edited"
+      },
+      "native_quit_observation": {
+        "native_main_returned": true,
+        "activity_finish_requested": true,
+        "resumed_activity_lines": [
+          "mResumedActivity: ActivityRecord{ea55f09 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.CompatActivity t11}"
+        ],
+        "game_main_resumed": false,
+        "compat_launcher_resumed": true,
+        "retained_package_pid": "",
+        "fatal_or_anr_lines": [
+          "10-31 15:27:49.481 12153 12153 E AndroidRuntime: FATAL EXCEPTION: main"
+        ]
+      },
+      "frames": [
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 0,
+          "seq": 1,
+          "frame_sha256": "fa4d248f191821223aeaf8372ed63d1e48bdf3d6de2071ed40daafcf5f5bf2d9",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793459695.3105762,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-000/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 1,
+          "seq": 2,
+          "frame_sha256": "8d6e5c6b57c1082ef0dc925e7ca0417caa130037c19da59b9b4734cc37e6d886",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793459847.4434586,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-001/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 2,
+          "seq": 3,
+          "frame_sha256": "2341d1d0250d02ea4bb707cadbe8afbd4b9d5b66cf56712fbbe9b9213c6cf39d",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793459903.2218847,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-002/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 3,
+          "seq": 4,
+          "frame_sha256": "6e299b4ac8ff6c8caa6fe85d391b76d80cb926836e51b04f88953798a404dc29",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793459945.2063713,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-003/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 4,
+          "seq": 5,
+          "frame_sha256": "0c42f1d8d62ea71287e3e08abc6621eae4c7de21d2aadfa12065d4ea53988b94",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460022.315477,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-004/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 5,
+          "seq": 6,
+          "frame_sha256": "cf950b178c2199b400e6b4b8cbe5922f5a872de77e0a48802e336ca2c5cd5411",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460210.772563,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-005/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 6,
+          "seq": 7,
+          "frame_sha256": "ce4e9a4fabfbe809affc40f1256d21789688b9e2ca499509b0bbd7491dfde76c",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460251.1685102,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-006/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 7,
+          "seq": 8,
+          "frame_sha256": "5aa234152451b1e36157433a166bcc4f9eaea0e11b4767e4c8379d5d886c3655",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460281.7564108,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-007/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 8,
+          "seq": 9,
+          "frame_sha256": "a8bc174021a0332c2a346b4aba8e6d792f3c47ea8e6fa6e5f42a4449f90b93b1",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460311.3470953,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-008/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 9,
+          "seq": 10,
+          "frame_sha256": "1c2aa459a31754fd30eb515f79f299bdf402aa766a21765e7834eed96c8dee95",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460346.745129,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-009/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 10,
+          "seq": 11,
+          "frame_sha256": "ec6117536931c793fac9bf1e7ab18271f71ea3bb64709d9a59b2925a573507b5",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460375.2672403,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-010/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 11,
+          "seq": 12,
+          "frame_sha256": "6e5af115041dfb54622fed7f75e83b73852c5b529de35c2e043f7503c21d6eb0",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460411.8875113,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-011/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 12,
+          "seq": 13,
+          "frame_sha256": "87d7a7d46263ee43d8ce87f1597c42c5ba404e36ba575b5eea43bc6c52fc05ed",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12153",
+          "time": 1793460447.2131863,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{b6a4fac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0,
+          "archive_member": "live-frame-012/screen.png"
+        },
+        {
+          "schema": 1,
+          "run_id": "41212609908",
+          "frame": 13,
+          "seq": 14,
+          "frame_sha256": "557dd38760b35e9ed9eea1443a0f0e4c5ce3e0551b6e75d720c8ecbfcdf2e2be",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "",
+          "time": 1793460473.8499627,
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{ea55f09 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.CompatActivity t11}"
+          ],
+          "native_main_returned": true,
+          "activity_finish_requested": true,
+          "fatal_or_anr_count": 1,
+          "archive_member": "live-frame-013/screen.png"
+        }
+      ],
+      "accepted_ui_commands": [
+        {
+          "seq": 1,
+          "frame_sha256": "fa4d248f191821223aeaf8372ed63d1e48bdf3d6de2071ed40daafcf5f5bf2d9",
+          "command": {
+            "type": "swipe",
+            "x1": 1834,
+            "y1": 200,
+            "x2": 1834,
+            "y2": 765,
+            "duration_ms": 1250
+          },
+          "note": "Zoom out using the visible right-hand camera ladder to select the sofa from the whole house.",
+          "time": 1793459838.270725
+        },
+        {
+          "seq": 2,
+          "frame_sha256": "8d6e5c6b57c1082ef0dc925e7ca0417caa130037c19da59b9b4734cc37e6d886",
+          "command": {
+            "type": "tap",
+            "x": 1122,
+            "y": 854
+          },
+          "note": "Accept the visible Wish dialog.",
+          "time": 1793459895.3291252
+        },
+        {
+          "seq": 3,
+          "frame_sha256": "2341d1d0250d02ea4bb707cadbe8afbd4b9d5b66cf56712fbbe9b9213c6cf39d",
+          "command": {
+            "type": "swipe",
+            "x1": 1834,
+            "y1": 200,
+            "x2": 1834,
+            "y2": 765,
+            "duration_ms": 1250
+          },
+          "note": "Zoom out using the visible camera ladder after closing the Wish.",
+          "time": 1793459935.2543218
+        },
+        {
+          "seq": 4,
+          "frame_sha256": "6e299b4ac8ff6c8caa6fe85d391b76d80cb926836e51b04f88953798a404dc29",
+          "command": {
+            "type": "tap",
+            "x": 970,
+            "y": 745
+          },
+          "note": "Select the visible dining chair next to the table to test the Sit interaction.",
+          "time": 1793460014.1959221
+        },
+        {
+          "seq": 5,
+          "frame_sha256": "0c42f1d8d62ea71287e3e08abc6621eae4c7de21d2aadfa12065d4ea53988b94",
+          "command": {
+            "type": "tap",
+            "x": 1235,
+            "y": 353
+          },
+          "note": "Select the actual rendered Sit action on the dining chair.",
+          "time": 1793460202.1908138
+        },
+        {
+          "seq": 6,
+          "frame_sha256": "cf950b178c2199b400e6b4b8cbe5922f5a872de77e0a48802e336ca2c5cd5411",
+          "command": {
+            "type": "tap",
+            "x": 1122,
+            "y": 854
+          },
+          "note": "Accept the visible timed wish dialog before checking the selected interaction.",
+          "time": 1793460242.829743
+        },
+        {
+          "seq": 7,
+          "frame_sha256": "ce4e9a4fabfbe809affc40f1256d21789688b9e2ca499509b0bbd7491dfde76c",
+          "command": {
+            "type": "tap",
+            "x": 1235,
+            "y": 353
+          },
+          "note": "Tap visible dining-chair Sit after acknowledging the timed wish.",
+          "time": 1793460272.6601207
+        },
+        {
+          "seq": 8,
+          "frame_sha256": "5aa234152451b1e36157433a166bcc4f9eaea0e11b4767e4c8379d5d886c3655",
+          "command": {
+            "type": "tap",
+            "x": 113,
+            "y": 965
+          },
+          "note": "Open pause menu after confirming the Sim is visibly seated on the selected chair.",
+          "time": 1793460303.2229838
+        },
+        {
+          "seq": 9,
+          "frame_sha256": "a8bc174021a0332c2a346b4aba8e6d792f3c47ea8e6fa6e5f42a4449f90b93b1",
+          "command": {
+            "type": "tap",
+            "x": 960,
+            "y": 798
+          },
+          "note": "Select the visible Save and Quit to menu action.",
+          "time": 1793460338.0641758
+        },
+        {
+          "seq": 10,
+          "frame_sha256": "1c2aa459a31754fd30eb515f79f299bdf402aa766a21765e7834eed96c8dee95",
+          "command": {
+            "type": "tap",
+            "x": 1122,
+            "y": 735
+          },
+          "note": "Confirm the visible Save Game and Quit prompt with its green check.",
+          "time": 1793460368.2460546
+        },
+        {
+          "seq": 11,
+          "frame_sha256": "ec6117536931c793fac9bf1e7ab18271f71ea3bb64709d9a59b2925a573507b5",
+          "command": {
+            "type": "wait",
+            "seconds": 10
+          },
+          "note": "Allow normal save-and-quit loading to finish.",
+          "time": 1793460396.8080018
+        },
+        {
+          "seq": 12,
+          "frame_sha256": "6e5af115041dfb54622fed7f75e83b73852c5b529de35c2e043f7503c21d6eb0",
+          "command": {
+            "type": "tap",
+            "x": 707,
+            "y": 798
+          },
+          "note": "Select the visible main-menu Quit button for clean native shutdown.",
+          "time": 1793460438.6575398
+        },
+        {
+          "seq": 13,
+          "frame_sha256": "87d7a7d46263ee43d8ce87f1597c42c5ba404e36ba575b5eea43bc6c52fc05ed",
+          "command": {
+            "type": "tap",
+            "x": 1122,
+            "y": 735
+          },
+          "note": "Confirm native Quit using the visible green check.",
+          "time": 1793460468.6514812
+        },
+        {
+          "seq": 14,
+          "frame_sha256": "557dd38760b35e9ed9eea1443a0f0e4c5ce3e0551b6e75d720c8ecbfcdf2e2be",
+          "command": {
+            "type": "finish"
+          },
+          "note": "Collect the complete run evidence after native Quit returned; fatal count requires investigation and is not accepted.",
+          "time": 1793460500.5443542
+        }
+      ],
+      "evidence_files": [
+        {
+          "archive_member": "acceptance.json",
+          "sha256": "0452cfa4534587ba5f9d6eac18fde8f33a16d2c00011fc477eb5cec9daa1f66f"
+        },
+        {
+          "archive_member": "logcat-live.txt",
+          "sha256": "ba0d4c779edc92a52625e189c095586ca22c95b4b4a067bde30d39d4fdc92793"
+        },
+        {
+          "archive_member": "candidate-identity.txt",
+          "sha256": "9fbc1999e7083fcc04972721a5e659de8482e53c97be692170b7b11d20160fb9"
+        },
+        {
+          "archive_member": "emulator.txt",
+          "sha256": "75c52cd34b76f5b8d61d1455671d03be213f22a441e122d1be690762495581cf"
+        }
+      ],
+      "limitations": [
+        "Android11 API30 emulator with ARMv7 translation only; no physical device or Android13\u201316 acceptance from this run.",
+        "Cheap Dining Chair Sit was exercised; Retro Sofa was not directly selected.",
+        "Post-Quit SceneGame metadata is a stale sampled native observation.",
+        "Visible CompatActivity and successful native return do not prove clean Quit when a Java fatal follows.",
+        "The original failed workflow and blocked acceptance record remain unchanged."
+      ],
+      "previews": [
+        {
+          "path": "docs/screenshots/object-actions-c2-chair-menu-preview.jpg",
+          "format": "JPEG preview",
+          "dimensions": [
+            1280,
+            720
+          ],
+          "quality": 90,
+          "bytes": 238625,
+          "sha256": "8b91dbfd281108ca0979c62c3e4971ef6ddc1d1c59b3a99295e2997673d571ec",
+          "original_archive_member": "live-frame-006/screen.png",
+          "original_png_sha256": "ce4e9a4fabfbe809affc40f1256d21789688b9e2ca499509b0bbd7491dfde76c",
+          "transformation": "Resize using LANCZOS and JPEG encode only; no overlays or content edits"
+        },
+        {
+          "path": "docs/screenshots/object-actions-c2-seated-sim-preview.jpg",
+          "format": "JPEG preview",
+          "dimensions": [
+            1280,
+            720
+          ],
+          "quality": 90,
+          "bytes": 278094,
+          "sha256": "668b469196a34e4b0fc50d5378bc252b3a05f479d98a4258eb20e63a3c25477c",
+          "original_archive_member": "live-frame-007/screen.png",
+          "original_png_sha256": "5aa234152451b1e36157433a166bcc4f9eaea0e11b4767e4c8379d5d886c3655",
+          "transformation": "Resize using LANCZOS and JPEG encode only; no overlays or content edits"
+        }
+      ]
+    },
+    {
+      "candidate": "C3",
+      "release_status": "not released",
+      "run_id": "41215805134",
+      "run_attempt": 1,
+      "source_commit": "02b1375300f541f3d092b3d1720d16031f4b7a06",
+      "workflow_conclusion": "failure",
+      "original_acceptance_status": "blocked",
+      "original_gate_passed": false,
+      "original_error": "RuntimeError: Cannot establish native SurfaceView/Main window bounds",
+      "apk": {
+        "bytes": 76762457,
+        "sha256": "3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5",
+        "native_shim_sha256": "d0f375b7e74b8174f0f00472a3b3eb6f44f0b5d2f48ffcfa1f03e812b236cf68"
+      },
+      "artifact": {
+        "id": 13047846272,
+        "name": "android-runtime-41215805134-1",
+        "bytes": 1119687,
+        "sha256": "0b133b784d29775c62856e0b0b9efec51b0e3e580cfb2e6eaf7cf20587b87152",
+        "url": "https://github.com/Russianranger/s3ce/actions/runs/41215805134/artifacts/13047846272"
+      },
+      "environment": {
+        "emulator_command": [
+          "/home/runner/work/_temp/s3ce-emulator-31.1.4/emulator/emulator",
+          "-avd",
+          "S3CE_VALIDATION",
+          "-port",
+          "5554",
+          "-accel",
+          "on",
+          "-gpu",
+          "swiftshader_indirect",
+          "-no-window",
+          "-no-audio",
+          "-no-boot-anim",
+          "-no-snapshot",
+          "-skip-adb-auth",
+          "-verbose",
+          "-memory",
+          "3072",
+          "-cores",
+          "4",
+          "-feature",
+          "-Vulkan,DynamicPartition",
+          "-show-kernel",
+          "-prop",
+          "qemu.hw.mainkeys=1",
+          "-partition-size",
+          "3083"
+        ],
+        "emulator_version": "Android emulator version 31.1.4.0 (build_id 7920983) (CL:N/A)\nCopyright (C) 2006-2017 The Android Open Source Project and many others.\nThis program is a derivative of the QEMU CPU emulator (www.qemu.org).\n\n  This software is licensed under the terms of the GNU General Public\n  License version 2, as published by the Free Software Foundation, and\n  may be copied, distributed, and modified under those terms.\n\n  This program is distributed in the hope that it will be useful,\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n  GNU General Public License for more details.\n\n",
+        "image_properties": "Pkg.Desc=System Image x86 with Google APIs.\nPkg.Revision=16\nPkg.Dependencies=emulator#30.8.0\nAndroidVersion.ApiLevel=30\nSystemImage.Abi=x86\nSystemImage.TagId=google_apis\nSystemImage.TagDisplay=Google APIs\nSystemImage.GpuSupport=true\nAddon.VendorId=google\nAddon.VendorDisplay=Google Inc.\n\n",
+        "system_image_bytes": 3232759808,
+        "system_image_sha256": "48e9d853b2ab892222889225629ad17cd53c0239c7db32798d134d10870a78fe",
+        "abi_list": "x86,armeabi-v7a,armeabi",
+        "native_bridge": "libndk_translation.so",
+        "page_size": "4096",
+        "kernel": "Linux localhost 5.4.249-android11-2-00004-g212a7aaded26-ab10688362 #1 SMP PREEMPT Mon Aug 21 12:17:45 UTC 2023 i686",
+        "candidate_native_viewport": null,
+        "emulator_exit_before_cleanup": null,
+        "live_logcat_exit_before_cleanup": null
+      },
+      "results": {
+        "normal_creation_save_restart_reload": "not reached",
+        "object_action": "not reached",
+        "clean_quit": "not reached",
+        "failure": {
+          "type": "SIGABRT in libndk_translation.so",
+          "time_utc": "2026-10-31T15:40:12.725Z",
+          "pid": 4187,
+          "tid": 4255,
+          "thread": "Thread-2",
+          "abort_message": "vendor/unbundled_google/libs/ndk_translation/ir/include/ndk_translation/ir/ir.h:716: CHECK failed: IsAligned(offset, GetFormatSize(src->format()))",
+          "compiler_path": [
+            "PutInsn::PutInsn",
+            "InsnBuilder::Put",
+            "SemanticsDecoder::VADDL",
+            "ArmDecoder::TranslateArmInsn"
+          ],
+          "translation_library_build_id": "32b46cd169ee83519dc60c614f156edb"
+        },
+        "java_fatal_count": 0
+      },
+      "evidence_files": [
+        {
+          "archive_member": "acceptance.json",
+          "sha256": "21749da40d7e98aabdc7d1bdb14588c22b5c8cf52df118ffdbee03e1bb5dcf48"
+        },
+        {
+          "archive_member": "logcat-live.txt",
+          "sha256": "ccf34f8a642ff35baee38260d0acc272e1cb89defa7a2153142718feecd8abc1"
+        },
+        {
+          "archive_member": "candidate-00-launched/screen.png",
+          "sha256": "ad3093947003d0aeb3464b9fbcadee07b540b696cb9b35c4916bb2f5a6a9135b"
+        },
+        {
+          "archive_member": "failure/screen.png",
+          "sha256": "ad3093947003d0aeb3464b9fbcadee07b540b696cb9b35c4916bb2f5a6a9135b"
+        },
+        {
+          "archive_member": "candidate-00-launched/native.log",
+          "sha256": "3f9104c5300b7c62835cf164a19e3009d9c32fcf9b4c598121067d1d940c1112"
+        }
+      ],
+      "followup": "One bounded rerun of the exact same source/APK was started as attempt2; no acceptance claim from attempt1."
+    }
+  ]
+}

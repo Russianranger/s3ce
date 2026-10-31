@@ -119,6 +119,21 @@ already-queued AudioTrack position callback called generateAudio after native
 shutdown, then dereferenced the now-null track in
 `SoundPlayer.onPeriodicNotification` at15:27:49.481. The original stop already
 detaches the listener, which does not cancel callbacks already queued by its
-delegate. A targeted audio lifecycle correction is in progress; it must reject
-retired-track callbacks before JNI and coordinate an in-flight callback with
-stop/restart while preserving normal playback.
+delegate. C3 replaces six guarded SoundPlayer methods. A shared explicit monitor serializes
+callback generation/write with stop, start, pause, resume and volume. A callback
+must name the current playing track before native generation and again before
+write; stop retires that track before detaching its listener and releasing it.
+Exception handlers release the monitor and rethrow the same exception. Original
+initialization, sample format/rate/buffer sizing and native generation remain.
+
+The actual assembled C3 DEX passes normal lifecycle, 1,000 delayed callbacks,
+stop/restart identity, concurrent generation/write drain, reentrant retirement,
+and exception/monitor checks. The old C2 DEX reproduces the observed delayed
+generation and null-track write. Six original method fingerprints plus native
+generation/init guards reject tampering before any write; repeat application is
+idempotent. All310 implemented C3 DEX methods pass static register/type analysis.
+These host checks model Android AudioTrack and native mixing boundaries, so the
+actual C3 Android interaction/clean-Quit replay remains required. C3 APK SHA256
+is `3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5`;
+only classes.dex and signing records differ from C2. Native bytes, the launcher
+DEX, AndroidManifest and original assets remain identical.
