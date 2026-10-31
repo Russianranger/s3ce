@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 19,
-  "frame_sha256": "fd2c8504da124c5310225e1c85d10930a3de5a9d8df70b45bd241c1a151d02c2",
+  "seq": 20,
+  "frame_sha256": "863a32e49951d7ae05b98b80fff590d1f4a944fa247767f8e4c2a58e3e638c0b",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 113,
-    "y": 965
+    "x": 500,
+    "y": 300
   },
-  "note": "Select Pause at its visible HUD target to begin normal Save and Quit."
+  "note": "Dismiss visible Sleepy hint; preserve timed popup evidence."
 }
