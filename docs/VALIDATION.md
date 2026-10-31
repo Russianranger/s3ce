@@ -37,10 +37,10 @@ res.dz SHA256 `3bbb04b058f245b1784370270f26a547ac36d124ef26d09fbadac05ee2dfcf82`
 
 Release [v0.1.11-object-actions](https://github.com/Russianranger/s3ce/releases/tag/v0.1.11-object-actions)
 was published from source `c7fee029f5ee6fcda3383d5baabaea6e3d337c9c`.
-[Publication run41219026998](https://github.com/Russianranger/s3ce/actions/runs/41219026998)
+[Publication run 41219026998](https://github.com/Russianranger/s3ce/actions/runs/41219026998)
 passed byte-exact reconstruction, signature/package/version111 checks, prerelease
 upload and download/checksum verification. A separate public GitHub download
-also matched76,762,457 bytes and SHA256
+also matched 76,762,457 bytes and SHA256
 `3f7698294ace0e7a78bb32524811ae237701395dc87184102cdc4c47534d07f5`.
 This is the exact manually accepted C3 APK; no rebuild or resigning occurred.
 
