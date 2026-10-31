@@ -1,5 +1,8 @@
 # Development handoff — 0.1.5
 
+Published source `c508de5dacb8ee0a0c41eecf0a29926d63bd7447`.
+Publication/download verification run `41152986602` passed.
+
 0.1.4 still fails on the Thor: callback returns with EGL_NO_CONTEXT/EGL_SUCCESS
 and no Java GL-entry log. Its post-call JNI exception=0 was not conclusive,
 since the original callMethod describes/clears exceptions internally.

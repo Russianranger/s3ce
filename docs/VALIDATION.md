@@ -42,7 +42,11 @@ APK SHA-256:
 Shim SHA-256:
 `27495c5d7a8619055bd2a214026383636db3f4c0c115ee54a921f681dd72b4cd`.
 
-Publication verification is recorded after completion.
+Publication run [41152986602](https://github.com/Russianranger/s3ce/actions/runs/41152986602)
+passed reconstruction, signature/identity checks, prerelease upload, and independent
+download/SHA-256 verification of the published APK. Release asset size/digest also
+match the frozen local APK. Published source:
+`c508de5dacb8ee0a0c41eecf0a29926d63bd7447`.
 Hardware startup/rendering/input/save results remain unverified. The exact
 cause of the device's original JNI-dispatch failure remains unresolved.
 
