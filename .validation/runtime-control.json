@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 5,
-  "frame_sha256": "6472177525f07b735d4d8a70bb0c18189a9cb4009ddeebfd4694c11d2569c983",
+  "seq": 6,
+  "frame_sha256": "488d025d8e3e8ab0dd5e87c685816f858525894b77261fec53e566698ab292a0",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 500,
-    "y": 270
+    "x": 452,
+    "y": 210
   },
-  "note": "Dismiss the visible Build Mode introduction to inspect the actual Buy controls."
+  "note": "Close the visible Build action chooser without purchasing or moving furniture."
 }
