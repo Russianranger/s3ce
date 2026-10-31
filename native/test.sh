@@ -20,6 +20,8 @@ cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \
 "$test_dir/safety_test"
 cc -std=gnu11 "${flags[@]}" "$native_dir/tests/code_flush_test.c" -o "$test_dir/flush_test"
 "$test_dir/flush_test"
+cc -std=gnu11 "${flags[@]}" "$native_dir/tests/ui_depth_test.c" -o "$test_dir/depth_test"
+"$test_dir/depth_test"
 cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \
     "$native_dir/tests/memory_compat_test.c" -o "$test_dir/memory_test"
 "$test_dir/memory_test"

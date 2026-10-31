@@ -251,6 +251,16 @@ context, never change state or read client buffers, and preserve observed GL
 errors for the game. Missing query functions skip the snapshot and retain the
 original draw call.
 
+The live state witness identified a separate UI projection error: at 1920×1080,
+the original display scale of 3.375 also scales the projection's Z axis. The HUD
+camera spans ±100 and begins its sprite layers at Z=-50, so those layers produce
+clip-space Z≈1.69 and disappear. During the first complete tracked game-code
+flush, the shim checks all 116 instruction bytes of the original projection
+wrapper and changes only its Z scale argument at code offset `0x135d80` to 1.0.
+X/Y scaling, input transforms, the earlier modelview scale, source assets and
+projection outside the display-scale bracket retain their original behavior.
+The original full-range instruction-cache flush follows this change.
+
 Run the CPU tests, optionally with sanitizers:
 
 ```sh
@@ -282,6 +292,7 @@ python3 native/tests/emulate_pointer_proxies.py /path/to/source.apk \
 python3 native/tests/emulate_cas_rotation.py /path/to/source.s3e.unpacked
 python3 native/tests/emulate_cas_tutorial.py /path/to/source.s3e.unpacked
 python3 native/tests/emulate_ui_strip_parser.py --source /path/to/source.s3e.unpacked
+python3 native/tests/emulate_ui_depth.py --source /path/to/source.s3e.unpacked
 ```
 
 The first script executes original `setViewNative`, `s3eGL_start`, and `callMethod`
@@ -317,6 +328,15 @@ copies and reference-count operations for the shipped implicit four-vertex strip
 and an equivalent explicit index array. Both parse to the same vertex range and
 strip length at preferred and high split addresses. Only typed stream reads and
 allocation/free boundaries are modeled; this proof does not test a GPU driver.
+The UI-depth proof executes the original Display begin/end, camera projection
+builder and actual GL projection wrapper at four screen sizes and two split
+address layouts. It verifies unchanged X/Y and input, unchanged projection
+outside the UI bracket, and a negative control showing that changing only the
+earlier modelview scale cannot correct this projection. Optional `--anim2d`,
+`--atlas`, `--report` and `--output` arguments replay the original sprite data
+against live captured device matrices in host fixed-function GL. They reproduce
+zero visible pixels with the original Z projection and visible sprites after
+the single projection correction. This is not Android gameplay progression.
 
 ## Behavior
 
@@ -366,9 +386,10 @@ on the Thor with 0.1.6, and working relaunch with the 0.1.7 RAM-reader correctio
 The 0.1.8 callback-to-game witness showed that dragging reaches the original
 gesture state machine. The user confirmed that dismissing the Create-a-Sim
 instruction screen through its original circular close control enables rotation
-and progression to traits. Missing M3G interface sprites remain under graphics
-investigation; a UI-only equivalent indexed-strip representation is tested as a
-bounded draw-path compatibility candidate, without changing texture pixels,
-coordinates, material state or input behavior.
+and progression to traits. The 0.1.9 indexed-strip experiment did not restore
+missing UI. Its diagnostic GPU matrices identified the separate Z projection
+clipping error above. The new native correction retains the original UI asset
+and draw representation; visible UI and progression beyond Create-a-Sim still
+require runtime validation before releasing another APK.
 Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.

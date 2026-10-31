@@ -370,3 +370,50 @@ and hash-verified before publication; the existing manifest format is retained.
 Reference checked for texture/completeness/query semantics: Khronos OpenGL ES
 1.1.12 specification, sections3.7.7–3.7.9:
 https://registry.khronos.org/OpenGL/specs/es/1.1/es_full_spec_1.1.pdf
+
+## Unreleased 0.1.10: confirmed projection-depth clipping
+
+The0.1.9 device GPU witness shows the indexed path executing, with valid enabled
+vertex/UV arrays, unit0 texture bindings, source-alpha blending, opaque color,
+and no query errors. All17 scaled HUD snapshots have projection m22≈-.03375
+instead of the camera's-.01, with modelview depth≈-50 and zero-depth sprite
+vertices. Their normalized depth1.63–1.69 exceeds the clip boundary1. The
+unscaled snapshots remain inside. This explains why equivalent indexed drawing
+did not restore the UI.
+
+Display.begin AE180 stores the screen scale. Its initial glScalef is later
+replaced by M3G modelview loading. The final projection wrapper135D50 reloads
+that active scale and multiplies all axes while loading GL_PROJECTION. The
+single correction at135D80 sets the Z argument to float1, preserving the original
+X/Y argument bits. Patching only AE1B0 is a tested negative control and does not
+fix the final projection. MatrixMode135DCC ensures the wrapper's extra scale is
+restricted to projection inside Display's UI bracket; outside-bracket3D behavior
+is unchanged.
+
+native/ui_depth.c applies that instruction only after a full116-byte original
+ARM fingerprint matches inside the tracked executable allocation. It runs under
+the allocation lock before the original full-code cache flush, with overflow/
+span/idempotence/tamper checks. The private packed S3E and archive assets remain
+original. The obsolete indexed-quad patch is removed from build application and
+asset verification, while its source tests remain as historical experiments.
+
+Actual ARM execution across32 low/high/dimension/control combinations preserves
+all XY/input entries, scale1 legacy output and bracket restoration. Independent
+Mesa replay uses the captured device matrices and exact original HUD textures/
+arrays: all four source sprites yield zero changed pixels before the fix and
+visible pixels after correcting projection Z only. This establishes the source
+failure mechanism; it does not replace actual Android progression acceptance.
+
+The new native crash occurs atGroup/World cast13B774, faulting at13B784 on the
+vtable+34 load. The object's first word was4; the input object itself was not a
+simple NULL. R4 retains it and original caller LR was saved atSP+4 before LR was
+overwritten locally. Both female/male model graphs and bounded explicit-parser
+allocation tests are valid. The origin of this invalid object remains unproven.
+Crash summaries now retain bounded crash-thread registers based on the exact
+Android13 tombstone schema;61 host regression checks pass.
+
+A full Android11 GoogleAPIs x86/ARMv7-translation runtime has been brought online
+for internal validation. Emulator setup required supported CPU extensions and
+preserving the system image's GPT/super partition size; these were runtime
+setup failures, not game failures. Visible UI, female customization, completion
+through SceneGame and save/resume must pass before another APK is presented.

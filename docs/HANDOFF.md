@@ -1,4 +1,57 @@
-# Development handoff — 0.1.9
+# Internal development handoff — 0.1.10
+
+User delivery gate: visible UI and actual Android progression through character
+creation into gameplay before another APK is presented. Investigate the female
+customization crash and exercise save/resume. No new APK has been published.
+AGENTS.md records this requirement for future agents.
+
+Confirmed UI cause from0.1.9 device GPU snapshots: projection m22=-.03375 and
+modelview z≈-50 put zero-depth HUD vertices at NDCz≈1.6875, outside clipping.
+Display scale3.375 affected Z as well as XY. The final projection wrapper135d50,
+not just the initial Display.begin scale, applies this multiplication. Native
+ui_depth.c changes only135d80 fromMOVr2,r0 toMOVr2,#float1 with a full116-byte
+fingerprint, tracked-allocation lock/bounds, and original full instruction-cache
+flush. Outside-UI/legacy scale1 behavior and all XY/input values are preserved.
+
+Twelve sanitizer suites,32 actual ARM combinations and replay of the captured
+GPU matrices with original sprite art pass. Native SHA:
+19c6bf2c89800590a316c2eaa8245159a021be3df6ac2dcc4d35037cf166330c.
+The source-proven mechanism is strong; those helper tests are not the full
+Android playthrough acceptance gate. Restore original res.dz: ui_indices is
+retained only as historical experiment code and no longer applied/accepted.
+
+The fresh crash is PC13b784, an LDR through vtable+34 in Group/World cast13b774.
+The previous instruction loaded the vtable from the object; fault38 implies a
+vtable word4, not a simple null input. r4 retains the object. LR was overwritten
+inside the helper; the original caller return is atSP+4. Both female/male asset
+hierarchies and exact explicit-TSA parser allocation/canary checks are valid.
+Origin remains unproven; do not hide it with a generic NULL skip.
+
+NativeTombstoneSummary now includes bounded crash-thread registers using the
+pinned Android13 schema.61 host regression checks pass; the internal APK has313
+executable DEX methods with zero static type/register errors. Saved stack memory
+is not extracted by this change.
+
+Validated INTERNAL candidate for the Android runtime (not a deliverable):
+analysis/internal-candidates-2/S3CE-0.1.10-character-creation-arm32.apk
+size76762457, SHA6307c5867135977e839315623178c9e7cca9ee9ce34ab9500df9a6784442a460.
+Fresh isolated build passed all source/config/native/signature/identity checks.
+Use --build-dir and --dist-dir; an earlier default-directory artifact failed
+manifest/config guards and was quarantined, never presented or installed.
+
+Runtime setup: Android11 Google APIs x86 image advertises ARMv7 translation.
+There is noKVM; use one persistent emulator+ADB controller because individual
+exec tool calls have isolated network namespaces. Guest CPU needs SSSE3/SSE4/
+POPCNT. Preserve the original3,232,759,808-byte system.img/GPT: default partition
+resizing previously truncated it. The runtime agent is restoring/pinning its
+size. Backup older emulator31.1.4 is prepared. No Android UI/playthrough result
+has been claimed yet.
+
+CAS flow: close hint12→13, appearance Next→persona14, choose persona/Next→traits15,
+five traits/Next→name16, nonempty name/confirm→confirmation19, Yes→SceneGame.
+Require live gameplay plus save/resume and retain runtime screenshots/logs.
+
+## Historical 0.1.9 handoff
 
 The Thor now passes the original hint confirmation and rotates/customizes the
 Sim. Input is working. Current blocker: missing M3G HUD sprites/panels/icons;

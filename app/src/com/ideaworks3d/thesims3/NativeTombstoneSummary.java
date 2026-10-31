@@ -6,14 +6,17 @@ import java.util.List;
 
 /**
  * Small, bounded reader for Android ApplicationExitInfo native-crash tombstones.
- * Schema: platform/system/core/debuggerd/proto/tombstone.proto (AOSP).
- * This intentionally summarizes crash metadata and backtraces only; register
- * dumps, memory contents, log buffers, and other unknown fields are skipped.
+ * Schema: AOSP android-13.0.0_r1, debuggerd/proto/tombstone.proto.
+ * https://android.googlesource.com/platform/system/core/+/refs/tags/
+ * android-13.0.0_r1/debuggerd/proto/tombstone.proto
+ * Thread.registers=3; Register.name=1, u64=2. The crashing thread's general
+ * registers are retained. Memory contents, logs, and unknown fields are skipped.
  */
 public final class NativeTombstoneSummary {
     private static final int MAX_INPUT = 2 * 1024 * 1024;
     private static final int MAX_OUTPUT = 12 * 1024;
     private static final int MAX_FRAMES = 32;
+    private static final int MAX_REGISTERS = 32;
     private static final int MAX_OTHER_THREADS = 3;
     private static final String TRUNCATED = "\n[Summary truncated]\n";
 
@@ -101,13 +104,13 @@ public final class NativeTombstoneSummary {
             if (value == null) continue;
             boolean crashing = key == summary.tid;
             boolean keep = crashing || summary.others.size() < MAX_OTHER_THREADS;
-            ThreadInfo thread = readThread(value, key, keep);
+            ThreadInfo thread = readThread(value, key, keep, crashing);
             if (crashing) summary.crashing = thread;
             else if (keep) summary.others.add(thread);
         }
     }
 
-    private static ThreadInfo readThread(Cursor input, long key, boolean keep) throws Malformed {
+    private static ThreadInfo readThread(Cursor input, long key, boolean keep, boolean registers) throws Malformed {
         ThreadInfo result = keep ? new ThreadInfo(key) : null;
         while (input.more()) {
             int tag = input.tag();
@@ -120,10 +123,34 @@ public final class NativeTombstoneSummary {
                     if (keep) result.name = input.text(tag, 128);
                     else input.skipAs(tag, 2);
                     break;
+                case 3:
+                    boolean collectRegister = keep && registers && result.registers.size() < MAX_REGISTERS;
+                    Register register = readRegister(input.message(tag), collectRegister);
+                    if (collectRegister) result.registers.add(register);
+                    break;
                 case 4:
                     boolean collect = keep && result.frames.size() < MAX_FRAMES;
                     Frame frame = readFrame(input.message(tag), collect);
                     if (collect) result.frames.add(frame);
+                    break;
+                default: input.skip(tag); break;
+            }
+        }
+        return result;
+    }
+
+    private static Register readRegister(Cursor input, boolean keep) throws Malformed {
+        Register result = keep ? new Register() : null;
+        while (input.more()) {
+            int tag = input.tag();
+            switch (tag >>> 3) {
+                case 1:
+                    if (keep) result.name = input.text(tag, 32);
+                    else input.skipAs(tag, 2);
+                    break;
+                case 2:
+                    long value = input.number(tag);
+                    if (keep) result.value = value;
                     break;
                 default: input.skip(tag); break;
             }
@@ -237,6 +264,16 @@ public final class NativeTombstoneSummary {
     private static int renderThread(Text output, ThreadInfo thread, boolean crashing, int count) {
         output.add((crashing ? "Crashing thread " : "Other thread ") + thread.id
                 + (thread.name.isEmpty() ? "" : " \"" + thread.name + "\"") + ":\n");
+        if (!thread.registers.isEmpty()) {
+            output.add("  Registers:\n");
+            for (int i = 0; i < thread.registers.size(); i++) {
+                Register register = thread.registers.get(i);
+                output.add((i % 4 == 0 ? "    " : " ")
+                        + (register.name.isEmpty() ? "(unnamed)" : register.name)
+                        + "=" + hex(register.value)
+                        + (i % 4 == 3 || i + 1 == thread.registers.size() ? "\n" : ""));
+            }
+        }
         int index = 0;
         for (Frame frame : thread.frames) {
             if (count == MAX_FRAMES) break;
@@ -274,7 +311,13 @@ public final class NativeTombstoneSummary {
         long id;
         String name = "";
         final List<Frame> frames = new ArrayList<>();
+        final List<Register> registers = new ArrayList<>();
         ThreadInfo(long id) { this.id = id; }
+    }
+
+    private static final class Register {
+        String name = "";
+        long value;
     }
 
     private static final class Frame {

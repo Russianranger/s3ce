@@ -8,6 +8,7 @@ import argparse
 import collections
 import hashlib
 import json
+import lzma
 import pathlib
 import struct
 import subprocess
@@ -23,6 +24,15 @@ EXPECTED_PATCH_SITES = {
     0x3752c: bytes.fromhex("10b582b0041c0092"),
     0x3766c: bytes.fromhex("00b583b00b1c0021"),
 }
+EXPECTED_S3E_SHA256 = "8198558b93316a963c2106f172fde53015063955af16d2aa13ee51a89a1e114a"
+EXPECTED_UI_SCALE = bytes.fromhex(
+    "10402de90040a0e12c009fe5001090e50000a0e30c00c1e5170ca0e3"
+    "b047fdeb2f48fdeb000094e5080084e51040bde80020a0e10010a0e12f48fdea")
+EXPECTED_UI_PROJECTION = bytes.fromhex(
+    "70402de968509fe50040a0e1000095e50c00d0e5000050e30400a0017040bd08"
+    "ba28fb0ab828fbeb000095e5080090e50020a0e10010a0e13b29fbeb000095e5"
+    "0020a0e3201090e5240090e5fe35a0e3000051e1ad07a0c30000a0d3010180c2"
+    "0210a0e12e29fbeb0400a0e17040bde81d29fbea")
 
 
 def parse_elf(data):
@@ -65,6 +75,30 @@ def main():
     assert hashlib.sha256(apk).hexdigest() == EXPECTED_APK, "Unexpected source APK"
     with zipfile.ZipFile(args.apk) as archive:
         data = archive.read("lib/armeabi/libairplay.so")
+        game = lzma.decompress(archive.read("assets/The Sims 3.s3e.jpg"))
+    assert hashlib.sha256(game).hexdigest() == EXPECTED_S3E_SHA256, "Unexpected source S3E"
+    assert struct.unpack_from("<I", game, 0x14)[0] == 0xd2a0
+    game_code = game[0xd2a0:0xd2a0 + 0x166ad8]
+    assert game_code[0xae180:0xae1bc] == EXPECTED_UI_SCALE, "UI scale fingerprint mismatch"
+    assert game_code[0x135d50:0x135dc4] == EXPECTED_UI_PROJECTION, "UI projection fingerprint mismatch"
+    # Resolve this function's tail branch against the original named import
+    # table, rather than assuming offset0x27c is a particular GL operation.
+    names = game[0x52:0xd2a0].split(b"\0")[:struct.unpack_from("<H", game, 0x50)[0]]
+    imports_by_offset, cursor = {}, 0
+    for name in names:
+        assert game_code[cursor:cursor + 4] == bytes.fromhex("feffffea")
+        imports_by_offset[cursor] = name.decode("ascii")
+        cursor += 4
+        if game_code[cursor:cursor + 4] == bytes.fromhex("7847c046"):
+            cursor += 4
+    branch = struct.unpack_from("<I", game_code, 0x135d88)[0]
+    displacement = (branch & 0xffffff) << 2
+    if displacement & 0x2000000:
+        displacement -= 0x4000000
+    target = 0x135d88 + 8 + displacement
+    assert branch >> 24 == 0xeb and target == 0x27c
+    assert imports_by_offset[target] == "glScalef"
+    ui_projection_import = imports_by_offset[target]
     assert len(data) == 410811
     header, programs = parse_elf(data)
     # Decode the original wrapper's PC-relative LDR and confirm its private
@@ -192,7 +226,10 @@ def main():
                "legacy_elf_sha256": hashlib.sha256(data).hexdigest(),
                "relocations_simulated": sum(counters.values()),
                "relocation_types": dict(counters), "imports": sorted(imports),
-               "allocator_guards": "pass", "gl_context_guard": "pass", "gl_dispatch_slot": hex(dispatch_slot), "jni_onload": hex(onload[0])}
+               "allocator_guards": "pass", "gl_context_guard": "pass", "gl_dispatch_slot": hex(dispatch_slot), "jni_onload": hex(onload[0]),
+               "ui_depth_profile": {"s3e_sha256": EXPECTED_S3E_SHA256,
+                   "function": "0x135d50", "z_argument": "0x135d80",
+                   "scale_import": ui_projection_import, "fingerprint": "pass"}}
     if args.shim:
         shim_data = args.shim.read_bytes()
         _, shim_programs = parse_elf(shim_data)

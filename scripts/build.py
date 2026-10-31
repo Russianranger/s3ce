@@ -21,13 +21,15 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     for name in ('input', 'apktool', 'sdk', 'ndk', 'jdk', 'keystore', 'signing-json'):
         p.add_argument('--' + name, required=True, type=Path)
+    p.add_argument('--build-dir', type=Path, default=ROOT / 'build')
+    p.add_argument('--dist-dir', type=Path, default=ROOT / 'dist')
     a = p.parse_args()
     if digest(a.input) != INPUT_SHA256:
         raise SystemExit('Unrecognized input APK: this patch set is version-specific.')
     a.sdk, a.ndk, a.jdk = a.sdk.resolve(), a.ndk.resolve(), a.jdk.resolve()
-    build, dist = ROOT / 'build', ROOT / 'dist'
-    build.mkdir(exist_ok=True)
-    dist.mkdir(exist_ok=True)
+    build, dist = a.build_dir.resolve(), a.dist_dir.resolve()
+    build.mkdir(parents=True, exist_ok=True)
+    dist.mkdir(parents=True, exist_ok=True)
     decoded = build / 'decoded'
     env = os.environ.copy()
     env['JAVA_HOME'] = str(a.jdk)
@@ -37,7 +39,7 @@ def main():
         subprocess.run([str(v) for v in command], check=True, env=env)
     java = a.jdk / 'bin/java'
     run(java, '-jar', a.apktool.resolve(), 'd', '-f', a.input.resolve(), '-o', decoded)
-    for patch in ('apply', 'gl_version_config', 'ui_indices'):
+    for patch in ('apply', 'gl_version_config'):
         spec = importlib.util.spec_from_file_location('s3ce_' + patch, ROOT / 'patches' / (patch + '.py'))
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -47,8 +49,8 @@ def main():
     data = metadata.read_text()
     data = data.replace('minSdkVersion: 3\n', 'minSdkVersion: 26\n')
     data = data.replace('targetSdkVersion: 7\n', 'targetSdkVersion: 28\n')
-    data = data.replace('versionCode: 1\n', 'versionCode: 109\n')
-    data = data.replace('versionName: 1.0\n', 'versionName: 0.1.9-ui-rendering\n')
+    data = data.replace('versionCode: 1\n', 'versionCode: 110\n')
+    data = data.replace('versionName: 1.0\n', 'versionName: 0.1.10-character-creation\n')
     metadata.write_text(data)
     legacy = decoded / 'assets/compat/libairplay-legacy.so'
     legacy.parent.mkdir(parents=True, exist_ok=True)
@@ -90,11 +92,17 @@ def main():
             '-alias', signing['alias'], '-dname', 'CN=S3CE Compatibility',
             '-keyalg', 'RSA', '-keysize', '3072', '-validity', '10000')
         a.keystore.chmod(0o600)
-    final = dist / 'S3CE-0.1.9-ui-rendering-arm32.apk'
+    final = dist / 'S3CE-0.1.10-character-creation-arm32.apk'
     run(bt / 'apksigner', 'sign', '--ks', a.keystore, '--ks-key-alias', signing['alias'],
         '--ks-pass', 'env:S3CE_STORE_PASS', '--key-pass', 'env:S3CE_STORE_PASS',
         '--out', final, aligned)
     run(bt / 'apksigner', 'verify', '--verbose', '--print-certs', final)
+    badging = subprocess.check_output([str(bt / 'aapt'), 'dump', 'badging', str(final)], env=env, text=True)
+    for expected in ("package: name='io.github.russianranger.s3ce' versionCode='110'",
+                     "versionName='0.1.10-character-creation'", "targetSdkVersion:'28'",
+                     "launchable-activity: name='com.ideaworks3d.thesims3.CompatActivity'"):
+        if expected not in badging:
+            raise SystemExit('Unexpected APK identity or launcher: ' + expected)
     run('python3', ROOT / 'scripts/verify.py', a.input.resolve(), final)
     run('python3', ROOT / 'native/verify_legacy.py', a.input.resolve(), '--shim', libdir / 'libairplay.so',
         '--ndk', a.ndk)

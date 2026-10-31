@@ -1,4 +1,33 @@
-# Candidate 0.1.9 validation
+# Internal 0.1.10 acceptance status
+
+The user requires visible UI and actual Android progression beyond character
+creation before another APK is presented. This gate is PENDING. No new release
+staging or APK publication is authorized before it passes.
+
+| Check | Current evidence |
+| --- | --- |
+| UI clipping cause | Confirmed from live GPU matrices: scaled projection places HUD outside depth range |
+| Projection correction | 32 original ARM cases and captured-state pixel replay pass; XY/input and legacy scale1 remain identical |
+| Native safety | 12 ASan/UBSan suites, fingerprint/allocation bounds/cache flush and ARM hardening checks pass |
+| App reporting | 61 crash-summary regressions pass; bounded registers added |
+| Internal APK | Signature, package/launcher/version, original assets/config and native checks pass |
+| Java bytecode | 313 methods, zero static type/register errors; assembled touch/lifecycle/GL regressions pass |
+| Full Android UI | Runtime is online; private app installation/playthrough pending |
+| Female-Sim crash | Invalid Group/World cast at13b784 confirmed; origin remains under investigation |
+| Character creation into gameplay | Pending real Android execution |
+| Gameplay and save/resume | Pending |
+
+Internal candidate SHA256:
+`6307c5867135977e839315623178c9e7cca9ee9ce34ab9500df9a6784442a460`.
+
+Native SHA256:
+`19c6bf2c89800590a316c2eaa8245159a021be3df6ac2dcc4d35037cf166330c`.
+
+This internal APK restores original res.dz and all other assets except the
+existing guarded Android configuration. The0.1.9 indexed-strip experiment is
+not applied. It is not a user deliverable until the runtime gate passes.
+
+## Historical 0.1.9 checks
 
 Device0.1.8 evidence confirms startup, reopening, hint dismissal, rotation and
 character-option changes. The new report reaches menuState13 with changing Sim

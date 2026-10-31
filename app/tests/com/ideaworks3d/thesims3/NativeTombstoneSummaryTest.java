@@ -9,6 +9,8 @@ public final class NativeTombstoneSummaryTest {
 
     public static void main(String[] args) {
         validCrashAndUnknownFields();
+        armRegistersAndUnknownFields();
+        registerBoundsAndMalformedFields();
         malformedInput();
         boundedOutputAndFramePriority();
         System.out.println("PASS: NativeTombstoneSummary " + checks + " checks");
@@ -43,6 +45,90 @@ public final class NativeTombstoneSummaryTest {
         String zeroFault = NativeTombstoneSummary.summarize(new Proto()
                 .message(10, new Proto().number(8, 1)).bytes());
         contains(zeroFault, "fault=0x0");
+    }
+
+    // Synthetic wire fixtures follow the pinned Android 13 AOSP schema:
+    // https://android.googlesource.com/platform/system/core/+/refs/tags/android-13.0.0_r1/debuggerd/proto/tombstone.proto
+    // Schema SHA256: 225912c9cb4fdfcbd24d3e9e20fccd51082b763bd78207768b72da32db1261db.
+    private static void armRegistersAndUnknownFields() {
+        Proto thread = thread(99, "ARM crash", 1);
+        // A proto3 zero-valued register can omit field2 entirely.
+        thread.message(3, new Proto().text(1, "r0"));
+        for (int i = 1; i <= 12; i++) thread.message(3, register("r" + i, 0xc0000000L + i));
+        thread.message(3, register("sp", 0xbffff000L))
+                .message(3, register("lr", 0xc013b790L))
+                .message(3, register("pc", 0xc013b784L))
+                .message(3, register("cpsr", 0x60000010L));
+        String result = crash(thread);
+        contains(result, "r0=0x0 r1=0xc0000001");
+        contains(result, "r12=0xc000000c sp=0xbffff000 lr=0xc013b790 pc=0xc013b784");
+        contains(result, "cpsr=0x60000010");
+        check(occurrences(result, "  Registers:") == 1, "one crashing register heading");
+        check(result.indexOf("  Registers:") < result.indexOf("  #00"), "registers precede frames");
+        check(!result.contains("REGISTER_SECRET"), "unknown register fields omitted");
+        check(!result.contains("MEMORY_SECRET"), "register summary still skips memory bytes");
+        Proto sparse = new Proto().number(1, 99).message(3, register("all64", -1L))
+                .message(3, new Proto().number(2, Long.MIN_VALUE))
+                .message(3, new Proto().text(1, "zero"));
+        result = crash(sparse);
+        contains(result, "all64=0xffffffffffffffff");
+        contains(result, "(unnamed)=0x8000000000000000");
+        contains(result, "zero=0x0");
+        contains(result, "No backtrace frames recorded");
+        Proto ordinary = thread(88, "other", 1).message(3, register("OTHER_REGISTER", 7));
+        result = NativeTombstoneSummary.summarize(new Proto().number(6, 99)
+                .message(16, entry(88, ordinary)).message(16, entry(99, thread)).bytes());
+        check(!result.contains("OTHER_REGISTER"), "only crash registers retained");
+        contains(result, "Other thread 88");
+    }
+
+    private static void registerBoundsAndMalformedFields() {
+        Proto thread = new Proto().number(1, 99);
+        for (int i = 0; i < 100; i++) thread.message(3, register("reg" + i, i));
+        String result = crash(thread);
+        check(occurrences(result, "=0x") == 32, "maximum 32 register entries");
+        contains(result, "reg31=0x1f");
+        check(!result.contains("reg32="), "extra registers omitted");
+        String large = repeat("x", 1000);
+        result = crash(new Proto().number(1, 99).message(3, register(large + "TAIL_SECRET", 42))
+                .message(3, register("r0\nINJECT", 0)));
+        contains(result, repeat("x", 32) + "…=0x2a");
+        contains(result, "r0 INJECT=0x0");
+        check(!result.contains("TAIL_SECRET"), "register name bounded");
+        check(result.getBytes(StandardCharsets.UTF_8).length <= 12 * 1024, "register output bounded");
+        malformed(crashBytes(new Proto().number(1, 99).number(3, 1)), "register message wrong wire");
+        malformed(crashBytes(new Proto().number(1, 99).message(3, new Proto().number(1, 0))),
+                "register name wrong wire");
+        malformed(crashBytes(new Proto().number(1, 99).message(3, new Proto().text(2, "wrong"))),
+                "register value wrong wire");
+        malformed(crashBytes(new Proto().number(1, 99).raw(3, new byte[]{0x10, (byte) 0x80})),
+                "truncated register value");
+        thread.message(3, new Proto().text(2, "wrong"));
+        malformed(crashBytes(thread), "malformed register beyond collection cap");
+        Proto others = new Proto().number(6, 99);
+        for (int i = 0; i < 5; i++) others.message(16, entry(i, thread(i, "other", 0)));
+        others.message(16, entry(55, new Proto().message(3, new Proto().number(1, 1))));
+        malformed(others.bytes(), "unselected thread register still validated");
+        Proto verbose = new Proto().number(1, 99);
+        for (int i = 0; i < 32; i++) verbose.message(3, register(large, -1L))
+                .message(4, new Proto().text(4, large).text(6, large));
+        result = crash(verbose);
+        contains(result, "[Summary truncated]");
+        check(result.getBytes(StandardCharsets.UTF_8).length <= 12 * 1024, "register and frame shared output budget");
+    }
+
+    private static Proto register(String name, long value) {
+        // Reversed fields and unknown fields exercise legal wire ordering and skipping.
+        return new Proto().number(2, value).text(1, name).number(1001, 7)
+                .fixed64(1002).text(1003, "REGISTER_SECRET").fixed32(1004);
+    }
+
+    private static byte[] crashBytes(Proto thread) {
+        return new Proto().number(6, 99).message(16, entry(99, thread)).bytes();
+    }
+
+    private static String crash(Proto thread) {
+        return NativeTombstoneSummary.summarize(crashBytes(thread));
     }
 
     private static void malformedInput() {

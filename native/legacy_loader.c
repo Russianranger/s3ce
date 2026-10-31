@@ -25,6 +25,7 @@
 #include "stack_bridge.h"
 #include "exception_inspect.h"
 #include "code_flush.h"
+#include "ui_depth.h"
 #include "memory_compat.h"
 #include "input_trace.h"
 #include "pointer_callbacks.h"
@@ -93,6 +94,7 @@ struct code_allocation {
     struct code_allocation *next;
     void *address;
     size_t length;
+    int ui_depth_status;
 };
 static struct code_allocation *code_allocations;
 static pthread_mutex_t code_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -115,6 +117,7 @@ static void *allocate_game_code(uint32_t requested) {
     if (!entry) { munmap(result, length); return NULL; }
     entry->address = result;
     entry->length = length;
+    entry->ui_depth_status = 0;
     pthread_mutex_lock(&code_lock);
     entry->next = code_allocations;
     code_allocations = entry;
@@ -146,6 +149,17 @@ static int flush_legacy_code(void *start, uint32_t length) {
         if (address >= base && address - base < entry->length &&
             length <= entry->length - (address - base)) break;
         entry = entry->next;
+    }
+    if (entry && !entry->ui_depth_status) {
+        int patched = s3ce_patch_ui_depth(entry->address, entry->length, start, length);
+        if (patched) {
+            entry->ui_depth_status = patched;
+            if (patched > 0)
+                LOGI("UI projection depth fixed: %p+0x135d80 uses XY scale and Z=1 (%s)",
+                     entry->address, patched == 1 ? "patched" : "already patched");
+            else
+                LOGE("UI depth scale patch refused: unexpected projection-wrapper fingerprint at %p", entry->address);
+        }
     }
     int result = s3ce_flush_code_span(start, length, entry ? entry->address : NULL,
         entry ? entry->length : 0, original_platform_cache_flush);

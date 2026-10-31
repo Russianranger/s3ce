@@ -2,12 +2,13 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **The Thor now starts, reopens, rotates the Sim and reaches
-character customization. HUD panels and controls are still missing. Version
-0.1.9 changes the shared HUD quad to indexed drawing, with identical intended
-geometry and pixels. This is a compatibility candidate awaiting Thor validation.**
+Java/JNI bridge. **Release 0.1.9 still hides the HUD and a later female-Sim
+interaction crashed. An unreleased correction now fixes the source-proven UI
+projection-depth error. The next APK is withheld until visible controls and
+progression through character creation into gameplay pass a full Android run.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.9-ui-rendering)
+Current source work and acceptance requirements are recorded in
+[AGENTS.md](AGENTS.md) and [the handoff](docs/HANDOFF.md).
 
 ## Supported candidate configuration
 
@@ -43,24 +44,17 @@ not a claim of successful gameplay on all four versions.
 
 ## Latest update and Thor test
 
-The latest report confirms hint dismissal, callback delivery, rotation and
-character-option changes. Missing graphics are the M3G HUD sprites; the visible
-hand buttons are standalone PNGs. The original sprites, textures, mip generation,
-material state, arrays and camera pass host execution/rendering checks. No exact
-on-device cause is established.
+The latest device GPU trace shows the UI being clipped: high-resolution screen
+scaling multiplies projection depth by3.375, putting HUD sprites at normalized
+Z1.6875 outside the visible range. The guarded correction changes only the
+projection scale's Z argument to1. Captured device matrices and original sprite
+art reproduce blank output before the correction and visible sprites afterward;
+XY/input coordinates remain identical.
 
-The candidate changes one shared quad from implicit vertices 0..3 to explicit
-indices 0..3, using the indexed draw API already used by visible 3D geometry.
-All 530 referenced sprite meshes retain their positions, UVs, topology and art.
-Source ARM execution and headless pixel comparisons validate equivalence; those
-checks do not establish the Thor result. Reports now include bounded read-only
-GPU state for matching quad draws if controls remain invisible.
-
-Install over the existing app, leave **Original rendering unchecked**, and start
-the game. Check the welcome dialog's panel/close control, then the appearance,
-clothing and traits controls. Continue using the touchscreen. If graphics remain
-missing, save that run's report and a screenshot. See
-[test instructions](docs/RELEASE_NOTES.md) and [native details](native/README.md).
+The unsuccessful indexed-quad experiment is removed from the build; original
+assets are restored. A separate crash at game offset13b784 involves an invalid
+Group/World cast object. Its origin is still under investigation. Internal
+Android runtime testing is in progress. No new APK is ready for presentation.
 
 ## Build
 
