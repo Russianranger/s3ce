@@ -1,16 +1,14 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 13,
-  "frame_sha256": "808f2a180973858bf4bef164590a397ced9af2ac1c08a257b2cff968163e8fe4",
+  "seq": 14,
+  "frame_sha256": "43fb1a2ecf08bd1fbd0e7e45be90d18f1bbec1190b57482ca49b6b2e9879abe6",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1124,
-    "y": 730
+    "type": "finish"
   },
-  "note": "Confirm the visible native Quit dialog; require actual native return and Activity finish."
+  "note": "Finish only after visible Compat version113, native Main return, Activity finish and zero fatal/ANR."
 }
