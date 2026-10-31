@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 2,
-  "frame_sha256": "aff389fdb4673938db4f0a63ee36461fa328d23134d12ab776544b33b5981b79",
+  "seq": 3,
+  "frame_sha256": "7b4b43ec0f21a7f6d16c0b798a3665f01920ba45f21c7b5816baef75c4ac679b",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1130,
-    "y": 792
+    "type": "wait",
+    "seconds": 6
   },
-  "note": "Select the visible Cheap Bed Sit row; inspect pose rather than menu closure."
+  "note": "Observe accepted bed input after normal travel time; require an actual seated pose."
 }
