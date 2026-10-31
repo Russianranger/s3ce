@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 8,
-  "frame_sha256": "fd3adcb6c739fc9768cc2a7eea0ff206462438682a413cab1fe904723cc3d275",
+  "seq": 9,
+  "frame_sha256": "99826b300460de7ec9ce2c9d656f445ce1ae1a46acfa10d2308043f3087cdfb8",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 113,
-    "y": 965
+    "x": 960,
+    "y": 797
   },
-  "note": "Open Pause now that the visible New Wish overlay is dismissed."
+  "note": "Select visible Save and Quit to menu after completed Bed Sit."
 }
