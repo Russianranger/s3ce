@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 3,
-  "frame_sha256": "2de453808993473f258b229dfd33a20a24c44ad206851c3e4c05793fecbdb0fc",
+  "seq": 4,
+  "frame_sha256": "7ad7643c80bb732dfdcccc649d9eb91e5324e9d9ccbb70de204a55a95702d96f",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 95,
-    "y": 330
+    "x": 110,
+    "y": 783
   },
-  "note": "Tap the unobstructed status-panel arrow beyond old raw X45 bound."
+  "note": "Select the visible chair/Buy button; it must open Buy rather than Pause."
 }
