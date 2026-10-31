@@ -21,11 +21,36 @@ PACKAGE = 'io.github.russianranger.s3ce'
 LAUNCHER = PACKAGE + '/com.ideaworks3d.thesims3.CompatActivity'
 SCENE = re.compile(r'Scene=(SceneMenu|SceneGame)(?:@[^\s]+)?')
 MENU = re.compile(r'menuState=(\d+)')
+BOUNDS = re.compile(r'\[(-?\d+),\s*(-?\d+)\]\[(-?\d+),\s*(-?\d+)\]')
 
 
 def sha(path):
     with path.open('rb') as stream:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def game_viewport(hierarchy, windows):
+    """Prefer the actual native view; otherwise use its fullscreen Main window."""
+    candidates = []
+    try:
+        for node in ET.fromstring(hierarchy).iter('node'):
+            name = node.get('class', '')
+            if 'SurfaceView' in name or 'AirplayView' in name:
+                match = BOUNDS.fullmatch(node.get('bounds', ''))
+                if match:
+                    candidates.append(tuple(map(int, match.groups())))
+    except ET.ParseError:
+        pass
+    if candidates:
+        return max(candidates, key=lambda b: (b[2] - b[0]) * (b[3] - b[1])), 'SurfaceView hierarchy'
+    for section in re.split(r'(?=\n\s*Window #\d+ Window\{)', windows):
+        heading = section.splitlines()[0:2]
+        if not any('com.ideaworks3d.thesims3.Main}' in line for line in heading):
+            continue
+        match = re.search(r'(?:mFrame=|\bframe=)(\[-?\d+,\s*-?\d+\]\[-?\d+,\s*-?\d+\])', section)
+        if match:
+            return tuple(map(int, BOUNDS.fullmatch(match[1]).groups())), 'Main window frame'
+    return None, None
 
 
 class Android:
@@ -36,6 +61,7 @@ class Android:
         self.events = []
         self.latest_native = ''
         self.screen_size = (1920, 1080)
+        self.viewport, self.viewport_source = None, None
 
     def adb(self, *args, timeout=45, check=True):
         result = subprocess.run([self.adb_path, '-s', self.serial, *map(str, args)],
@@ -75,6 +101,9 @@ class Android:
         except subprocess.TimeoutExpired:
             hierarchy = b'<!-- UI hierarchy unavailable: animated native surface did not idle. -->\n'
         (directory / 'hierarchy.xml').write_bytes(hierarchy)
+        windows = self.shell('dumpsys', 'window', 'windows', check=False)
+        (directory / 'windows.txt').write_text(windows)
+        self.viewport, self.viewport_source = game_viewport(hierarchy, windows)
         (directory / 'activity.txt').write_text(self.shell('dumpsys', 'activity', 'activities', check=False))
         (directory / 'app-files.txt').write_text(self.shell('ls', '-lR', f'/data/data/{PACKAGE}/files', check=False))
         self.latest_native = self.shell('cat', f'/data/data/{PACKAGE}/files/compat-native.log', check=False)
@@ -82,6 +111,7 @@ class Android:
         observers = [line for line in self.latest_native.splitlines() if SCENE.search(line)]
         event = {'name': label, 'time': time.time(), 'screen_size': list(self.screen_size),
                  'scene': self.last_scene(), 'menu_state': self.last_menu_state(),
+                 'native_viewport': self.viewport, 'viewport_source': self.viewport_source,
                  'game_pid': self.shell('pidof', PACKAGE, check=False).strip(),
                  'observer': observers[-1] if observers else None}
         self.events.append(event)
@@ -128,14 +158,19 @@ class Android:
         self.click_text('Start game')
 
     def tap(self, position, coordinate_size):
-        x, y = [round(value * actual / expected) for value, actual, expected
-                in zip(position, self.screen_size, coordinate_size)]
+        x, y = self.coordinates(position, coordinate_size)
         self.shell('input', 'tap', x, y)
+
+    def coordinates(self, position, coordinate_size):
+        left, top, right, bottom = self.viewport or (0, 0, *self.screen_size)
+        return (round(left + position[0] * (right - left) / coordinate_size[0]),
+                round(top + position[1] * (bottom - top) / coordinate_size[1]))
 
     def run_plan(self, plan, prefix, limit=None):
         checkpoints = {}
         for index, step in enumerate(plan['steps'][:limit]):
             name = f'{prefix}-{index:02d}-{step["name"]}'
+            previous_pid = next((event['game_pid'] for event in reversed(self.events) if event.get('game_pid')), None)
             if step.get('when_menu_state') is not None:
                 self.native_scene()
                 if self.last_menu_state() not in step['when_menu_state']:
@@ -145,8 +180,8 @@ class Android:
                 self.tap(step['tap'], plan['coordinate_size'])
             elif 'swipe' in step:
                 x1, y1, x2, y2, duration = step['swipe']
-                scaled = [round(v * a / e) for v, a, e in zip(
-                    [x1, y1, x2, y2], self.screen_size * 2, plan['coordinate_size'] * 2)]
+                scaled = [*self.coordinates([x1, y1], plan['coordinate_size']),
+                          *self.coordinates([x2, y2], plan['coordinate_size'])]
                 self.shell('input', 'swipe', *scaled, duration)
             elif 'text' in step:
                 if not re.fullmatch(r'[A-Za-z0-9_%.-]+', step['text']):
@@ -158,6 +193,8 @@ class Android:
                 self.click_text(step['click_text'], timeout=step.get('timeout', 45))
             elif step.get('relaunch'):
                 self.shell('am', 'force-stop', PACKAGE)
+                self.launch()
+            elif step.get('reopen'):
                 self.launch()
             time.sleep(step.get('wait', 2))
             # A touch is the observer trigger. Scene checkpoints may poll the
@@ -178,6 +215,8 @@ class Android:
                 self.wait_for(name + ' scene/menu observation', scene_ready,
                               step.get('timeout', 90))
             self.snapshot(name)
+            if step.get('expect_same_pid') and (not previous_pid or self.events[-1]['game_pid'] != previous_pid):
+                raise RuntimeError(f'{name}: game process changed across Home/reopen')
             if step.get('expect_menu_state') is not None and self.last_menu_state() != step['expect_menu_state']:
                 raise RuntimeError(f'{name}: expected menu state {step["expect_menu_state"]}, '
                                    f'observed {self.last_menu_state()}')
@@ -197,6 +236,7 @@ def main():
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     sdk = Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
+    emulator_dir = Path(os.environ.get('S3CE_EMULATOR_DIR', sdk / 'emulator'))
     image = sdk / 'system-images/android-30/google_apis/x86'
     original_size = (image / 'system.img').stat().st_size
     plan = json.loads(args.plan.read_text())
@@ -208,14 +248,15 @@ def main():
     emulator = logcat = None
     emulator_log = (output / 'emulator.txt').open('wb')
     try:
-        command = [str(sdk / 'emulator/emulator'), '-avd', args.avd, '-port', '5554',
-                   '-accel', 'on', '-gpu', 'swiftshader', '-no-window', '-no-audio',
+        command = [str(emulator_dir / 'emulator'), '-avd', args.avd, '-port', '5554',
+                   '-accel', 'on', '-gpu', os.environ.get('S3CE_GPU_MODE', 'swiftshader'), '-no-window', '-no-audio',
                    '-no-boot-anim', '-no-snapshot', '-skip-adb-auth', '-memory', '3072',
                    '-cores', '4', '-feature', '-Vulkan,DynamicPartition', '-show-kernel',
+                   '-prop', 'qemu.hw.mainkeys=1',
                    '-partition-size', str(math.ceil(original_size / 1048576))]
         result['environment']['emulator_command'] = command
         result['environment']['emulator_version'] = subprocess.check_output(
-            [str(sdk / 'emulator/emulator'), '-no-window', '-version'], text=True)
+            [str(emulator_dir / 'emulator'), '-no-window', '-version'], text=True)
         result['environment']['image_properties'] = (image / 'source.properties').read_text()
         result['environment']['system_image_bytes'] = original_size
         result['environment']['system_image_sha256'] = sha(image / 'system.img')
@@ -232,7 +273,11 @@ def main():
                 raise RuntimeError(label + ' APK package or ABI changed')
         emulator = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=emulator_log,
                                     stderr=subprocess.STDOUT)
-        android.wait_for('Android boot', lambda: android.shell('getprop', 'sys.boot_completed').strip() == '1', 600)
+        def boot_ready():
+            if emulator.poll() is not None:
+                raise ChildProcessError('Emulator exited during boot with status ' + str(emulator.returncode))
+            return android.shell('getprop', 'sys.boot_completed').strip() == '1'
+        android.wait_for('Android boot', boot_ready, 600)
         android.wait_for('PackageManager', lambda: 'package:' in android.shell('pm', 'path', 'android'), 120)
         android.adb('root', check=False)
         android.adb('wait-for-device', timeout=90)
@@ -252,13 +297,24 @@ def main():
             raise RuntimeError('Candidate requires 4096-byte pages')
         if (image / 'system.img').stat().st_size != original_size:
             raise RuntimeError('Emulator resized GPT system image')
-        for label, apk in [('baseline', args.baseline), ('candidate', args.candidate)]:
+        live_log = (output / 'logcat-live.txt').open('wb')
+        logcat = subprocess.Popen([android.adb_path, '-s', android.serial, 'logcat', '-v', 'threadtime'],
+                                  stdin=subprocess.DEVNULL, stdout=live_log, stderr=subprocess.STDOUT)
+        variants = [('baseline', args.baseline), ('candidate', args.candidate)] if plan.get('run_baseline', True) else [('candidate', args.candidate)]
+        for label, apk in variants:
             android.adb('uninstall', PACKAGE, check=False)
             android.adb('logcat', '-c')
             android.adb('install', '-r', '-d', apk.resolve(), timeout=120)
             android.launch()
             time.sleep(plan.get('launch_wait', 20))
             android.snapshot(label + '-00-launched')
+            result['environment'][label + '_native_viewport'] = android.viewport
+            if android.viewport is None:
+                raise RuntimeError('Cannot establish native SurfaceView/Main window bounds')
+            left, top, right, bottom = android.viewport
+            expected_width, expected_height = plan['coordinate_size']
+            if abs((right - left) / (bottom - top) - expected_width / expected_height) > .002:
+                raise RuntimeError('Native viewport aspect ratio differs from source-proven touch plan')
             if label == 'baseline':
                 try:
                     android.run_plan(plan, label, limit=plan.get('baseline_steps', 3))
@@ -285,6 +341,16 @@ def main():
         raise
     finally:
         result['events'] = android.events
+        result['environment']['emulator_exit_before_cleanup'] = emulator.poll() if emulator else None
+        result['environment']['live_logcat_exit_before_cleanup'] = logcat.poll() if logcat else None
+        for name, command in [('host-kernel.txt', ['dmesg', '-T']),
+                              ('host-memory.txt', ['cat', '/proc/meminfo']),
+                              ('host-memory-events.txt', ['cat', '/sys/fs/cgroup/memory.events'])]:
+            try:
+                state = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=10)
+                (output / name).write_bytes(state.stdout)
+            except (OSError, subprocess.TimeoutExpired):
+                pass
         (output / 'acceptance.json').write_text(json.dumps(result, indent=2) + '\n')
         if emulator is not None:
             emulator.terminate()
@@ -293,6 +359,14 @@ def main():
             except subprocess.TimeoutExpired:
                 emulator.kill()
                 emulator.wait()
+        if logcat is not None:
+            logcat.terminate()
+            try:
+                logcat.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                logcat.kill()
+                logcat.wait()
+            live_log.close()
         emulator_log.close()
 
 
