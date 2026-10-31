@@ -80,7 +80,12 @@ with no fatal crash lines. A timed New Wish then blocks Pause, and accepting it
 queues Recipes; the test had not opened the Save menu. Next automation drains
 only recognized onboarding cards using their rendered controls, requires clear
 HUD frames, and verifies actual Paused/SaveQuit text before selecting the row.
-Save/resume remains pending. Native-bridge float diagnostic
+Run41176188587 clears the random New Wish and reaches the real four-row pause
+menu; all buttons are visible. Broad scene OCR recognized only Help/About and
+stopped before Save. The next helper reads the four observed row crops directly
+(all10 recorded pause frames pass), with a dedicated type2 body crop for the
+Save confirmation. APK bytes remain unchanged. Save/resume remains pending.
+Native-bridge float diagnostic
 records are unreliable in this emulator; use actual PNGs/integer phase/PID
 observations and the separate original device/source projection proof.
 

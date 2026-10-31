@@ -16,7 +16,7 @@ staging or APK publication is authorized before it passes.
 | Full Android UI | Run41169033872 screenshots confirm panels/icons/buttons at1920×1080 on Android11 x86/ARMv7 translation, Emulator31.1.4/KVM/SwiftShader |
 | Female-Sim crash | Three female hairstyle changes and same-process Home/reopen plus30seconds pass in that run; the reported13b784 cause remains unresolved |
 | Character creation into gameplay | Run41174263077 completes female creation and observes real SceneGame with rendered house/HUD |
-| Gameplay and save/resume | Initial gameplay interaction passes; timed New Wish/Recipes cards blocked test's Save menu, so save/reopen is pending |
+| Gameplay and save/resume | House/HUD and onboarding controls confirmed; run41176188587 opens real Pause menu, with row OCR correction pending before Save/reopen |
 
 Internal candidate SHA256:
 `45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb`.

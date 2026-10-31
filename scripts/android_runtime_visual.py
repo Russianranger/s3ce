@@ -105,10 +105,53 @@ def analyze_traits(image_path, evidence_prefix=None, viewport=None):
     return result
 
 
+def pause_menu_rows(image, viewport, evidence_prefix=None):
+    """Read four observed pause buttons without the surrounding scene/logo."""
+    panel = image.crop(rectangle(viewport, (700, 300, 1220, 850)))
+    blue = sum(b > r + 35 and g > r + 20 and g > 80 and b > 130
+               for r, g, b in panel.getdata()) / (panel.width * panel.height)
+    if blue < .70:
+        return None
+    rows = []
+    for y, label in ((320, 'Options'), (480, 'Help & About'),
+                     (640, 'Save and Continue'), (800, 'Save and Quit to menu')):
+        box = rectangle(viewport, (650, y - 50, 1280, y + 50))
+        crop = image.crop(box)
+        crop = crop.resize((crop.width * 2, crop.height * 2), Image.Resampling.LANCZOS)
+        encoded = io.BytesIO()
+        crop.save(encoded, format='PNG')
+        run = subprocess.run(['tesseract', 'stdin', 'stdout', '--psm', '7', 'tsv'],
+                             input=encoded.getvalue(), stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, timeout=30, check=True)
+        tsv = run.stdout.decode(errors='replace')
+        words = [r for r in csv.DictReader(io.StringIO(tsv), delimiter='\t')
+                 if r.get('level') == '5' and r.get('text', '').strip() and float(r['conf']) >= 60]
+        text = ' '.join(word['text'] for word in words)
+        center_y = ((min(int(w['top']) for w in words) +
+                     max(int(w['top']) + int(w['height']) for w in words)) / 4 + box[1]) if words else None
+        rows.append({'expected': label, 'text': text, 'matches': normalized(text) == normalized(label),
+                     'center_y': center_y})
+        if evidence_prefix:
+            crop.save(f'{evidence_prefix}-pause-{y}.png')
+            Path(f'{evidence_prefix}-pause-{y}.tsv').write_text(tsv)
+    return {'kind': 'pause-menu' if all(row['matches'] for row in rows) else 'unknown',
+            'point': [(viewport[0] + viewport[2]) / 2, rows[-1]['center_y']]
+            if all(row['matches'] for row in rows) else None,
+            'text': ' | '.join(row['text'] for row in rows), 'rows': rows,
+            'pause_panel_blue_fraction': blue, 'viewport': list(viewport)}
+
+
 def analyze_gameplay_overlay(image_path, evidence_prefix=None, viewport=None):
     """Recognize only known onboarding dialogs and the real pause/save menu."""
     image = Image.open(image_path).convert('RGB')
     viewport = viewport or (0, 0, *image.size)
+    if evidence_prefix:
+        Path(evidence_prefix).parent.mkdir(parents=True, exist_ok=True)
+    pause = pause_menu_rows(image, viewport, evidence_prefix)
+    if pause is not None:
+        if evidence_prefix:
+            Path(str(evidence_prefix) + '.json').write_text(json.dumps(pause, indent=2) + '\n')
+        return pause
     crop_box = rectangle(viewport, (440, 80, 1475, 940))
     crop = image.crop(crop_box)
     encoded = io.BytesIO()
@@ -118,7 +161,6 @@ def analyze_gameplay_overlay(image_path, evidence_prefix=None, viewport=None):
                          stderr=subprocess.PIPE, timeout=30, check=True)
     tsv = run.stdout.decode(errors='replace')
     words = []
-    lines = {}
     for row in csv.DictReader(io.StringIO(tsv), delimiter='\t'):
         if row.get('level') != '5' or not row.get('text', '').strip() or float(row['conf']) < 45:
             continue
@@ -126,8 +168,6 @@ def analyze_gameplay_overlay(image_path, evidence_prefix=None, viewport=None):
         word = {'text': row['text'], 'confidence': float(row['conf']),
                 'box': [crop_box[0] + x, crop_box[1] + y, crop_box[0] + x + w, crop_box[1] + y + h]}
         words.append(word)
-        key = tuple(row[k] for k in ('page_num', 'block_num', 'par_num', 'line_num'))
-        lines.setdefault(key, []).append(word)
     text = ' '.join(word['text'] for word in words)
     compact = normalized(text)
     area_scale = ((viewport[2] - viewport[0]) / 1920) * ((viewport[3] - viewport[1]) / 1080)
@@ -168,12 +208,21 @@ def analyze_gameplay_overlay(image_path, evidence_prefix=None, viewport=None):
         result.update(kind='edit-appearance', control=blue_x)
     elif 'savegameprogress' in compact and 'mainmenu' in compact:
         result.update(kind='save-confirmation', control=control((1020, 600, 1230, 960), 'green'))
-    elif 'paused' in compact or ('saveandcontinue' in compact and 'helpabout' in compact):
-        for group in lines.values():
-            if normalized(' '.join(w['text'] for w in group)) == 'saveandquittomenu':
-                result.update(kind='pause-menu', point=[(viewport[0] + viewport[2]) / 2,
-                              (min(w['box'][1] for w in group) + max(w['box'][3] for w in group)) / 2])
-                break
+    elif result['kind'] == 'unknown':
+        body = image.crop(rectangle(viewport, (560, 410, 1360, 630)))
+        body = body.resize((body.width * 2, body.height * 2), Image.Resampling.LANCZOS)
+        encoded = io.BytesIO()
+        body.save(encoded, format='PNG')
+        run = subprocess.run(['tesseract', 'stdin', 'stdout', '--psm', '6'],
+                             input=encoded.getvalue(), stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, timeout=30, check=True)
+        body_text = run.stdout.decode(errors='replace').strip()
+        result['body_text'] = body_text
+        if 'savegameprogress' in normalized(body_text) and 'mainmenu' in normalized(body_text):
+            result.update(kind='save-confirmation', control=control((1020, 600, 1230, 960), 'green'))
+        if evidence_prefix:
+            body.save(str(evidence_prefix) + '-body.png')
+            Path(str(evidence_prefix) + '-body.txt').write_text(body_text + '\n')
     if result.get('control'):
         result['point'] = result['control']['center']
     if result['kind'] not in ('none', 'unknown') and result['point'] is None:
