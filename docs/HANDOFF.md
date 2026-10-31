@@ -1,8 +1,38 @@
-# Development handoff — 0.1.2
+# Development handoff — 0.1.3
+
+Reports now save correctly. The attached 0.1.2 report identifies a real native
+crash in platform glGetString(GL_VERSION), fault nearNULL, from original runtime
+wrapper returnoffset 0x33987, in both rendering modes. Startup had only the
+software view; JavaGL initialization had not run. Do not revert Java/input or
+PVRTC changes based on that trace: the failure is the earlier version query.
+
+0.1.3 selects existing [S3E] GLForceDLLVersion=0x0101 on Android, skipping the
+engine's early version probe. It also replaces original wrap_glGetString with a
+current-context guard. The correct driver slot is g_glGetString 0x55a64, derived
+from its own tablebase55a44, NOT the separate version-state table55a04. The
+verifier checks instructions, literal, symbol, RWsegment and entry fingerprint.
+Do not conflate those adjacent legacy tables in future patches.
+
+Shared guard remains active in original-renderer mode; only the texture adapter
+is bypassed in that mode. No UI-thread EGL context creation or synthetic vendor/
+extension strings were introduced. The engine's original extension filtering
+is preserved and NULL is handled before string access.
+
+Next Thor gate: install over 0.1.2, UNCHECK Original rendering (the user last
+selected it), Start game; menu, backgrounds/hair/eyes, CAS room and swipe tutorial,
+then house/save/reopen. On failure, Save report again. Full game/runtime success
+is not yet claimed. All report export and crash-capture features remain.
+
+Keep same app ID/key/JNI classnames. ARM32,4KiB,target28 and RWX S3E code constraints
+remain. Never publish the private signing backup. Release publication uses the
+pinned 0.1.0 base APK plus byte-exact literal reconstruction.
+
+## Historical 0.1.2 handoff
+
 
 Published source: `1f2805317582e2d7cefa5a8145cb1b59c9643424`.
 Publication/download-verification run `41147877179` passed. APK and instructions
-are available on release `v0.1.2-crash-report`.
+are available on release `v 0.1.2-crash-report`.
 
 0.1.0 reached the menus/Create-a-Sim with missing graphics and stalled swipes.
 0.1.1 added PVRTC fallback + input fixes + separate report launcher, then crashed

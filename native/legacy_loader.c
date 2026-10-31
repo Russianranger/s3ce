@@ -19,6 +19,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include "graphics_diagnostics.h"
+#include "graphics_safety.h"
 
 static char diagnostic_path[PATH_MAX];
 static pthread_mutex_t diagnostic_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -308,8 +309,13 @@ static jint load_legacy(JNIEnv *env, JavaVM *vm, jobject asset_manager) {
     phase = "patch dedicated S3E allocator";
     static const uint8_t malloc_code[8] = {0x00,0xb5,0x81,0xb0,0x00,0xf0,0x18,0xf8};
     static const uint8_t free_code[8] = {0x00,0xb5,0x81,0xb0,0x00,0xf0,0x96,0xfe};
+    static const uint8_t get_string_code[8] = {0xf0,0xb5,0x19,0x4e,0x81,0xb0,0x33,0x6a};
+    void **get_string_slot = image_pointer(&image, 0x55a64, sizeof(void *));
+    if (!get_string_slot) goto done;
+    s3ce_gl_safety_bind(get_string_slot, diagnostic_log);
     if (patch_thumb_function(&image, 0x37148, malloc_code, (void *)(uintptr_t)&allocate_game_code) ||
-        patch_thumb_function(&image, 0x36434, free_code, (void *)(uintptr_t)&free_game_code)) goto done;
+        patch_thumb_function(&image, 0x36434, free_code, (void *)(uintptr_t)&free_game_code) ||
+        patch_thumb_function(&image, 0x3397c, get_string_code, (void *)(uintptr_t)&s3ce_safe_gl_get_string)) goto done;
     phase = "protect legacy segments";
     if (mprotect(image.base, image.size, PROT_NONE)) goto done;
     for (size_t i = 0; i < header->e_phnum; ++i) {
@@ -349,6 +355,7 @@ done:
     AAsset_close(asset);
     if (result == JNI_ERR) {
         LOGE("Legacy load failed during %s; errno=%d (%s)", phase, errno, strerror(errno));
+        s3ce_gl_safety_bind(NULL, NULL);
         if (image.base) munmap(image.base, image.size);
         for (size_t i = 0; i < image.handle_count; ++i) dlclose(image.handles[i]);
     }

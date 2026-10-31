@@ -64,3 +64,20 @@ Original MultiTouch uses a pointer ID as a coordinate-array index and ignores
 ACTION_CANCEL. The original DEX reproduces the sparse-ID failure. The original
 resume handshake can lose an early notification during native/GL teardown;
 the predicate-gated wait is covered by a latch-controlled host regression.
+
+## 0.1.3 confirmed pre-context query
+
+The device report shows the crash in platform glGetString at the original
+wrapper's return offset 0x33987. s3eGLGetInt_platform 0x3f690 can call version
+detection before Java EGL startup; its GL_VERSION call at 0x33acc therefore has
+no current context. The existing GLForceDLLVersion configuration branch at
+0x33a9c avoids this call. Section s3e is hardcoded by s3eConfigGet 0x2972c;
+version 0x0101 is already used in the provided engine configuration.
+
+The wrapper replacement also guards eglGetCurrentContext and delegates only
+when current. Public EGL specifies EGL_NO_CONTEXT when none is current:
+https://registry.khronos.org/EGL/specs/eglspec.1.4.pdf
+
+The dispatch binding is g_glGetString 0x55a64, independently verified from the
+original instruction/literal and ELF symbol. Full user reports stay private;
+only technical crash offsets are recorded here.

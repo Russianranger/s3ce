@@ -14,9 +14,10 @@ import subprocess
 import zipfile
 
 EXPECTED_APK = "d42d0bf4a663abc3b1bb2abd0b350d93b6a2fa687a3b902f111a40c38a94f0d0"
-EXPECTED_ALLOCATORS = {
+EXPECTED_PATCH_SITES = {
     0x37148: bytes.fromhex("00b581b000f018f8"),
     0x36434: bytes.fromhex("00b581b000f096fe"),
+    0x3397c: bytes.fromhex("f0b5194e81b0336a"),
 }
 
 
@@ -61,7 +62,33 @@ def main():
     with zipfile.ZipFile(args.apk) as archive:
         data = archive.read("lib/armeabi/libairplay.so")
     assert len(data) == 410811
-    _, programs = parse_elf(data)
+    header, programs = parse_elf(data)
+    # Decode the original wrapper's PC-relative LDR and confirm its private
+    # dispatch slot against the unstripped ELF symbol table, not version globals.
+    load_at = 0x3397e
+    load_instruction = struct.unpack_from("<H", data, load_at)[0]
+    assert load_instruction == 0x4e19  # LDR r6,[PC,#0x64]
+    literal_at = ((load_at + 4) & ~3) + (load_instruction & 0xff) * 4
+    table_base = struct.unpack_from("<I", data, literal_at)[0]
+    dispatch_slot = table_base + 0x20
+    assert literal_at == 0x339e4 and table_base == 0x55a44 and dispatch_slot == 0x55a64
+    assert header[11] == 40
+    sections = [struct.unpack_from("<IIIIIIIIII", data, header[6] + i*40)
+                for i in range(header[12])]
+    symbol_values = {}
+    for section in sections:
+        if section[1] != 2:  # SHT_SYMTAB
+            continue
+        table_strings = sections[section[6]]
+        names = data[table_strings[4]:table_strings[4]+table_strings[5]]
+        assert section[9] == 16
+        for at in range(section[4], section[4]+section[5], 16):
+            name_at, value, _, _, _, _ = struct.unpack_from("<IIIBBH", data, at)
+            name = names[name_at:names.index(0, name_at)].decode("ascii")
+            symbol_values[name] = value
+    assert symbol_values["g_glGetString"] == dispatch_slot
+    assert any(p[0] == 1 and p[6] & 2 and p[2] <= dispatch_slot < p[2]+p[5]
+               for p in programs), "GL dispatch slot must be in writable ELF data"
     image = virtual_bytes(data, programs)
     tags = dynamic_tags(image, programs)
     assert tags[22], "Expected original DT_TEXTREL"
@@ -111,8 +138,8 @@ def main():
                 value = (address + old if kind == 2 else address) & 0xffffffff
             struct.pack_into("<I", image, target, value)
     assert counters == {23: 4115, 2: 2, 22: 130}, counters
-    for address, expected in EXPECTED_ALLOCATORS.items():
-        assert image[address:address+8] == expected, "Allocator fingerprint mismatch"
+    for address, expected in EXPECTED_PATCH_SITES.items():
+        assert image[address:address+8] == expected, "Runtime patch fingerprint mismatch"
         image[address:address+8] = bytes.fromhex("dff800f0") + struct.pack("<I", 0x71000001)
     onload = [s[1] for s in symbols if string(s[0]) == "JNI_OnLoad"]
     assert onload == [0x21115]
@@ -120,7 +147,7 @@ def main():
                "legacy_elf_sha256": hashlib.sha256(data).hexdigest(),
                "relocations_simulated": sum(counters.values()),
                "relocation_types": dict(counters), "imports": sorted(imports),
-               "allocator_guards": "pass", "jni_onload": hex(onload[0])}
+               "allocator_guards": "pass", "gl_context_guard": "pass", "gl_dispatch_slot": hex(dispatch_slot), "jni_onload": hex(onload[0])}
     if args.shim:
         shim_data = args.shim.read_bytes()
         _, shim_programs = parse_elf(shim_data)

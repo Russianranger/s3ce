@@ -1,42 +1,34 @@
-S3CE 0.1.2 — report export and startup-crash investigation.
+S3CE 0.1.3 — targeted fix for the reported startup crash.
 
-0.1.1 crashed during startup on the Thor. The cause is not confirmed; this
-release must not be described as a proven startup-crash fix.
+The 0.1.2 report identifies SIGSEGV in glGetString(GL_VERSION), called by the
+original engine before Java has created an EGL context. Both rendering modes
+failed at the same original wrapper, so texture conversion was not the failing
+operation in that trace.
 
 Changes:
 
-- **Save report** writes a named .txt file through Android's document picker.
-- **Share report file** attaches a real content URI with a filename, size,
-  MIME type, and temporary read permission. The old text-only share could not
-  be saved by the user's file manager.
-- **View / copy report** provides a fallback without a file manager.
-- Reports include retained Android process-exit records, available native
-  tombstone summaries, persisted logs, and newly captured Java exceptions.
-  The previous build's crash may still be retained after installing this update.
-- Remove the extra Snapdragon alpha-state workaround added in 0.1.1; all
-  original game assets/configuration are now byte-identical to the supplied APK.
-- Keep the PVRTC texture conversion and touch corrections. **Original rendering
-  (diagnostic mode)** bypasses the new GL hooks to isolate the startup regression;
-  missing textures are expected in that mode. Fully close the game before
-  switching modes if the previous game process is still alive.
+- Use the engine's existing Android [S3E] GLForceDLLVersion=0x0101 setting to
+  select its GLES1.1 path without the premature version probe.
+- Guard the original GL string wrapper in both modes. Without a current context,
+  return NULL before entering the GLES driver. Once a context is current, pass
+  through the normal query and preserve the original extension filtering.
+- Keep PVRTC texture conversion, touch corrections, and the working report
+  save/share/view options. The earlier alpha workaround stays disabled.
 
-Install over 0.1.1; app ID, signing key, and saved data are unchanged.
-ARM32 application support and 4 KiB pages remain required. No game-file import
-is needed. New runtime fixes remain unverified on hardware.
+The fix matches the captured crash path and passes native no-context/current-
+context regression tests, ARM compilation, independent review, and packaging
+checks. The updated game still needs device confirmation.
 
-First steps:
+Test:
 
-1. Install the update. Open the app, but **do not press Start game yet**.
-2. Tap **Save report**, choose Downloads, keep the suggested .txt filename, and
-   confirm. Attach that saved .txt file to this conversation. It may already
-   contain the 0.1.1 crash and the last native startup stage.
-3. If saving is unavailable, use **Share report file** or **View / copy report**.
-4. After preserving the report, try Start game. If it crashes, reopen the app
-   icon and save another report. The report launcher runs independently.
-5. If asked to compare rendering paths, fully close the game, enable **Original
-   rendering (diagnostic mode)**, and retry. Preserve separate reports for each
-   mode. Do not clear app data or uninstall.
+1. Install over 0.1.2. Do not uninstall or clear app data.
+2. Open The Sims 3 CE and **uncheck Original rendering (diagnostic mode)**.
+   Your last test enabled it; that setting can persist through the update.
+3. Tap Start game and check whether the menu loads. Check backgrounds, hair/eyes
+   and the room, then swipe across the Sim in Create-a-Sim.
+4. If it works, proceed into the house and save/reopen when convenient.
+5. If it crashes or stalls, reopen the app icon, use Save report, and attach the
+   .txt file. Report saving worked on the previous test and is retained.
 
-Build, signature, relocation/import, asset-integrity, tombstone-parser and DEX
-checks pass. Actual Android document-provider saving and game execution require
-the Thor confirmation; those are not established by host checks.
+Same app ID, signing certificate, saved-data location, ARM32 and 4 KiB page
+requirements. No new game-file import is needed.

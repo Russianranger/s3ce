@@ -15,6 +15,9 @@ c++ -std=c++14 "${flags[@]}" "$test_dir/graphics.o" \
     "$native_dir/pvrtc/PVRTDecompress.cpp" "$native_dir/pvrtc/pvrtc_bridge.cpp" \
     -ldl -o "$test_dir/graphics_test"
 "$test_dir/graphics_test"
+cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \
+    "$native_dir/tests/graphics_safety_test.c" -o "$test_dir/safety_test"
+"$test_dir/safety_test"
 c++ -std=c++14 "${flags[@]}" "$native_dir/pvrtc/test_bridge.cpp" \
     "$native_dir/pvrtc/PVRTDecompress.cpp" "$native_dir/pvrtc/pvrtc_bridge.cpp" \
     -o "$test_dir/decoder_test"

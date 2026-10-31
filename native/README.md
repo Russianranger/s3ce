@@ -32,12 +32,39 @@ with the application's assets and files directory. Before bootstrap,
 `nativeConfigureGraphics(boolean enabled)` selects PVRTC compatibility or the
 original renderer. It returns false if changing modes after the legacy runtime
 is loaded; restart the game process before changing modes. Disabling compatibility
-bypasses every GL hook and uses the original symbol-resolution path.
+bypasses PVRTC and diagnostics hooks and uses the original symbol-resolution
+path. The mandatory pre-context string guard below remains active in both modes.
 
 A positive bootstrap return is the
 original JNI version; a negative return is failure. Bootstrap must finish before
 starting the original game Activity. The original Activity's later library load
 then reuses the already loaded shim.
+
+## Pre-context GL safety (0.1.3)
+
+The Thor's native tombstone identifies `libGLESv1_CM.so glGetString+0x1c`, called
+from the original runtime at offset `0x33987`, before Java GL initialization.
+Disassembly confirms that `s3eGLGetInt_platform` can invoke the version probe
+before a current EGL context exists. The old runtime checks the query's NULL
+result only after entering the driver; this modern driver crashes before it can
+return.
+
+The loader now replaces the original `wrap_glGetString` entry at `0x3397c` with
+a guarded implementation. `eglGetCurrentContext()==EGL_NO_CONTEXT` returns NULL
+without entering the driver, for every string name. With a current context, the
+original driver or PVRTC adapter receives the unchanged query. The original
+runtime's intentional `GL_OES_framebuffer_object` filter is preserved, with safe
+handling of NULL extension strings.
+
+The real dispatch slot is `0x55a64`. The verifier derives it from the original
+Thumb LDR at `0x3397e`, its PC-relative literal at `0x339e4`, and the table base
+`0x55a44 + 0x20`; it cross-checks the unstripped `g_glGetString` symbol and writable
+ELF segment. These are separate from version globals at `0x55a04`.
+
+The original engine's Android-only `GLForceDLLVersion=0x0101` setting avoids the
+premature probe and selects its existing GLES 1.1 rendering path. The guard is
+still required for other early string queries and original-renderer mode. It
+creates no EGL context and invents no vendor or extension strings.
 
 ## Graphics compatibility (0.1.1)
 
@@ -123,8 +150,8 @@ The host verifier checks the exact source, simulates all 4,247 relocations,
 verifies both allocator guards, audits all 131 used imports against API28 ARM NDK
 system-library stubs plus the linked shim helpers, and checks the shim's ELF
 protections. The original 0.1.0 loader has reached game menus and Create-a-Sim on the Thor.
-The 0.1.1 graphics candidate regressed startup on the Thor. Host tests have not
-identified its native crash cause. The 0.1.2 candidate adds original-renderer
-isolation and durable native phase markers; the graphics path still requires
-hardware verification and a crash trace. Validation must cover loading, graphics, audio, input, save/reload,
+The 0.1.1 and 0.1.2 candidates regressed startup on the Thor. The actual 0.1.2
+native trace identifies the pre-context `glGetString` fault addressed above.
+The 0.1.3 guard and version setting pass host regression checks; they and the
+PVRTC graphics path still require hardware confirmation. Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.

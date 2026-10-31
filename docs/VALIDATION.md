@@ -1,4 +1,44 @@
-# Candidate 0.1.2 validation
+# Candidate 0.1.3 validation
+
+Captured device evidence: both rendering modes crashed in platform
+libGLESv1_CM glGetString, from original Airplay wrapper return offset 0x33987,
+while startup logs had no GL view/context initialization. The engine's separate
+s3eGLGetInt_platform path can query GL_VERSION before s3eGL_start.
+
+Completed:
+
+- Disassembly traces early GetInt at 0x3f690 to DetermineGLVersion 0x33a80,
+  GL_VERSION call 0x33acc, wrapper 0x3397c and driver call 0x33986, matching the
+  reported return PC. No new Java EGL initialization runs on the UI thread.
+- Existing config escape GLForceDLLVersion is read at 0x33a9c from section s3e.
+  0x0101 uses the provided runtime's GLES1.1 version encoding and skips the probe.
+- Exact original app.icf digest, idempotency and tamper guards preserve all bytes
+  except the Android-only override. Alpha workaround remains absent.
+- The shared native replacement checks eglGetCurrentContext before driver calls,
+  handles NULL safely, and preserves normal/current-context results plus the
+  original FBO extension filter. It is applied in both rendering modes.
+- Independent review corrected a dispatch-slot binding before release. The
+  verifier derives literal 0x339e4/table 0x55a44/slot 0x55a64 from the original Thumb
+  instruction, cross-checks the g_glGetString ELF symbol and writable segment,
+  and verifies the exact8-byte wrapper entry fingerprint.
+- Native host tests with sanitizers cover missing/current contexts, all GL string
+  names, NULL driver returns and filtering. Existing PVRTC tests also pass.
+- ARM compilation, 4,247 relocation simulation, 131 import audit, native segment
+  protections, asset/config integrity, APK assembly and v2/v3 signatures pass.
+- Same app ID/certificate; versionCode103. Saved data is preserved.
+
+APK SHA-256:
+`9dd9eef9c6135f2b449b9709c7eb41a087cddc9203c2cd69aad5859b362093f3`.
+
+Shim SHA-256:
+`720a2a2fb5dde8097524280b153a5051603e908f6851fe2e759403a978338487`.
+
+The captured failure path is corrected in code. Reaching the menu, correct
+texture display, swipe/tutorial progression, gameplay and persistence still
+require Thor confirmation. Host/static checks do not establish those results.
+
+## Historical 0.1.2 checks
+
 
 Reported device result: 0.1.1 crashed during startup, and its text-only share
 could not be saved by the file manager. No exact crash trace was supplied.
