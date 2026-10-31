@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 15,
-  "frame_sha256": "71ef61e8a2ac7efe5c0edea18614fb47f96be588ce2db55a5b55b817154ad0c3",
+  "seq": 16,
+  "frame_sha256": "2e5a13d1bd8d331ffefef4d4dbd9833bdbe7f717244da60825383598897042bd",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1129,
-    "y": 794
+    "type": "wait",
+    "seconds": 12
   },
-  "note": "Choose the actual visible Cheap Bed / Sit action and inspect the Sim pose."
+  "note": "Allow the queued Bed Sit to settle; menu closure and approach alone are not completion."
 }
