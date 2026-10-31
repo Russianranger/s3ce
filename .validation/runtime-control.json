@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41240915455",
-  "seq": 9,
-  "frame_sha256": "99826b300460de7ec9ce2c9d656f445ce1ae1a46acfa10d2308043f3087cdfb8",
+  "seq": 10,
+  "frame_sha256": "52ed4054792f8ffd2963a4aab67d67346028293d1fc28144ded481466aeda917",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 960,
-    "y": 797
+    "x": 1124,
+    "y": 730
   },
-  "note": "Select visible Save and Quit to menu after completed Bed Sit."
+  "note": "Confirm the visible Save Game progress-and-quit-to-main-menu dialog."
 }
