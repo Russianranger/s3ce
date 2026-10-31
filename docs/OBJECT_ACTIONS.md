@@ -65,6 +65,14 @@ static type/register failures.
 
 ## Runtime delivery gate
 
+Active workflow: [41205174960](https://github.com/Russianranger/s3ce/actions/runs/41205174960),
+source `a1a9961792aaf29ca8ed6b4d133120ad564279bf`. Frozen internal C2 APK SHA256
+`a5a98513afa16520bc86b2aff67fda2b68d3505755d57e69e75cd6499453aa48`,
+76,762,457 bytes. Native SHA256
+`d0f375b7e74b8174f0f00472a3b3eb6f44f0b5d2f48ffcfa1f03e812b236cf68`.
+The exact bytes reconstruct from `.validation/object-actions`; this is not
+release staging. Do not publish until actual object completion and Quit pass.
+
 Pending: select a real object action through ordinary Android input and retain
 screenshots showing the Sim performing it. Verify continued UI and save/reload.
 Do not publish a new APK based only on menu dismissal or the host ARM fixtures.
