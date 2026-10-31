@@ -1,3 +1,23 @@
+# Current 0.1.13 runtime continuation
+
+Frozen signed APK SHA256ce8c54bffe5deeb00e6c81b3d942bfdd5f5480b63ef281d33b053cc255eb3a5e,
+code113, production sourceb76f771113032361de079ee360588e0990426c08.
+Run41237818263 proves actual Wishes panel activation with camera mode off/on,
+pan/limited release stability and zoom; two cold menus pass, zero failures,
+normal creation/prefix save/new-process reload and zero fatal/ANR. It stays red
+on its24-command harness limit. Final SaveContinue dialog was unconfirmed;
+completed Sit/post-test save/native Quit are not established in that run.
+
+Harness-only source537f768540eb962a6e9422a02ec4838c6b00249d coherently allows40
+strictly frame/hash/run/sequence-bound UI commands. Same deadlines/native-Quit
+guard, all24 host tests pass. Run41240915455 is green for the same APK. Root and
+two reviewers accept its completed Bed Sit, advancing post-action save and clean
+native Quit; both new cold menus pass and full logs have zero fatal/ANR/audio
+warnings. Total four cold-menu tests, zero failures, plus two save restarts.
+See docs/CAMERA_INPUT_RUNTIME_ACCEPTANCE.md. Publish these frozen bytes and verify
+public download; no rebuild/resign. Retain first failure and both raw gate=false
+files. Deliver APK/test links, then continue from Thor feedback.
+
 # Current continuation — camera pan steals bottom-right taps
 
 The user reports everything seems to work except the bottom-right icon: camera

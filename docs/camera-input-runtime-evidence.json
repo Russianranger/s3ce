@@ -1,0 +1,1886 @@
+{
+  "candidate": {
+    "version_name": "0.1.13-camera-input",
+    "version_code": 113,
+    "source": "b76f771113032361de079ee360588e0990426c08",
+    "sha256": "ce8c54bffe5deeb00e6c81b3d942bfdd5f5480b63ef281d33b053cc255eb3a5e",
+    "bytes": 76770649
+  },
+  "environment": {
+    "emulator_command": [
+      "/home/runner/work/_temp/s3ce-emulator-31.1.4/emulator/emulator",
+      "-avd",
+      "S3CE_VALIDATION",
+      "-port",
+      "5554",
+      "-accel",
+      "on",
+      "-gpu",
+      "swiftshader_indirect",
+      "-no-window",
+      "-no-audio",
+      "-no-boot-anim",
+      "-no-snapshot",
+      "-skip-adb-auth",
+      "-verbose",
+      "-memory",
+      "3072",
+      "-cores",
+      "4",
+      "-feature",
+      "-Vulkan,DynamicPartition",
+      "-show-kernel",
+      "-prop",
+      "qemu.hw.mainkeys=1",
+      "-partition-size",
+      "3083"
+    ],
+    "emulator_version": "Android emulator version 31.1.4.0 (build_id 7920983) (CL:N/A)\nCopyright (C) 2006-2017 The Android Open Source Project and many others.\nThis program is a derivative of the QEMU CPU emulator (www.qemu.org).\n\n  This software is licensed under the terms of the GNU General Public\n  License version 2, as published by the Free Software Foundation, and\n  may be copied, distributed, and modified under those terms.\n\n  This program is distributed in the hope that it will be useful,\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n  GNU General Public License for more details.\n\n",
+    "image_properties": "Pkg.Desc=System Image x86 with Google APIs.\nPkg.Revision=16\nPkg.Dependencies=emulator#30.8.0\nAndroidVersion.ApiLevel=30\nSystemImage.Abi=x86\nSystemImage.TagId=google_apis\nSystemImage.TagDisplay=Google APIs\nSystemImage.GpuSupport=true\nAddon.VendorId=google\nAddon.VendorDisplay=Google Inc.\n\n",
+    "system_image_bytes": 3232759808,
+    "system_image_sha256": "48e9d853b2ab892222889225629ad17cd53c0239c7db32798d134d10870a78fe",
+    "abi_list": "x86,armeabi-v7a,armeabi",
+    "native_bridge": "libndk_translation.so",
+    "page_size": "4096",
+    "kernel": "Linux localhost 5.4.249-android11-2-00004-g212a7aaded26-ab10688362 #1 SMP PREEMPT Mon Aug 21 12:17:45 UTC 2023 i686",
+    "candidate_native_viewport": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "emulator_exit_before_cleanup": null,
+    "live_logcat_exit_before_cleanup": null
+  },
+  "runs": [
+    {
+      "run_id": 41237818263,
+      "attempt": 1,
+      "source": "b76f771113032361de079ee360588e0990426c08",
+      "workflow_conclusion": "failure",
+      "artifact_id": 13057785251,
+      "archive_bytes": 151084667,
+      "archive_sha256": "516be9f902820851afa5236bcddb80dd88b7629e406ff9560ec50e95f4fc437a",
+      "original_acceptance": {
+        "status": "blocked",
+        "gate_passed": false,
+        "error": "RuntimeError: Interactive frame budget exhausted without finish"
+      },
+      "original_acceptance_sha256": "7746b6fd601e914d193c7672ea4f4a7d1fb968d889785fa2546b43fcdf0b04ac",
+      "cold_starts": [
+        {
+          "attempt": 1,
+          "marker": "S3CE-cold-start-1-1793477652885708794",
+          "start_epoch": 1793477652.8857105,
+          "status": "ready-awaiting-visual-review",
+          "visual_review": "required",
+          "scope": "normal launcher/Start; process-cold; app data retained",
+          "game_pid": "4193",
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "screenshot_sha256": "8bcf1f7da3a291fd626941f2306e3439e5ba4ffac3b81ecaabb41423f3580ae7",
+          "fatal_or_anr_lines": [],
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{63d4e59 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t10}"
+          ],
+          "end_epoch": 1793477692.5440743
+        },
+        {
+          "attempt": 2,
+          "marker": "S3CE-cold-start-2-1793477692544299175",
+          "start_epoch": 1793477692.5443006,
+          "status": "ready-awaiting-visual-review",
+          "visual_review": "required",
+          "scope": "normal launcher/Start; process-cold; app data retained",
+          "game_pid": "6195",
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "screenshot_sha256": "6eb8f467af421fc7d0c48bb0bec8df09e8f850f44b2cae3e0a2782ecac6dfd4c",
+          "fatal_or_anr_lines": [],
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{63f0bac u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "end_epoch": 1793477731.1077769
+        }
+      ],
+      "checkpoints": {
+        "gameplay": {
+          "name": "candidate-21-clear-gameplay-onboarding-popups",
+          "time": 1793478162.809111,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "6195",
+          "observer": "Pointer callback EXIT #2145 timeMs=492509 event=0 result=-1231444336 Game input AppEngine=0xb6998f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6c5c8f0 gesture=3 primary=0 origin=696,540 current=696,540 gamePhase=14 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0"
+        },
+        "saved-to-menu": {
+          "name": "candidate-24-confirm-save-and-quit",
+          "time": 1793478387.1937625,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneMenu",
+          "menu_state": 5,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "6195",
+          "observer": "Pointer callback EXIT #4096 timeMs=763209 event=1 result=-1231444576 Game input AppEngine=0xb6998f20 active=0 counts=1,0 engine420=0 engine430=0 transition424=0x00ffffff direction428=-1 speed42c=197379 Scene=SceneMenu@0xb6c68c60 gesture=1 primary=0 origin=682,540 current=682,540 menuState=5 menuRoute=-1 menu1bc=0 angleBits=0x00000000 angle=0"
+        },
+        "resume": {
+          "name": "candidate-27-load-existing-saved-female-sim",
+          "time": 1793478482.8125594,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "12732",
+          "observer": "Pointer callback EXIT #286 timeMs=860350 event=0 result=-1230723440 Game input AppEngine=0xb6a48f20 active=1 counts=0,3 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0"
+        }
+      },
+      "live_frames": [
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 0,
+          "seq": 1,
+          "frame_sha256": "620b6ee322d06e49eb1f664335f3555e7a46d635e2470063f134a183a72dbba0",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793478511.0797582,
+          "input_observer": "Pointer callback EXIT #286 timeMs=860350 event=0 result=-1230723440 Game input AppEngine=0xb6a48f20 active=1 counts=0,3 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 1,
+          "seq": 2,
+          "frame_sha256": "2c299cfcb6196c436d694d4a1ff0170f18a6a3679c9b2a0caa9fb4fd01b71cfb",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793478596.1975276,
+          "input_observer": "Pointer callback EXIT #286 timeMs=860350 event=0 result=-1230723440 Game input AppEngine=0xb6a48f20 active=1 counts=0,3 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 2,
+          "seq": 3,
+          "frame_sha256": "d0397093764951e6de0d52f7d816ea0ff596b7e7b24d12be9a018a2ba6c5d199",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793478646.7336948,
+          "input_observer": "Pointer callback EXIT #286 timeMs=860350 event=0 result=-1230723440 Game input AppEngine=0xb6a48f20 active=1 counts=0,3 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 3,
+          "seq": 4,
+          "frame_sha256": "ea4f84768f35cb3dc735af9fb3d29b571570fda3ef5e3c03ec765e39ef4161d9",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793478695.5459197,
+          "input_observer": "Pointer callback EXIT #286 timeMs=860350 event=0 result=-1230723440 Game input AppEngine=0xb6a48f20 active=1 counts=0,3 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 4,
+          "seq": 5,
+          "frame_sha256": "57295307cfb52693cf817369afc17409766888f08a418a098229d030ec1e5042",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793478745.8962512,
+          "input_observer": "Pointer callback EXIT #286 timeMs=860350 event=0 result=-1230723440 Game input AppEngine=0xb6a48f20 active=1 counts=0,3 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 5,
+          "seq": 6,
+          "frame_sha256": "102501348a980834d84ac0ea87a1ef80909388ff7fa1323bea624359a4241123",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793478893.479619,
+          "input_observer": "Pointer callback EXIT #286 timeMs=860350 event=0 result=-1230723440 Game input AppEngine=0xb6a48f20 active=1 counts=0,3 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 6,
+          "seq": 7,
+          "frame_sha256": "146ef41aa31b818477b182c1652e1ebb16cd75bca68727725d92d5246dd501da",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793478948.8274107,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 7,
+          "seq": 8,
+          "frame_sha256": "4e97d56305e414396e7dbb3c3a5a81683dc8145b25e05ead97a1992b5d7c7a5e",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793478987.1643434,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 8,
+          "seq": 9,
+          "frame_sha256": "7824e2c3b4651bf13310c5bac4bddb7394d261c185fd4b5f3dbe903780c2fa1e",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479036.937127,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 9,
+          "seq": 10,
+          "frame_sha256": "6e26278e5fcfc5230f78de42deb3713487334a7ba3f6099828cf0d87d8b14ddf",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479080.6333566,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 10,
+          "seq": 11,
+          "frame_sha256": "efd0755916a0cda8dd150f1c0cbbeb0de3fec04b207abc6363adca1227a8a311",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479120.384309,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 11,
+          "seq": 12,
+          "frame_sha256": "7097fd21dd6e6e6c12024d139cf140f0a9def10da78e13bb78170a4159894105",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479166.2484703,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 12,
+          "seq": 13,
+          "frame_sha256": "35f211399cddd1adf81b6b20f03bd57ab4fe30b59bc35d770dbe8dcc1b086827",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479212.0932896,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 13,
+          "seq": 14,
+          "frame_sha256": "ce3ca8d5808b3099d1c771ff7000f8594e0d5cb3c1a43ea97a5085874b65fe2b",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479255.8205283,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 14,
+          "seq": 15,
+          "frame_sha256": "ca26d6892ffa43449d2c5617099b28f766ec18f58ad84ca942947db95f1e7aa3",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479300.615262,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 15,
+          "seq": 16,
+          "frame_sha256": "b104d095b764005c4bc4912804cc28c120cf189d10f455c96a13721ed0142181",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479362.6902616,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 16,
+          "seq": 17,
+          "frame_sha256": "79cb01ad76906a60ada93688c806f585d93a9b8f872bec3d02e8e00db4e65948",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479418.0590813,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 17,
+          "seq": 18,
+          "frame_sha256": "1cbcc776ae4db777a0bacdb8653357e671defc4dfea6b04445fa425daff49b0a",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479468.2468803,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 18,
+          "seq": 19,
+          "frame_sha256": "fd2c8504da124c5310225e1c85d10930a3de5a9d8df70b45bd241c1a151d02c2",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479523.4562006,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 19,
+          "seq": 20,
+          "frame_sha256": "863a32e49951d7ae05b98b80fff590d1f4a944fa247767f8e4c2a58e3e638c0b",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479573.2832072,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 20,
+          "seq": 21,
+          "frame_sha256": "b96b77a86345c4215cdfa27299386ea0585dc36263c08f09d52b4c4ebfaa67d7",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479684.901833,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 21,
+          "seq": 22,
+          "frame_sha256": "202d8875b444a8ea0ce4aa8c51ac68e1b133f35599ee6b8ed4484b3469516ee4",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479757.878711,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 22,
+          "seq": 23,
+          "frame_sha256": "cdffa64f2a894bd31b771a4e3b125fc6b84be2fc1ffa0ba0ec506f8ed19d54e4",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479812.43418,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41237818263",
+          "frame": 23,
+          "seq": 24,
+          "frame_sha256": "2f4aea5ab253f4c290d8df2bc6a39414e5b1e863ee3dde9fb972d4c24d592369",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "12732",
+          "time": 1793479857.1452131,
+          "input_observer": "Pointer callback EXIT #318 timeMs=1324862 event=0 result=-1230723680 Game input AppEngine=0xb6a48f20 active=0 counts=3,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xb6b5a070 gesture=3 primary=0 origin=1227,600 current=1227,600 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{29170b9 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        }
+      ],
+      "commands": [
+        {
+          "seq": 1,
+          "frame_sha256": "620b6ee322d06e49eb1f664335f3555e7a46d635e2470063f134a183a72dbba0",
+          "command": {
+            "type": "tap",
+            "x": 1804,
+            "y": 965
+          },
+          "note": "Tap the visible bottom-right jewel in normal phase6/fullHUD flags with cameraMode0; old0.1.12 would toggle camera.",
+          "time": 1793478588.494729
+        },
+        {
+          "seq": 2,
+          "frame_sha256": "2c299cfcb6196c436d694d4a1ff0170f18a6a3679c9b2a0caa9fb4fd01b71cfb",
+          "command": {
+            "type": "tap",
+            "x": 797,
+            "y": 854
+          },
+          "note": "Dismiss the visible timed Wish notice through its red X before repeating the jewel test.",
+          "time": 1793478637.6377401
+        },
+        {
+          "seq": 3,
+          "frame_sha256": "d0397093764951e6de0d52f7d816ea0ff596b7e7b24d12be9a018a2ba6c5d199",
+          "command": {
+            "type": "tap",
+            "x": 1804,
+            "y": 965
+          },
+          "note": "Repeat the now unobstructed jewel tap with camera control enabled and mode0.",
+          "time": 1793478688.1286314
+        },
+        {
+          "seq": 4,
+          "frame_sha256": "ea4f84768f35cb3dc735af9fb3d29b571570fda3ef5e3c03ec765e39ef4161d9",
+          "command": {
+            "type": "tap",
+            "x": 279,
+            "y": 220
+          },
+          "note": "Close the visible Wishes panel after successful jewel selection in camera mode0.",
+          "time": 1793478736.9177675
+        },
+        {
+          "seq": 5,
+          "frame_sha256": "57295307cfb52693cf817369afc17409766888f08a418a098229d030ec1e5042",
+          "command": {
+            "type": "tap",
+            "x": 1685,
+            "y": 793
+          },
+          "note": "Toggle camera mode with its visible icon.",
+          "time": 1793478885.4748738
+        },
+        {
+          "seq": 6,
+          "frame_sha256": "102501348a980834d84ac0ea87a1ef80909388ff7fa1323bea624359a4241123",
+          "command": {
+            "type": "swipe",
+            "x1": 1100,
+            "y1": 600,
+            "x2": 1300,
+            "y2": 600,
+            "duration_ms": 600
+          },
+          "note": "Pan world with camera mode selected; inspect fixed HUD and moving scene.",
+          "time": 1793478939.903302
+        },
+        {
+          "seq": 7,
+          "frame_sha256": "146ef41aa31b818477b182c1652e1ebb16cd75bca68727725d92d5246dd501da",
+          "command": {
+            "type": "wait",
+            "seconds": 2
+          },
+          "note": "Observe release stability after pan drag.",
+          "time": 1793478980.025441
+        },
+        {
+          "seq": 8,
+          "frame_sha256": "4e97d56305e414396e7dbb3c3a5a81683dc8145b25e05ead97a1992b5d7c7a5e",
+          "command": {
+            "type": "tap",
+            "x": 500,
+            "y": 300
+          },
+          "note": "Dismiss the visible timed Go to Town hint before testing jewel with camera enabled.",
+          "time": 1793479028.5306401
+        },
+        {
+          "seq": 9,
+          "frame_sha256": "7824e2c3b4651bf13310c5bac4bddb7394d261c185fd4b5f3dbe903780c2fa1e",
+          "command": {
+            "type": "tap",
+            "x": 1804,
+            "y": 965
+          },
+          "note": "Select jewel with camera mode enabled; require actual Info/Wishes panel.",
+          "time": 1793479073.0957892
+        },
+        {
+          "seq": 10,
+          "frame_sha256": "6e26278e5fcfc5230f78de42deb3713487334a7ba3f6099828cf0d87d8b14ddf",
+          "command": {
+            "type": "tap",
+            "x": 279,
+            "y": 220
+          },
+          "note": "Close actual Wishes panel after successful jewel activation with camera enabled.",
+          "time": 1793479112.4366565
+        },
+        {
+          "seq": 11,
+          "frame_sha256": "efd0755916a0cda8dd150f1c0cbbeb0de3fec04b207abc6363adca1227a8a311",
+          "command": {
+            "type": "tap",
+            "x": 1685,
+            "y": 793
+          },
+          "note": "Disable camera mode using its visible icon.",
+          "time": 1793479157.25866
+        },
+        {
+          "seq": 12,
+          "frame_sha256": "7097fd21dd6e6e6c12024d139cf140f0a9def10da78e13bb78170a4159894105",
+          "command": {
+            "type": "swipe",
+            "x1": 1830,
+            "y1": 273,
+            "x2": 1830,
+            "y2": 600,
+            "duration_ms": 600
+          },
+          "note": "Zoom out with the existing slider; inspect scene scale and nearby HUD targets.",
+          "time": 1793479202.7836728
+        },
+        {
+          "seq": 13,
+          "frame_sha256": "35f211399cddd1adf81b6b20f03bd57ab4fe30b59bc35d770dbe8dcc1b086827",
+          "command": {
+            "type": "tap",
+            "x": 1210,
+            "y": 240
+          },
+          "note": "Select the visible bed as a regression check outside the camera button.",
+          "time": 1793479248.2941744
+        },
+        {
+          "seq": 14,
+          "frame_sha256": "ce3ca8d5808b3099d1c771ff7000f8594e0d5cb3c1a43ea97a5085874b65fe2b",
+          "command": {
+            "type": "tap",
+            "x": 1130,
+            "y": 792
+          },
+          "note": "Select visible Bed Sit; require Sim movement and seated pose, not just menu closure.",
+          "time": 1793479292.7185867
+        },
+        {
+          "seq": 15,
+          "frame_sha256": "ca26d6892ffa43449d2c5617099b28f766ec18f58ad84ca942947db95f1e7aa3",
+          "command": {
+            "type": "wait",
+            "seconds": 25
+          },
+          "note": "Observe queued Bed Sit through travel and final pose without modifying game state.",
+          "time": 1793479332.2234955
+        },
+        {
+          "seq": 16,
+          "frame_sha256": "b104d095b764005c4bc4912804cc28c120cf189d10f455c96a13721ed0142181",
+          "command": {
+            "type": "tap",
+            "x": 450,
+            "y": 600
+          },
+          "note": "Select clear bedroom floor for a nearby world-target walking regression.",
+          "time": 1793479409.6702747
+        },
+        {
+          "seq": 17,
+          "frame_sha256": "79cb01ad76906a60ada93688c806f585d93a9b8f872bec3d02e8e00db4e65948",
+          "command": {
+            "type": "tap",
+            "x": 253,
+            "y": 140
+          },
+          "note": "Close visible bed menu; no completed Bed Sit is claimed for this run.",
+          "time": 1793479459.9873352
+        },
+        {
+          "seq": 18,
+          "frame_sha256": "1cbcc776ae4db777a0bacdb8653357e671defc4dfea6b04445fa425daff49b0a",
+          "command": {
+            "type": "tap",
+            "x": 797,
+            "y": 854
+          },
+          "note": "Decline the visible timed New Wish popup before saving.",
+          "time": 1793479514.7870746
+        },
+        {
+          "seq": 19,
+          "frame_sha256": "fd2c8504da124c5310225e1c85d10930a3de5a9d8df70b45bd241c1a151d02c2",
+          "command": {
+            "type": "tap",
+            "x": 113,
+            "y": 965
+          },
+          "note": "Select Pause at its visible HUD target to begin normal Save and Quit.",
+          "time": 1793479564.795711
+        },
+        {
+          "seq": 20,
+          "frame_sha256": "863a32e49951d7ae05b98b80fff590d1f4a944fa247767f8e4c2a58e3e638c0b",
+          "command": {
+            "type": "tap",
+            "x": 500,
+            "y": 300
+          },
+          "note": "Dismiss visible Sleepy hint; preserve timed popup evidence.",
+          "time": 1793479676.2480068
+        },
+        {
+          "seq": 21,
+          "frame_sha256": "b96b77a86345c4215cdfa27299386ea0585dc36263c08f09d52b4c4ebfaa67d7",
+          "command": {
+            "type": "wait",
+            "seconds": 10
+          },
+          "note": "Allow visible bed activity to finish after the timed Sleepy hint is dismissed; inspect actual pose.",
+          "time": 1793479742.1201909
+        },
+        {
+          "seq": 22,
+          "frame_sha256": "202d8875b444a8ea0ce4aa8c51ac68e1b133f35599ee6b8ed4484b3469516ee4",
+          "command": {
+            "type": "tap",
+            "x": 500,
+            "y": 220
+          },
+          "note": "Dismiss visible Bad Mood hint before post-test save path; retain this bounded session.",
+          "time": 1793479804.6686337
+        },
+        {
+          "seq": 23,
+          "frame_sha256": "cdffa64f2a894bd31b771a4e3b125fc6b84be2fc1ffa0ba0ec506f8ed19d54e4",
+          "command": {
+            "type": "tap",
+            "x": 113,
+            "y": 965
+          },
+          "note": "Open Pause using ordinary HUD input before preserving this session's final save path.",
+          "time": 1793479849.2837136
+        },
+        {
+          "seq": 24,
+          "frame_sha256": "2f4aea5ab253f4c290d8df2bc6a39414e5b1e863ee3dde9fb972d4c24d592369",
+          "command": {
+            "type": "tap",
+            "x": 960,
+            "y": 637
+          },
+          "note": "Select visible Save and Continue in final slot; this session will retain a harness-budget failure rather than claim normal Quit.",
+          "time": 1793479898.721559
+        }
+      ],
+      "limits": [
+        "24-command budget exhausted before native Quit",
+        "Save and Continue confirmation pending; no post-test save",
+        "Completed Bed Sit unconfirmed; later movement/activity observed"
+      ],
+      "complete_log": {
+        "bytes": 46182901,
+        "sha256": "2ed0b5d52eec9a6d02512c5ffb220c2ce328c227692f9287215ac2695958e428",
+        "fatal_or_anr_count": 0,
+        "late_audio_warning_count": 0
+      }
+    },
+    {
+      "run_id": 41240915455,
+      "attempt": 1,
+      "source": "537f768540eb962a6e9422a02ec4838c6b00249d",
+      "workflow_conclusion": "success",
+      "artifact_id": 13057464438,
+      "archive_bytes": 118389092,
+      "archive_sha256": "02615e464bc80ff951dfd536f08cb2243518ef7a189a293c04c9b13edcb8351b",
+      "original_acceptance": {
+        "status": "runtime-progression-observed-awaiting-visual-review",
+        "gate_passed": false,
+        "error": null
+      },
+      "original_acceptance_sha256": "e1c49da8081ba084469f2e8c2d1502590680e1bd14fc88e92fd1411a3adba027",
+      "cold_starts": [
+        {
+          "attempt": 1,
+          "marker": "S3CE-cold-start-1-1793480051171286797",
+          "start_epoch": 1793480051.1712887,
+          "status": "ready-awaiting-visual-review",
+          "visual_review": "required",
+          "scope": "normal launcher/Start; process-cold; app data retained",
+          "game_pid": "4039",
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "screenshot_sha256": "42ab14c72b736f43e19721845fdc6548ced1594498d84f749190b88104468e58",
+          "fatal_or_anr_lines": [],
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{45d9494 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t10}"
+          ],
+          "end_epoch": 1793480091.5808158
+        },
+        {
+          "attempt": 2,
+          "marker": "S3CE-cold-start-2-1793480091581032471",
+          "start_epoch": 1793480091.5810342,
+          "status": "ready-awaiting-visual-review",
+          "visual_review": "required",
+          "scope": "normal launcher/Start; process-cold; app data retained",
+          "game_pid": "6206",
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "screenshot_sha256": "85474fa1e7a9d7908544f08894c1dca0905b9505fe6a62d19d20342880edf651",
+          "fatal_or_anr_lines": [],
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{6e4fb80 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "end_epoch": 1793480130.7893322
+        }
+      ],
+      "checkpoints": {
+        "gameplay": {
+          "name": "candidate-21-clear-gameplay-onboarding-popups",
+          "time": 1793480611.625799,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "6206",
+          "observer": "Pointer callback EXIT #2052 timeMs=478047 event=0 result=-1052691040 Game input AppEngine=0xc1411f20 active=0 counts=2,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc16d58e8 gesture=0 primary=0 origin=684,540 current=682,540 gamePhase=20 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0"
+        },
+        "saved-to-menu": {
+          "name": "candidate-24-confirm-save-and-quit",
+          "time": 1793480828.9417725,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneMenu",
+          "menu_state": 5,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "6206",
+          "observer": "Pointer callback EXIT #4053 timeMs=806011 event=0 result=-1052690800 Game input AppEngine=0xc1411f20 active=1 counts=0,5 engine420=0 engine430=0 transition424=0x00ffffff direction428=-1 speed42c=197379 Scene=SceneMenu@0xc16e1c58 gesture=3 primary=0 origin=698,540 current=698,540 menuState=5 menuRoute=-1 menu1bc=0 angleBits=0x00000000 angle=0"
+        },
+        "resume": {
+          "name": "candidate-27-load-existing-saved-female-sim",
+          "time": 1793480923.7556572,
+          "screen_size": [
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "native_viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "viewport_source": "Main BASE_APPLICATION frame",
+          "keyboard_visible": false,
+          "game_pid": "13050",
+          "observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0"
+        }
+      },
+      "live_frames": [
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 0,
+          "seq": 1,
+          "frame_sha256": "5d69b75e82eb73487b3d19f7256df7ae17d66e729473cd88e8f266a05ccaf4be",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793480953.4326823,
+          "input_observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 1,
+          "seq": 2,
+          "frame_sha256": "aff389fdb4673938db4f0a63ee36461fa328d23134d12ab776544b33b5981b79",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793480998.4237792,
+          "input_observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 2,
+          "seq": 3,
+          "frame_sha256": "7b4b43ec0f21a7f6d16c0b798a3665f01920ba45f21c7b5816baef75c4ac679b",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481042.994641,
+          "input_observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 3,
+          "seq": 4,
+          "frame_sha256": "14a4fa8b65099b4361b4832acd3902e90eb025eb41d6798dfe548649ec65b941",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481085.6729007,
+          "input_observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 4,
+          "seq": 5,
+          "frame_sha256": "5f6b1c0066812b0e9ce9cbe15f2b563b50f05f77fb5fb9821d60e61a8ba7e70a",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481146.352421,
+          "input_observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 5,
+          "seq": 6,
+          "frame_sha256": "8cd7f6af0e4c85c2bf79372618161907b1c35b357f22c32fc179cf4c5d85925e",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481192.4246366,
+          "input_observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 6,
+          "seq": 7,
+          "frame_sha256": "1e32e74c93b0d27b6d43c86d6220ade33ddd2e2a5c4b787c5c8785ce93fbd3cb",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481247.1988473,
+          "input_observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 7,
+          "seq": 8,
+          "frame_sha256": "fd3adcb6c739fc9768cc2a7eea0ff206462438682a413cab1fe904723cc3d275",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481287.009134,
+          "input_observer": "Pointer callback EXIT #256 timeMs=902517 event=0 result=-1053739376 Game input AppEngine=0xc1311f20 active=1 counts=0,7 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=3 primary=0 origin=26,540 current=26,540 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 8,
+          "seq": 9,
+          "frame_sha256": "99826b300460de7ec9ce2c9d656f445ce1ae1a46acfa10d2308043f3087cdfb8",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481337.3071957,
+          "input_observer": "Pointer callback EXIT #272 timeMs=1314835 event=0 result=-1053739616 Game input AppEngine=0xc1311f20 active=0 counts=2,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=0 primary=0 origin=912,633 current=912,633 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 9,
+          "seq": 10,
+          "frame_sha256": "52ed4054792f8ffd2963a4aab67d67346028293d1fc28144ded481466aeda917",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481377.007151,
+          "input_observer": "Pointer callback EXIT #272 timeMs=1314835 event=0 result=-1053739616 Game input AppEngine=0xc1311f20 active=0 counts=2,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=0 primary=0 origin=912,633 current=912,633 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 10,
+          "seq": 11,
+          "frame_sha256": "1403630d9e5769f7e462f3b7369961c308b4bb0f5785d2cbb2c381f9555fd0ac",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481420.657411,
+          "input_observer": "Pointer callback EXIT #272 timeMs=1314835 event=0 result=-1053739616 Game input AppEngine=0xc1311f20 active=0 counts=2,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=0 primary=0 origin=912,633 current=912,633 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 11,
+          "seq": 12,
+          "frame_sha256": "2e214a7f8a678991950119e4a66215a4e303145a5595ac53a0fd2860e0eaa310",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481487.7634308,
+          "input_observer": "Pointer callback EXIT #272 timeMs=1314835 event=0 result=-1053739616 Game input AppEngine=0xc1311f20 active=0 counts=2,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=0 primary=0 origin=912,633 current=912,633 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 12,
+          "seq": 13,
+          "frame_sha256": "808f2a180973858bf4bef164590a397ced9af2ac1c08a257b2cff968163e8fe4",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481537.9268842,
+          "input_observer": "Pointer callback EXIT #272 timeMs=1314835 event=0 result=-1053739616 Game input AppEngine=0xc1311f20 active=0 counts=2,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=0 primary=0 origin=912,633 current=912,633 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{2f73be6 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t14}"
+          ],
+          "native_main_returned": false,
+          "activity_finish_requested": false,
+          "fatal_or_anr_count": 0
+        },
+        {
+          "schema": 1,
+          "run_id": "41240915455",
+          "frame": 13,
+          "seq": 14,
+          "frame_sha256": "43fb1a2ecf08bd1fbd0e7e45be90d18f1bbec1190b57482ca49b6b2e9879abe6",
+          "coordinate_size": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "scene": "SceneGame",
+          "menu_state": null,
+          "game_pid": "13050",
+          "time": 1793481574.3188608,
+          "input_observer": "Pointer callback EXIT #272 timeMs=1314835 event=0 result=-1053739616 Game input AppEngine=0xc1311f20 active=0 counts=2,0 engine420=0 engine430=1 transition424=0x00ffffff direction428=1 speed42c=197379 Scene=SceneGame@0xc1423070 gesture=0 primary=0 origin=912,633 current=912,633 gamePhase=6 hudFlags=0xffffffff cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=0",
+          "control_transport": "github-contents-api",
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{a4eac1e u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.CompatActivity t13}"
+          ],
+          "native_main_returned": true,
+          "activity_finish_requested": true,
+          "fatal_or_anr_count": 0
+        }
+      ],
+      "commands": [
+        {
+          "seq": 1,
+          "frame_sha256": "5d69b75e82eb73487b3d19f7256df7ae17d66e729473cd88e8f266a05ccaf4be",
+          "command": {
+            "type": "tap",
+            "x": 1300,
+            "y": 300
+          },
+          "note": "Select the visible bed early in this session, before extended timed-hint/game-time progression.",
+          "time": 1793480990.1280966
+        },
+        {
+          "seq": 2,
+          "frame_sha256": "aff389fdb4673938db4f0a63ee36461fa328d23134d12ab776544b33b5981b79",
+          "command": {
+            "type": "tap",
+            "x": 1130,
+            "y": 792
+          },
+          "note": "Select the visible Cheap Bed Sit row; inspect pose rather than menu closure.",
+          "time": 1793481035.178187
+        },
+        {
+          "seq": 3,
+          "frame_sha256": "7b4b43ec0f21a7f6d16c0b798a3665f01920ba45f21c7b5816baef75c4ac679b",
+          "command": {
+            "type": "wait",
+            "seconds": 6
+          },
+          "note": "Observe accepted bed input after normal travel time; require an actual seated pose.",
+          "time": 1793481074.4067976
+        },
+        {
+          "seq": 4,
+          "frame_sha256": "14a4fa8b65099b4361b4832acd3902e90eb025eb41d6798dfe548649ec65b941",
+          "command": {
+            "type": "tap",
+            "x": 1130,
+            "y": 792
+          },
+          "note": "Select Sit on the now-visible bed menu after the timed wish transition; earlier menu disappearance was insufficient.",
+          "time": 1793481137.7342272
+        },
+        {
+          "seq": 5,
+          "frame_sha256": "5f6b1c0066812b0e9ce9cbe15f2b563b50f05f77fb5fb9821d60e61a8ba7e70a",
+          "command": {
+            "type": "wait",
+            "seconds": 3
+          },
+          "note": "Observe the final Bed Sit pose following the visible approach/transition.",
+          "time": 1793481183.4699817
+        },
+        {
+          "seq": 6,
+          "frame_sha256": "8cd7f6af0e4c85c2bf79372618161907b1c35b357f22c32fc179cf4c5d85925e",
+          "command": {
+            "type": "tap",
+            "x": 113,
+            "y": 965
+          },
+          "note": "Open Pause after the unobstructed completed seated pose.",
+          "time": 1793481239.3800018
+        },
+        {
+          "seq": 7,
+          "frame_sha256": "1e32e74c93b0d27b6d43c86d6220ade33ddd2e2a5c4b787c5c8785ce93fbd3cb",
+          "command": {
+            "type": "tap",
+            "x": 797,
+            "y": 854
+          },
+          "note": "Decline visible New Wish overlay before selecting Pause.",
+          "time": 1793481278.5436897
+        },
+        {
+          "seq": 8,
+          "frame_sha256": "fd3adcb6c739fc9768cc2a7eea0ff206462438682a413cab1fe904723cc3d275",
+          "command": {
+            "type": "tap",
+            "x": 113,
+            "y": 965
+          },
+          "note": "Open Pause now that the visible New Wish overlay is dismissed.",
+          "time": 1793481329.429961
+        },
+        {
+          "seq": 9,
+          "frame_sha256": "99826b300460de7ec9ce2c9d656f445ce1ae1a46acfa10d2308043f3087cdfb8",
+          "command": {
+            "type": "tap",
+            "x": 960,
+            "y": 797
+          },
+          "note": "Select visible Save and Quit to menu after completed Bed Sit.",
+          "time": 1793481368.8715162
+        },
+        {
+          "seq": 10,
+          "frame_sha256": "52ed4054792f8ffd2963a4aab67d67346028293d1fc28144ded481466aeda917",
+          "command": {
+            "type": "tap",
+            "x": 1124,
+            "y": 730
+          },
+          "note": "Confirm the visible Save Game progress-and-quit-to-main-menu dialog.",
+          "time": 1793481413.572103
+        },
+        {
+          "seq": 11,
+          "frame_sha256": "1403630d9e5769f7e462f3b7369961c308b4bb0f5785d2cbb2c381f9555fd0ac",
+          "command": {
+            "type": "wait",
+            "seconds": 20
+          },
+          "note": "Allow normal save and main-menu loading to complete.",
+          "time": 1793481462.5213912
+        },
+        {
+          "seq": 12,
+          "frame_sha256": "2e214a7f8a678991950119e4a66215a4e303145a5595ac53a0fd2860e0eaa310",
+          "command": {
+            "type": "tap",
+            "x": 710,
+            "y": 797
+          },
+          "note": "Select the actual visible main-menu Quit row.",
+          "time": 1793481529.688235
+        },
+        {
+          "seq": 13,
+          "frame_sha256": "808f2a180973858bf4bef164590a397ced9af2ac1c08a257b2cff968163e8fe4",
+          "command": {
+            "type": "tap",
+            "x": 1124,
+            "y": 730
+          },
+          "note": "Confirm the visible native Quit dialog; require actual native return and Activity finish.",
+          "time": 1793481569.3053687
+        },
+        {
+          "seq": 14,
+          "frame_sha256": "43fb1a2ecf08bd1fbd0e7e45be90d18f1bbec1190b57482ca49b6b2e9879abe6",
+          "command": {
+            "type": "finish"
+          },
+          "note": "Finish only after visible Compat version113, native Main return, Activity finish and zero fatal/ANR.",
+          "time": 1793481610.8070226
+        }
+      ],
+      "native_quit": {
+        "native_main_returned": true,
+        "activity_finish_requested": true,
+        "resumed_activity_lines": [
+          "mResumedActivity: ActivityRecord{a4eac1e u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.CompatActivity t13}"
+        ],
+        "game_main_resumed": false,
+        "compat_launcher_resumed": true,
+        "retained_package_pid": "13050",
+        "fatal_or_anr_lines": []
+      },
+      "complete_log": {
+        "bytes": 32471195,
+        "sha256": "07fc9ffa73583e0e1f563b80cb62f702a68a11cab6326a0d00e275afd601ce79",
+        "fatal_or_anr_count": 0,
+        "late_audio_warning_count": 0
+      },
+      "save_files": {
+        "before_reload": "sim3dat0 2562 bytes and sim3set 90 bytes, mtime 2026-10-31 21:04 UTC",
+        "after_post_action_save": "same names/sizes, mtime 2026-10-31 21:16 UTC"
+      }
+    }
+  ],
+  "manual_decision": {
+    "status": "publish exact signed bytes as a focused Thor test candidate after full archive review",
+    "reviewers": [
+      "root",
+      "independent_review",
+      "runtime_recovery"
+    ],
+    "original_gates_preserved": true,
+    "confirmed": [
+      "four process-cold menu tests across both runs, zero failures; all attempts retained",
+      "ordinary creation, candidate-created save and new-process saved-Sim loading in both runs",
+      "actual Wishes panel opens with camera off and on",
+      "camera toggle, world drag, bounded release stability and zoom",
+      "completed visible Bed Sit after repeated selection in follow-up run",
+      "post-action save with advancing file mtimes, normal native Quit and Compat launcher resume",
+      "both full logs have zero fatal/ANR and zero late-audio warnings"
+    ],
+    "unconfirmed": [
+      "physical Thor camera/jewel and prior-save install-over acceptance",
+      "Thor LOW_MEMORY reliability and peak footprint",
+      "new Home/return and Android13\u201316 gameplay",
+      "cause of initial Bed Sit selection interruption; later explicit selection completed"
+    ]
+  },
+  "publication": null
+}

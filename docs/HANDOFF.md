@@ -1,4 +1,4 @@
-# Current continuation — 0.1.13 camera-input candidate
+# Current continuation — 0.1.13 camera-input release
 
 Recovered live main at `4ea1ecd6b93c65b84078a1c0e653b5e25da37cb0` before editing.
 Following 0.1.12, the user reports everything seems to work except the bottom-right
@@ -22,12 +22,29 @@ checks plus180 prior HUD comparisons),22 runtime tests, source/asset/signature
 checks and exact release reconstruction pass. Read-only observer fields now
 identify actual phase/flags/camera state; their timing is not final-action proof.
 
-Next: push exact candidate to Android validation, two menu cold starts plus
-normal creation/save/reload prefix, then prioritize camera toggle/drag/release
-and bottom-right selection with actual state evidence. Publish these exact
-bytes after review and deliver a short install-over test.
+Actual Android run41237818263, source
+`b76f771113032361de079ee360588e0990426c08`, uses the exact candidate SHA above.
+Two cold menus and normal creation/save/reload pass. Actual Wishes opens with
+camera mode off and on; pan, bounded release and zoom are visibly confirmed.
+The run remains red after exhausting24 commands amid timed game hints. Final
+SaveContinue confirmation was still pending; no post-test save or native Quit
+is claimed. Completed Bed Sit is also unconfirmed, though later world movement
+and activity are visible. Preserve this complete failed-session evidence.
 
-# Current takeover — 0.1.12 HUD/startup candidate
+Harness-only source `537f768540eb962a6e9422a02ec4838c6b00249d` coherently permits
+40 strictly bound commands, with unchanged deadlines/native-Quit guard and24
+passing host tests. Run41240915455 is green for the same signed bytes. Root and
+two reviewers checked its complete hash-verified archive: two additional cold
+menus, completed visible Bed Sit, advancing post-action save files, clean native
+Quit and Compat113 resume. Both full logs have zero fatal/ANR and late-audio
+warnings. Across both runs: four cold-menu tests, zero failures, plus two saved
+game restarts. Retain first run's red status and both original gate=false files.
+See [runtime receipt](CAMERA_INPUT_RUNTIME_ACCEPTANCE.md) and its evidence index.
+Exact signed bytes are accepted as a focused Thor candidate. Next: publish and
+verify public download, then deliver explicit install-over APK/test links. No
+rebuild or resign. Physical memory-pressure reliability/Home-return remain open.
+
+# Historical takeover — 0.1.12 HUD/startup candidate
 
 Recovered `main` at `a13b0ec799adca78edeac8ea56e69ac53c60a669` against live GitHub
 before editing. Reused original input, signing identity and prior analysis.
@@ -69,8 +86,10 @@ The original automated gate_passed=false remains intact; separate manual decisio
 allows this exact targeted Thor test candidate. No rebuild or resign is needed.
 
 Limits: runtime save was candidate-created; prior0.1.11 save install-over remains
-Thor validation. Wishes activation was not demonstrated: source-proven coordinate
-repair remains, but runtime reached original tutorial gating/Go to Town hint.
+Thor validation. Wishes activation was not demonstrated in that run. A Go to
+Town hint was observed; it did not establish phase21 or attribute every rejected
+tap to tutorial gating. The current0.1.13 investigation identifies camera
+precedence and demonstrates actual Wishes activation in both camera modes.
 New Home/return and physical memory-pressure reliability remain unconfirmed.
 This is API30 x86/ARMv7 translation, not physical ARM or Android13–16 acceptance.
 

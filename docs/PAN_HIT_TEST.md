@@ -12,7 +12,8 @@ plumbob and the lower strips. It converts raw coordinates to logical UI space
 at107284. At107288 it then reads `Scene+264`, which both initialization105f88
 and every camera render112f90 compute as `Display.scale(35)`. Its sole camera
 hit consumer compares this already scaled radius with logical touch coordinates.
-The final UI projection scales the logical circle again in physical space.
+Converting that logical hit boundary back to physical screen coordinates
+introduces a second scale factor; no visible circle is drawn for this boundary.
 
 At1920×1080, scale3.375, original rendering and source soft-float math give:
 
@@ -107,5 +108,16 @@ The live-frame metadata exposes the same raw observer text for review.
 
 The signed candidate's original bridge and launcher DEX are byte-identical to
 0.1.12; only native code, version manifest and signing records differ. All15
-native sanitizer suites,22 runtime harness tests and byte-exact reconstruction
-pass. Android camera/neighbor interaction remains the runtime gate.
+native sanitizer suites, the original22 runtime harness tests and byte-exact
+reconstruction pass. The harness-only continuation adds two tests for its
+40-command bound and coupled frame uploads; all24 tests pass. Android evidence
+and its original failed-session limits are recorded in
+[CAMERA_INPUT_RUNTIME_ACCEPTANCE.md](CAMERA_INPUT_RUNTIME_ACCEPTANCE.md).
+
+The previous 0.1.12 Go to Town screenshot demonstrated a hint path, not a
+captured phase21 value. The ordinary prefix had already selected No at the
+optional tutorial prompt. Do not infer phase/flags from that hint alone or
+attribute every old strip miss to gating. Enabled camera precedence is now
+independently reproduced; use actual mode/panel frames plus sampled state/time
+for the new runtime. Observer logging is sampled, so the latest retained line
+may precede the latest command; check callback number/time before attribution.

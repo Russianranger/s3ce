@@ -2,9 +2,10 @@
 
 Experimental preservation build of the supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) and existing original
-ARM analysis. The 0.1.12 candidate corrects HUD hit testing, avoids an unused
-GL-view bitmap and retains startup/session memory evidence across retries.
-See [current handoff](docs/HANDOFF.md), [HUD analysis](docs/HUD_INPUT.md),
+ARM analysis. The 0.1.13 candidate corrects the oversized camera touch region
+that intercepted the bottom-right jewel. It retains the 0.1.12 HUD/startup changes.
+See [current handoff](docs/HANDOFF.md), [camera analysis](docs/PAN_HIT_TEST.md),
+[HUD analysis](docs/HUD_INPUT.md),
 [startup evidence](docs/STARTUP_DIAGNOSTICS.md) and
 [memory change](docs/SURFACE_MEMORY.md).
 
@@ -12,13 +13,18 @@ The user physically confirmed 0.1.11 object interactions and previous-save
 continuation on the Thor. A first failed start is consistent with Android's
 retained LOW_MEMORY exit; three circled HUD areas remained difficult to select.
 Earlier Thor testing confirmed visible UI, character creation, house entry,
-walking, saving and camera zoom/pan. These are preservation requirements.
+walking, saving and camera zoom/pan. Following 0.1.12 delivery, the user reports
+everything seems to work except the camera region intercepting the jewel.
+No fresh report verifies that installed version or a repeated-start count.
+These working behaviors remain preservation requirements.
 
-[Download 0.1.12](https://github.com/Russianranger/s3ce/releases/download/v0.1.12-hud-startup/S3CE-0.1.12-hud-startup-arm32.apk).
-[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.12-hud-startup).
-[Actual runtime evidence](docs/HUD_STARTUP_RUNTIME_ACCEPTANCE.md): four menu cold
-starts with zero failures; status/Build selection, Bed Sit, save/load and clean
-Quit. Wishes activation and physical low-memory reliability remain Thor tests.
+[Download 0.1.13](https://github.com/Russianranger/s3ce/releases/download/v0.1.13-camera-input/S3CE-0.1.13-camera-input-arm32.apk).
+[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.13-camera-input).
+[Camera runtime evidence](docs/CAMERA_INPUT_RUNTIME_ACCEPTANCE.md) records actual
+jewel-panel activation in both camera modes, panning and the validation limits.
+The [0.1.12 receipt](docs/HUD_STARTUP_RUNTIME_ACCEPTANCE.md) preserves earlier
+status/Build, completed Bed Sit and startup evidence. Physical low-memory
+reliability remains unconfirmed.
 
 Install updates over the existing app without clearing data. Keep **Original rendering (diagnostic mode)
 unchecked**. Reports: **Home → app icon → Save report**.
@@ -63,8 +69,8 @@ The guarded native correction fixes the projection Z scale at 1 and preserves
 XY rendering and input coordinates. Original game assets are restored after the
 unsuccessful 0.1.9 indexed-quad experiment.
 
-The following describes the historical 0.1.11 acceptance; the current 0.1.12
-receipt is linked above.
+The following describes the historical 0.1.11 acceptance; newer receipts are
+linked above.
 
 The exact 0.1.11 release APK was tested on Android 11/API 30 Google APIs x86 with ARMv7
 translation, Emulator 31.1.4/KVM/SwiftShader, 4 KiB pages and 1920×1080. Ordinary
