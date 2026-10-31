@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41212609908",
-  "seq": 10,
-  "frame_sha256": "1c2aa459a31754fd30eb515f79f299bdf402aa766a21765e7834eed96c8dee95",
+  "seq": 11,
+  "frame_sha256": "ec6117536931c793fac9bf1e7ab18271f71ea3bb64709d9a59b2925a573507b5",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1122,
-    "y": 735
+    "type": "wait",
+    "seconds": 10
   },
-  "note": "Confirm the visible Save Game and Quit prompt with its green check."
+  "note": "Allow normal save-and-quit loading to finish."
 }
