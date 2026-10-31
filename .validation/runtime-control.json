@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 2,
-  "frame_sha256": "7e324a98d2ee5fb06476a6e5d9bb872682cb69ba8c8c9823b2acb557a60f5017",
+  "seq": 3,
+  "frame_sha256": "7cc8b93840887a7cd1dafb89385c24af8366d3e0d7536fbae1c3d48bb5016eeb",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1122,
-    "y": 854
+    "x": 500,
+    "y": 362
   },
-  "note": "Accept the visible New Wish dialog before zooming."
+  "note": "Close the visible Recipes information panel using its X."
 }
