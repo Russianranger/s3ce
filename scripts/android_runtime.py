@@ -6,6 +6,8 @@ Scene observations come from the application's guarded read-only input observer.
 Visible controls and the resulting game scene still require screenshot review.
 """
 import argparse
+import base64
+import binascii
 import hashlib
 import json
 import math
@@ -27,6 +29,35 @@ SCENE = re.compile(r'Scene=(SceneMenu|SceneGame)(?:@[^\s]+)?')
 MENU = re.compile(r'menuState=(\d+)')
 BOUNDS = re.compile(r'\[(-?\d+),\s*(-?\d+)\]\[(-?\d+),\s*(-?\d+)\]')
 CONTROL_URL = 'https://raw.githubusercontent.com/Russianranger/s3ce/qa/object-actions-ui/.validation/runtime-control.json'
+CONTROL_CONTENTS_URL = 'https://api.github.com/repos/Russianranger/s3ce/contents/.validation/runtime-control.json?ref=qa%2Fobject-actions-ui'
+
+
+def fetch_control_document():
+    """Read the fixed QA document without exposing the optional read-only token."""
+    from android_runtime_control import ControlError, MAX_DOCUMENT_BYTES
+    token = os.environ.get('S3CE_CONTROL_GITHUB_TOKEN')
+    headers = {'Cache-Control': 'no-cache', 'User-Agent': 'S3CE-runtime-validation'}
+    if not token:
+        request = urllib.request.Request(CONTROL_URL + '?t=' + str(time.time_ns()), headers=headers)
+        with urllib.request.urlopen(request, timeout=15) as response:
+            return response.read(MAX_DOCUMENT_BYTES + 1)
+    headers.update({'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json',
+                    'X-GitHub-Api-Version': '2022-11-28'})
+    request = urllib.request.Request(CONTROL_CONTENTS_URL + '&t=' + str(time.time_ns()), headers=headers)
+    with urllib.request.urlopen(request, timeout=15) as response:
+        data = response.read(MAX_DOCUMENT_BYTES * 4 + 1)
+    if len(data) > MAX_DOCUMENT_BYTES * 4:
+        raise ControlError('GitHub Contents response exceeds its bounded size')
+    try:
+        content = json.loads(data)
+        if content.get('encoding') != 'base64' or type(content.get('content')) is not str:
+            raise ValueError('encoding')
+        raw = base64.b64decode(''.join(content['content'].split()), validate=True)
+    except (ValueError, TypeError, AttributeError, binascii.Error) as error:
+        raise ControlError('GitHub Contents response is not a base64 control file') from error
+    if len(raw) > MAX_DOCUMENT_BYTES:
+        raise ControlError('Decoded GitHub control exceeds its bounded size')
+    return raw
 
 
 def sha(path):
@@ -93,6 +124,7 @@ class Android:
         self.object_actions = []
         self.quit_observation = {}
         self.interactive_observation = {'commands': [], 'frames': [], 'finish_requested': False}
+        self.runtime_started = time.monotonic()
 
     def adb(self, *args, timeout=45, check=True):
         result = subprocess.run([self.adb_path, '-s', self.serial, *map(str, args)],
@@ -481,7 +513,10 @@ class Android:
             raise ValueError('Interactive mode requires a real run ID and at most24commands')
         live = self.output / 'live'
         live.mkdir(parents=True, exist_ok=True)
-        deadline = time.monotonic() + 3600
+        overall = self.runtime_started + 4500
+        if os.environ.get('S3CE_RUNTIME_DEADLINE_EPOCH'):
+            overall = min(overall, time.monotonic() + max(0, float(os.environ['S3CE_RUNTIME_DEADLINE_EPOCH']) - time.time()))
+        deadline = min(time.monotonic() + 3600, overall)
         seen_rejections = set()
         for frame_index in range(max_commands):
             label = f'live-frame-{frame_index:03d}'
@@ -498,6 +533,7 @@ class Android:
                         'coordinate_size': list(self.screen_size), 'viewport': self.viewport,
                         'scene': observation['scene'], 'menu_state': observation['menu_state'],
                         'game_pid': observation['game_pid'], 'time': time.time(),
+                        'control_transport': 'github-contents-api' if os.environ.get('S3CE_CONTROL_GITHUB_TOKEN') else 'public-raw',
                         'resumed_activity_lines': [line.strip() for line in activity.splitlines()
                                                   if 'mResumedActivity' in line or 'topResumedActivity' in line],
                         'native_main_returned': bool(re.search(r'Native code done\.\s+Shutting down', log)),
@@ -513,10 +549,7 @@ class Android:
             command = None
             while time.monotonic() < deadline:
                 try:
-                    request = urllib.request.Request(CONTROL_URL + '?t=' + str(time.time_ns()),
-                        headers={'Cache-Control': 'no-cache', 'User-Agent': 'S3CE-runtime-validation'})
-                    with urllib.request.urlopen(request, timeout=15) as response:
-                        raw = response.read(4097)
+                    raw = fetch_control_document()
                     command = validate_control(raw, run_id, frame_index + 1,
                         metadata['frame_sha256'], self.screen_size, viewport=self.viewport)
                     document = json.loads(raw)

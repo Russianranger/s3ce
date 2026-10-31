@@ -1,5 +1,6 @@
 """Synthetic protocol tests only; no Android process or game state is accessed."""
 import io
+import base64
 import json
 import os
 from pathlib import Path
@@ -12,7 +13,7 @@ from unittest.mock import patch
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from android_runtime import Android, CONTROL_URL, sha
+from android_runtime import Android, CONTROL_URL, CONTROL_CONTENTS_URL, fetch_control_document, sha
 
 
 class FakeAndroid(Android):
@@ -65,7 +66,7 @@ class InteractiveProtocolTests(unittest.TestCase):
                     document['command'] = {'type': 'finish'}
                 return io.BytesIO(json.dumps(document).encode())
 
-            with patch('android_runtime.urllib.request.urlopen', side_effect=response), patch('android_runtime.time.sleep'):
+            with patch.dict(os.environ, {'S3CE_CONTROL_GITHUB_TOKEN': ''}), patch('android_runtime.urllib.request.urlopen', side_effect=response), patch('android_runtime.time.sleep'):
                 android.interactive_loop('123', max_commands=3)
             self.assertEqual(android.taps, [[1000, 500]])
             self.assertTrue(android.quit_checked)
@@ -102,6 +103,21 @@ class InteractiveProtocolTests(unittest.TestCase):
             result = subprocess.run([sys.executable, str(script), '--output', str(output), '--finish', '--timeout', '1'],
                                     env=environment, capture_output=True, text=True)
             self.assertEqual(result.returncode, 1)
+
+    def test_authenticated_contents_transport_and_raw_fallback(self):
+        raw = b'{"schema":1}'
+        response = json.dumps({'encoding': 'base64', 'content': base64.b64encode(raw).decode() + '\n'}).encode()
+        with patch.dict(os.environ, {'S3CE_CONTROL_GITHUB_TOKEN': 'synthetic-test-token'}):
+            with patch('android_runtime.urllib.request.urlopen', return_value=io.BytesIO(response)) as opener:
+                self.assertEqual(fetch_control_document(), raw)
+                request = opener.call_args.args[0]
+                self.assertTrue(request.full_url.startswith(CONTROL_CONTENTS_URL + '&t='))
+                self.assertEqual(request.get_header('Authorization'), 'Bearer synthetic-test-token')
+        with patch.dict(os.environ, {'S3CE_CONTROL_GITHUB_TOKEN': ''}):
+            with patch('android_runtime.urllib.request.urlopen', return_value=io.BytesIO(raw)) as opener:
+                self.assertEqual(fetch_control_document(), raw)
+                self.assertTrue(opener.call_args.args[0].full_url.startswith(CONTROL_URL + '?t='))
+                self.assertFalse(opener.call_args.args[0].has_header('Authorization'))
 
 
 if __name__ == '__main__':

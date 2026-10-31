@@ -21,7 +21,7 @@ permissions:
 
 concurrency:
   group: s3ce-android-runtime
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   validate:
@@ -40,7 +40,7 @@ jobs:
           mkdir -p build/runtime-evidence "$ANDROID_AVD_HOME"
           printf 'ANDROID_HOME=%s\nANDROID_AVD_HOME=%s\n' "$ANDROID_HOME" "$ANDROID_AVD_HOME" > build/runtime-evidence/setup.txt
           python3 - <<'PYMODE'
-          import json, os
+          import json, os, time
           from pathlib import Path
           plan = json.loads(Path('scripts/android_runtime_plan.json').read_text())
           enabled = (os.environ.get('DISPATCH_INTERACTIVE', '').lower() == 'true'
@@ -48,6 +48,7 @@ jobs:
                      else bool(plan.get('interactive_control_enabled', False)))
           with open(os.environ['GITHUB_ENV'], 'a') as env:
               env.write('S3CE_RUNTIME_INTERACTIVE=' + str(enabled).lower() + '\n')
+              env.write('S3CE_RUNTIME_DEADLINE_EPOCH=' + str(int(time.time()) + 4800) + '\n')
           print('Interactive frame controller:', enabled)
           PYMODE
       - name: Prepare byte-exact internal APKs
@@ -139,6 +140,7 @@ jobs:
         env:
           CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}
           BASELINE_APK: ${{ steps.apks.outputs.baseline }}
+          S3CE_CONTROL_GITHUB_TOKEN: ${{ github.token }}
         run: |
           mkdir -p build/runtime-evidence/live
           nohup /usr/bin/python3 scripts/android_runtime.py --avd S3CE_VALIDATION --candidate "$CANDIDATE_APK" --baseline "$BASELINE_APK" --plan scripts/android_runtime_plan.json --output build/runtime-evidence --interactive > build/runtime-evidence/controller.log 2>&1 < /dev/null &
@@ -275,7 +277,17 @@ jobs:
               kill -TERM "$controller_pid" 2>/dev/null || true
             fi
           fi
-          /usr/bin/python3 scripts/android_runtime_frame.py --finish --timeout 120
+          set +e
+          /usr/bin/python3 scripts/android_runtime_frame.py --finish --timeout 900
+          controller_status=$?
+          if [ "$controller_status" -ne 0 ] && [ -f "$RUNNER_TEMP/s3ce-runtime-controller.pid" ]; then
+            read -r controller_pid < "$RUNNER_TEMP/s3ce-runtime-controller.pid"
+            if [[ "$controller_pid" =~ ^[0-9]+$ ]]; then
+              kill -TERM "$controller_pid" 2>/dev/null || true
+            fi
+            /usr/bin/python3 scripts/android_runtime_frame.py --finish --timeout 120 || true
+          fi
+          exit "$controller_status"
       - name: Upload screenshots and runtime evidence only
         if: always()
         uses: actions/upload-artifact@v4
