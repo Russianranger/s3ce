@@ -21,27 +21,36 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    env:
+      ANDROID_AVD_HOME: ${{ runner.temp }}/s3ce-validation-avd
     steps:
       - uses: actions/checkout@v4
+      - name: Initialize validation diagnostics
+        shell: bash
+        run: |
+          mkdir -p build/runtime-evidence "$ANDROID_AVD_HOME"
+          printf 'ANDROID_HOME=%s\nANDROID_AVD_HOME=%s\n' "$ANDROID_HOME" "$ANDROID_AVD_HOME" > build/runtime-evidence/setup.txt
       - name: Prepare byte-exact internal APKs
         id: apks
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/android_runtime_prepare.py
+        run: python3 scripts/android_runtime_prepare.py 2>&1 | tee -a build/runtime-evidence/setup.txt
       - name: Install Android runtime tools
         shell: bash
         run: |
           set -euo pipefail
+          exec > >(tee -a build/runtime-evidence/setup.txt) 2>&1
           test -c /dev/kvm
           sudo chmod a+rw /dev/kvm
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platform-tools' 'emulator' 'build-tools;35.0.0' 'system-images;android-30;google_apis;x86'
-          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --force --name S3CE_VALIDATION --package 'system-images;android-30;google_apis;x86' --device pixel_2
+          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --force --name S3CE_VALIDATION --path "$ANDROID_AVD_HOME/S3CE_VALIDATION.avd" --package 'system-images;android-30;google_apis;x86' --device pixel_2
           python3 - <<'PY'
           import os
           from pathlib import Path
           image = Path(os.environ['ANDROID_HOME']) / 'system-images/android-30/google_apis/x86'
-          avd = Path.home() / '.android/avd/S3CE_VALIDATION.avd/config.ini'
+          avd_root = Path(os.environ['ANDROID_AVD_HOME'])
+          avd = avd_root / 'S3CE_VALIDATION.avd/config.ini'
           values = dict(line.split('=', 1) for line in avd.read_text().splitlines() if '=' in line)
           values.update({'hw.lcd.width': '1080', 'hw.lcd.height': '1920', 'hw.lcd.density': '320',
                          'hw.initialOrientation': 'landscape', 'hw.cpu.ncore': '4', 'hw.ramSize': '3072',
@@ -51,7 +60,12 @@ jobs:
                          'disk.systemPartition.size': str((image / 'system.img').stat().st_size),
                          'showDeviceFrame': 'no', 'fastboot.forceColdBoot': 'yes'})
           avd.write_text(''.join(f'{key}={value.strip()}\n' for key, value in values.items()))
+          (avd_root / 'S3CE_VALIDATION.ini').write_text(
+              'avd.ini.encoding=UTF-8\npath=' + str(avd.parent) + '\ntarget=android-30\n')
+          print('Configured AVD:', avd)
+          print('Original GPT system image bytes:', (image / 'system.img').stat().st_size)
           PY
+          "$ANDROID_HOME/emulator/emulator" -list-avds
           "$ANDROID_HOME/emulator/emulator" -accel-check
       - name: Exercise baseline and candidate through real Android input
         env:

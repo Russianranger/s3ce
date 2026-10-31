@@ -11,14 +11,15 @@ staging or APK publication is authorized before it passes.
 | Native safety | 12 ASan/UBSan suites, fingerprint/allocation bounds/cache flush and ARM hardening checks pass |
 | App reporting | 61 crash-summary regressions pass; bounded registers added |
 | Internal APK | Signature, package/launcher/version, original assets/config and native checks pass |
-| Java bytecode | 313 methods, zero static type/register errors; assembled touch/lifecycle/GL regressions pass |
+| Java bytecode | 310 methods, zero static type/register errors; assembled touch/lifecycle/GL regressions pass |
+| Native-control overlap | Permanent Report overlay removed; reports remain accessible from the launcher |
 | Full Android UI | Runtime is online; private app installation/playthrough pending |
 | Female-Sim crash | Invalid Group/World cast at13b784 confirmed; origin remains under investigation |
 | Character creation into gameplay | Pending real Android execution |
 | Gameplay and save/resume | Pending |
 
 Internal candidate SHA256:
-`6307c5867135977e839315623178c9e7cca9ee9ce34ab9500df9a6784442a460`.
+`45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb`.
 
 Native SHA256:
 `19c6bf2c89800590a316c2eaa8245159a021be3df6ac2dcc4d35037cf166330c`.

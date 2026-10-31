@@ -154,6 +154,8 @@ class Android:
                 self.shell('input', 'text', step['text'])
             elif 'keyevent' in step:
                 self.shell('input', 'keyevent', int(step['keyevent']))
+            elif 'click_text' in step:
+                self.click_text(step['click_text'], timeout=step.get('timeout', 45))
             elif step.get('relaunch'):
                 self.shell('am', 'force-stop', PACKAGE)
                 self.launch()

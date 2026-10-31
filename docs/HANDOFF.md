@@ -28,14 +28,16 @@ hierarchies and exact explicit-TSA parser allocation/canary checks are valid.
 Origin remains unproven; do not hide it with a generic NULL skip.
 
 NativeTombstoneSummary now includes bounded crash-thread registers using the
-pinned Android13 schema.61 host regression checks pass; the internal APK has313
+pinned Android13 schema.61 host regression checks pass; the internal APK has310
 executable DEX methods with zero static type/register errors. Saved stack memory
 is not extracted by this change.
 
 Validated INTERNAL candidate for the Android runtime (not a deliverable):
-analysis/internal-candidates-2/S3CE-0.1.10-character-creation-arm32.apk
-size76762457, SHA6307c5867135977e839315623178c9e7cca9ee9ce34ab9500df9a6784442a460.
+analysis/internal-candidates-3/S3CE-0.1.10-character-creation-arm32.apk
+size76762457, SHA45335ca99a15e2b26dcbaeb0547cb2edc184eb7fa302446abae22dd455fb40fb.
 Fresh isolated build passed all source/config/native/signature/identity checks.
+The permanent Report overlay is removed because it overlaps the native upper-
+right CAS control. Logs/watchdog remain; Home then the app icon opens reports.
 Use --build-dir and --dist-dir; an earlier default-directory artifact failed
 manifest/config guards and was quarantined, never presented or installed.
 
@@ -44,8 +46,11 @@ There is noKVM; use one persistent emulator+ADB controller because individual
 exec tool calls have isolated network namespaces. Guest CPU needs SSSE3/SSE4/
 POPCNT. Preserve the original3,232,759,808-byte system.img/GPT: default partition
 resizing previously truncated it. The runtime agent is restoring/pinning its
-size. Backup older emulator31.1.4 is prepared. No Android UI/playthrough result
-has been claimed yet.
+size. Backup older emulator31.1.4 is prepared. The Android-runtime GitHub workflow
+uses KVM and assembles the internal candidate from .validation without publishing
+an APK. Only screenshots/logs are uploaded. Initial run41168243704 failed before
+boot because the runner's AVD directory differs from the default; infrastructure
+repair is in progress. No Android UI/playthrough result has been claimed yet.
 
 CAS flow: close hint12→13, appearance Next→persona14, choose persona/Next→traits15,
 five traits/Next→name16, nonempty name/confirm→confirmation19, Yes→SceneGame.
