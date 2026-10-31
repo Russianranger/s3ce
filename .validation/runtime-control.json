@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41215805134",
-  "seq": 11,
-  "frame_sha256": "95e8fadf72094d046e7c84542e964dd227eb0bd69ac9d0afc58b74e927631a00",
+  "seq": 12,
+  "frame_sha256": "2ab2cff39e93949774729dd5c375937832177cc4f93ddc44183ec957018d7e7e",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 113,
-    "y": 965
+    "x": 960,
+    "y": 798
   },
-  "note": "Open Pause after visually confirming Alex is seated on the selected chair."
+  "note": "Select visible Save and Quit to menu after completed Sit."
 }
