@@ -1,19 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 12,
-  "frame_sha256": "7097fd21dd6e6e6c12024d139cf140f0a9def10da78e13bb78170a4159894105",
+  "seq": 13,
+  "frame_sha256": "35f211399cddd1adf81b6b20f03bd57ab4fe30b59bc35d770dbe8dcc1b086827",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "swipe",
-    "x1": 1830,
-    "y1": 273,
-    "x2": 1830,
-    "y2": 600,
-    "duration_ms": 600
+    "type": "tap",
+    "x": 1210,
+    "y": 240
   },
-  "note": "Zoom out with the existing slider; inspect scene scale and nearby HUD targets."
+  "note": "Select the visible bed as a regression check outside the camera button."
 }
