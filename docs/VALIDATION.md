@@ -1,4 +1,41 @@
-# Candidate 0.1.1 validation
+# Candidate 0.1.2 validation
+
+Reported device result: 0.1.1 crashed during startup, and its text-only share
+could not be saved by the file manager. No exact crash trace was supplied.
+The startup crash cause remains unconfirmed.
+
+Completed:
+
+- Report export uses ACTION_CREATE_DOCUMENT with a nonempty .txt filename and
+  writes/closes the selected URI on a worker before reporting success.
+- Attachment sharing provides EXTRA_STREAM, ClipData, read grant and a
+  read-only ContentProvider in the separate :launcher process. Canonical path
+  and generated-name checks restrict access to report files.
+- Java exceptions persist before Android's ordinary crash handler. Own-package
+  ApplicationExitInfo history and bounded native tombstone summaries are added.
+- Pure Java tombstone-parser tests pass all 33 cases, including malformed and
+  unknown fields, bounds, trace ordering, and output limits.
+- Independent review and DEX type/register/control-flow analysis of the final
+  APK: 302 executable methods, zero analysis errors.
+- ARM cross-compilation, all 4,247 relocations, 131 imports, native ELF hardening,
+  identical original assets/configuration, APK assembly and signatures pass.
+- The same application ID/certificate is retained; versionCode 102.
+- Native rendering mode can bypass all new GL interposition. Durable log markers
+  bracket initial GL queries, PVRTC decoding and GPU uploads. All 691 actual
+  texture mip levels also passed host sanitizer checks; no native cause proven.
+
+APK SHA-256:
+`5c9820bfd8bd1682a9026c939f4ab1ca73828b4f839072f8d8a38ec92749e615`.
+
+Shim SHA-256:
+`002d713649bc2040da0a1ba09646c73d86b3f7a93c6466eda227f103c687ce0c`.
+
+Not verified on hardware: saving through the document picker, reading through a
+recipient file manager, retained exit records availability, and actual game
+startup/rendering/input. Host and static checks do not establish those outcomes.
+
+## Historical 0.1.1 checks
+
 
 User evidence: 0.1.0 reached menus and Create-a-Sim on the Thor, with white
 backgrounds, missing hair/eyes, and an unresponsive swipe tutorial. These are

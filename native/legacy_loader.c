@@ -60,6 +60,7 @@ static size_t page_size;
 static void *legacy_base;
 static size_t legacy_mapping_size;
 static jint legacy_jni_version;
+static int graphics_enabled = 1;
 static pthread_mutex_t load_lock = PTHREAD_MUTEX_INITIALIZER;
 
 struct code_allocation {
@@ -123,7 +124,7 @@ static void *resolve_import(const char *name, void **handles, size_t handle_coun
 #define MATCH_EABI(symbol) if (!strcmp(name, #symbol)) return (void *)(uintptr_t)&symbol;
     EABI_FUNCTIONS(MATCH_EABI)
 #undef MATCH_EABI
-    if (!strcmp(name, "dlsym")) return (void *)(uintptr_t)&legacy_dlsym;
+    if (graphics_enabled && !strcmp(name, "dlsym")) return (void *)(uintptr_t)&legacy_dlsym;
     if (!strcmp(name, "atexit")) return (void *)(uintptr_t)&legacy_atexit;
     if (!strcmp(name, "__srget")) return (void *)(uintptr_t)&legacy_srget;
     if (!strcmp(name, "_Znaj") || !strcmp(name, "_Znwj"))
@@ -354,6 +355,23 @@ done:
     return result;
 }
 
+/* Configure only before the legacy runtime exists. Original-renderer mode
+ * bypasses all GL interception and follows the 0.1.0 symbol-resolution path. */
+JNIEXPORT jboolean JNICALL Java_com_ideaworks3d_thesims3_GameBootActivity_nativeConfigureGraphics(
+        JNIEnv *env, jclass klass, jboolean enabled) {
+    (void)env;
+    (void)klass;
+    int requested = enabled == JNI_TRUE;
+    pthread_mutex_lock(&load_lock);
+    if (legacy_base && graphics_enabled != requested) {
+        pthread_mutex_unlock(&load_lock);
+        return JNI_FALSE;
+    }
+    graphics_enabled = requested;
+    pthread_mutex_unlock(&load_lock);
+    return JNI_TRUE;
+}
+
 /* Explicit bootstrap keeps all Android framework access in public Java APIs.
  * Call after System.loadLibrary("airplay") and before the original Activity.
  * Loading the original Java classes during RegisterNatives then uses the same
@@ -376,7 +394,8 @@ JNIEXPORT jint JNICALL Java_com_ideaworks3d_thesims3_GameBootActivity_nativeBoot
         }
         FILE *fresh_log = fopen(diagnostic_path, "w");
         if (fresh_log) fclose(fresh_log);
-        LOGI("S3CE ARM32 compatibility loader starting; page size %zu", page_size);
+        LOGI("S3CE ARM32 compatibility loader starting; page size %zu; graphics mode=%s",
+             page_size, graphics_enabled ? "PVRTC compatibility" : "original (no GL hooks)");
         legacy_jni_version = load_legacy(env, vm, assets);
     }
     jint result = legacy_jni_version;

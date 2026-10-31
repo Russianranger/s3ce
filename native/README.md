@@ -28,7 +28,13 @@ Original runtime SHA-256:
 
 Java startup calls `System.loadLibrary("airplay")`, then the static native method
 `com.ideaworks3d.thesims3.GameBootActivity.nativeBootstrap(AssetManager, String)`
-with the application's assets and files directory. A positive return is the
+with the application's assets and files directory. Before bootstrap,
+`nativeConfigureGraphics(boolean enabled)` selects PVRTC compatibility or the
+original renderer. It returns false if changing modes after the legacy runtime
+is loaded; restart the game process before changing modes. Disabling compatibility
+bypasses every GL hook and uses the original symbol-resolution path.
+
+A positive bootstrap return is the
 original JNI version; a negative return is failure. Bootstrap must finish before
 starting the original game Activity. The original Activity's later library load
 then reuses the already loaded shim.
@@ -63,7 +69,9 @@ packaged with the APK.
 The adapter logs the native renderer, version, extension list, initial texture
 formats, and bounded GL errors. Errors inspected for logging are queued for the
 game's next `glGetError` call. Runtime and S3E mapping addresses are recorded for
-crash correlation. The decoder uses a static C++ runtime; no `libc++_shared.so`
+crash correlation. Bounded, durable before/after markers around initial string
+queries, CPU decoding, and GPU uploads help identify the last operation before a
+native crash; no signal handler or signal-time logging is installed. The decoder uses a static C++ runtime; no `libc++_shared.so`
 installation is needed.
 
 Run the CPU tests, optionally with sanitizers:
@@ -115,5 +123,8 @@ The host verifier checks the exact source, simulates all 4,247 relocations,
 verifies both allocator guards, audits all 131 used imports against API28 ARM NDK
 system-library stubs plus the linked shim helpers, and checks the shim's ELF
 protections. The original 0.1.0 loader has reached game menus and Create-a-Sim on the Thor.
-The new graphics correction still requires hardware verification. Validation must cover loading, graphics, audio, input, save/reload,
+The 0.1.1 graphics candidate regressed startup on the Thor. Host tests have not
+identified its native crash cause. The 0.1.2 candidate adds original-renderer
+isolation and durable native phase markers; the graphics path still requires
+hardware verification and a crash trace. Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.

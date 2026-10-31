@@ -2,9 +2,9 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **Version 0.1.0 reached menus/Create-a-Sim on the Thor with missing textures and stalled input; the 0.1.1 corrections need device verification.**
+Java/JNI bridge. **0.1.0 reached menus/Create-a-Sim with missing textures; 0.1.1 crashed on startup. Version 0.1.2 repairs report export and adds crash-history/renderer isolation. The startup cause remains unconfirmed.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.1-graphics-input)
+[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.2-crash-report)
 
 ## Supported candidate configuration
 
@@ -31,23 +31,23 @@ not a claim of successful gameplay on all four versions.
 - Contacts, location, and phone services return unsupported results; their
   permissions and the internet permission are removed.
 - Screen wake uses the public window API instead of privileged `userActivity`.
-- Launcher catches Java/native-loader initialization errors and can share a
-  diagnostic report. Native crashes may still require logcat.
-- Original game/audio assets remain unchanged except for an Android-only alpha-workaround config addition, uncompressed, as
+- A separate launcher can save, share, view and copy report files after a game
+  crash. Reports include available Android exit/tombstone records and Java exceptions.
+- All original game/audio assets and configuration remain byte-identical and uncompressed, as
   required by the original `AssetManager.openFd` audio path.
 
 ## Latest update and Thor test
 
-Version 0.1.1 adds conditional software PVRTC conversion for the missing title,
-room, hair, and eye textures; the existing Snapdragon alpha workaround; indexed
-and cancel-safe touch dispatch; and a resume notification race fix. A separate
-report process remains reachable through the app icon if the game UI hangs.
+Install 0.1.2 over the existing app. Before retrying the game, tap **Save report**,
+choose Downloads, and send the .txt file. The previous startup crash may still be
+available in Android's own retained exit history. **Share report file** now sends
+an actual file; **View / copy report** is a fallback.
 
-Install over 0.1.0, preserving data. Open the app and tap **Start game**. Check
-backgrounds, hair/eyes, and continuous left/right swipes in Create-a-Sim.
-If it stalls, wait 10 seconds, press Home, reopen the app icon, and tap
-**Share diagnostics** before starting the game again. See
-[full test instructions](docs/RELEASE_NOTES.md).
+PVRTC texture conversion and corrected touch handling remain. The extra alpha
+workaround from 0.1.1 has been removed, and an **Original rendering (diagnostic
+mode)** option bypasses all new GL hooks to isolate startup behavior. This mode
+can show the old missing textures. The crash root cause is not yet confirmed.
+See [full test instructions](docs/RELEASE_NOTES.md).
 
 ## Build
 

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-feature android:glEsVersion="0x00010001" android:required="true" />
     <application android:icon="@drawable/icon" android:label="The Sims 3 CE"
+        android:name="com.ideaworks3d.thesims3.CrashCaptureApplication"
         android:allowBackup="false" android:extractNativeLibs="true"
         android:hardwareAccelerated="false" android:theme="@android:style/Theme.Material.NoActionBar">
         <activity android:name="com.ideaworks3d.thesims3.CompatActivity" android:exported="true"
@@ -17,6 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name="com.ideaworks3d.thesims3.GameBootActivity" android:exported="false" />
+        <provider android:name="com.ideaworks3d.thesims3.ReportProvider"
+            android:authorities="io.github.russianranger.s3ce.reports"
+            android:exported="false" android:grantUriPermissions="true" android:process=":launcher" />
         <activity android:name="com.ideaworks3d.thesims3.Main" android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:resizeableActivity="false" />

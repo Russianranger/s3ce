@@ -1,39 +1,42 @@
-S3CE 0.1.1 — graphics, touch, and accessible diagnostics update.
+S3CE 0.1.2 — report export and startup-crash investigation.
 
-Requires Android 13–16 **with ARM32 app support and 4 KiB pages**. Primary target:
-AYN Thor Max on Android 13. ARM64-only devices and 16 KiB pages are unsupported.
-Version 0.1.0 reached the menu and Create-a-Sim on the Thor, but had missing
-backgrounds/hair/eyes and unresponsive swipes. This update addresses identified
-causes; **the new fixes still need device testing**.
+0.1.1 crashed during startup on the Thor. The cause is not confirmed; this
+release must not be described as a proven startup-crash fix.
 
 Changes:
 
-- Software PVRTC texture conversion when the GPU lacks that format. The affected
-  assets include the title background, Create-a-Sim room, hair, and eyes.
-- Enable the game's existing Snapdragon alpha-state workaround on Android.
-- Correct finger ID/index handling, release canceled touches, remove the UI
-  input sleep, and guard against a lost resume notification.
-- Add an in-game Report button and a separate launcher process for diagnostics.
-  Reports include graphics capabilities/errors, input/frame counters, and
-  stalled UI-thread snapshots where available.
+- **Save report** writes a named .txt file through Android's document picker.
+- **Share report file** attaches a real content URI with a filename, size,
+  MIME type, and temporary read permission. The old text-only share could not
+  be saved by the user's file manager.
+- **View / copy report** provides a fallback without a file manager.
+- Reports include retained Android process-exit records, available native
+  tombstone summaries, persisted logs, and newly captured Java exceptions.
+  The previous build's crash may still be retained after installing this update.
+- Remove the extra Snapdragon alpha-state workaround added in 0.1.1; all
+  original game assets/configuration are now byte-identical to the supplied APK.
+- Keep the PVRTC texture conversion and touch corrections. **Original rendering
+  (diagnostic mode)** bypasses the new GL hooks to isolate the startup regression;
+  missing textures are expected in that mode. Fully close the game before
+  switching modes if the previous game process is still alive.
 
-Install over 0.1.0; the app ID and signing certificate are unchanged. Do not
-uninstall or clear app data. Original game assets are unchanged except for the
-guarded alpha-workaround configuration addition. No game-file import is needed.
+Install over 0.1.1; app ID, signing key, and saved data are unchanged.
+ARM32 application support and 4 KiB pages remain required. No game-file import
+is needed. New runtime fixes remain unverified on hardware.
 
-Test:
+First steps:
 
-1. Install the update, open **The Sims 3 CE**, and tap **Start game**. Keep
-   airplane mode on.
-2. Check whether menu backgrounds/buttons, the room, hair, and eyes now appear.
-3. At the Create-a-Sim tutorial, make a continuous left/right swipe over the Sim.
-   Check rotation and whether the tutorial advances.
-4. If that works, enter the house, check sound/touch, save and reopen. Briefly
-   go home and return to check resume.
-5. If it stalls, wait about 10 seconds, press Home and tap the app icon again.
-   Tap **Share diagnostics**, without pressing Start game again first. The
-   report launcher runs separately from the game. The in-game **Report** button
-   also opens it while the game UI is responsive.
+1. Install the update. Open the app, but **do not press Start game yet**.
+2. Tap **Save report**, choose Downloads, keep the suggested .txt filename, and
+   confirm. Attach that saved .txt file to this conversation. It may already
+   contain the 0.1.1 crash and the last native startup stage.
+3. If saving is unavailable, use **Share report file** or **View / copy report**.
+4. After preserving the report, try Start game. If it crashes, reopen the app
+   icon and save another report. The report launcher runs independently.
+5. If asked to compare rendering paths, fully close the game, enable **Original
+   rendering (diagnostic mode)**, and retry. Preserve separate reports for each
+   mode. Do not clear app data or uninstall.
 
-The original controller behavior is retained; no new controller mapping is
-implemented. Keep the existing app data during testing.
+Build, signature, relocation/import, asset-integrity, tombstone-parser and DEX
+checks pass. Actual Android document-provider saving and game execution require
+the Thor confirmation; those are not established by host checks.

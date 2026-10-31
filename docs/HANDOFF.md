@@ -1,4 +1,40 @@
-# Development handoff — 0.1.1
+# Development handoff — 0.1.2
+
+0.1.0 reached the menus/Create-a-Sim with missing graphics and stalled swipes.
+0.1.1 added PVRTC fallback + input fixes + separate report launcher, then crashed
+at startup on the Thor. Its plain EXTRA_TEXT sharing could not be saved by the
+file manager, so no exact crash trace is available yet. Do not claim a confirmed
+startup-crash fix.
+
+0.1.2 adds direct SAF Save report, real attachment sharing, view/copy, Java crash
+capture, retained own-package exit history and readable native tombstone summary.
+The user should save a report BEFORE starting the game, since Android may still
+retain the previous 0.1.1 failure. Provider and launcher both use :launcher; do
+not move file serving into the potentially hung game process.
+
+The extra alpha-state config from 0.1.1 is rolled back as an unnecessary risk;
+all original assets/config are identical again. PVRTC software support remains.
+Native configureGraphics(false), selected by Original rendering diagnostic mode,
+bypasses GL hooks and uses the original platform dlsym path. This isolates the
+new rendering adapter; it is not an ARM64 port or a separate game implementation.
+Mode changes require the existing runtime/process to be closed. Keep the JNI
+configure call before bootstrap; bootstrap/export class is GameBootActivity.
+
+Native audit ruled out the hypothesized stack-alignment and missing-resource
+path branches for the examined call sites; all 691 texture mip levels passed
+sanitizers. Do not implement speculative assembly thunks or resource aliases
+without new evidence. Next step is the actual device exit/tombstone + logs.
+
+ARM32/4 KiB/target28 remain deliberate. Dedicated S3E code is RWX. Preserve app ID,
+original JNI class names, and the key from private S3CE-private-signing-backup.zip
+for install-over updates. Never commit the key or its signing configuration.
+
+Publication reconstructs the signed APK from the pinned 0.1.0 release's unchanged
+ZIP data plus a small literal payload. Complete APKs remain in Releases.
+See RELEASE_NOTES.md and VALIDATION.md for user steps and exact verification.
+
+## Historical 0.1.1 handoff
+
 
 Published candidate source commit: `8a64cb4e985702150e1d9f2169a80e71239a71d8`.
 Publication and independent download verification passed in run `41146391540`.

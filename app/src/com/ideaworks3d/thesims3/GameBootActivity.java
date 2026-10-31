@@ -17,6 +17,7 @@ import java.nio.file.Files;
 /** Native startup runs in the game's process, independently of reports. */
 public final class GameBootActivity extends Activity {
     private static native int nativeBootstrap(AssetManager assets, String filesDirectory);
+    private static native boolean nativeConfigureGraphics(boolean enabled);
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -26,6 +27,10 @@ public final class GameBootActivity extends Activity {
             if (Process.is64Bit()) throw new UnsupportedOperationException(
                     "This build requires 32-bit ARM app support.");
             System.loadLibrary("airplay");
+            boolean graphics = getIntent().getBooleanExtra("graphics_compatibility", true);
+            if (!nativeConfigureGraphics(graphics)) throw new IllegalStateException(
+                    "Fully close the game before changing rendering mode, then retry.");
+            writeBootLog(run + "Graphics compatibility=" + graphics + "\n");
             int version = nativeBootstrap(getAssets(), getFilesDir().getAbsolutePath());
             if (version < 0) throw new UnsatisfiedLinkError("The legacy runtime could not initialize.");
             Class.forName("com.ideaworks3d.airplay.AirplayActivity", true, getClassLoader());

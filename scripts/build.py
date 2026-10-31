@@ -37,7 +37,7 @@ def main():
         subprocess.run([str(v) for v in command], check=True, env=env)
     java = a.jdk / 'bin/java'
     run(java, '-jar', a.apktool.resolve(), 'd', '-f', a.input.resolve(), '-o', decoded)
-    for patch in ('apply', 'graphics_config'):
+    for patch in ('apply',):
         spec = importlib.util.spec_from_file_location('s3ce_' + patch, ROOT / 'patches' / (patch + '.py'))
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -47,8 +47,8 @@ def main():
     data = metadata.read_text()
     data = data.replace('minSdkVersion: 3\n', 'minSdkVersion: 26\n')
     data = data.replace('targetSdkVersion: 7\n', 'targetSdkVersion: 28\n')
-    data = data.replace('versionCode: 1\n', 'versionCode: 101\n')
-    data = data.replace('versionName: 1.0\n', 'versionName: 0.1.1-graphics-input\n')
+    data = data.replace('versionCode: 1\n', 'versionCode: 102\n')
+    data = data.replace('versionName: 1.0\n', 'versionName: 0.1.2-crash-report\n')
     metadata.write_text(data)
     legacy = decoded / 'assets/compat/libairplay-legacy.so'
     legacy.parent.mkdir(parents=True, exist_ok=True)
@@ -90,7 +90,7 @@ def main():
             '-alias', signing['alias'], '-dname', 'CN=S3CE Compatibility',
             '-keyalg', 'RSA', '-keysize', '3072', '-validity', '10000')
         a.keystore.chmod(0o600)
-    final = dist / 'S3CE-0.1.1-graphics-input-arm32.apk'
+    final = dist / 'S3CE-0.1.2-crash-report-arm32.apk'
     run(bt / 'apksigner', 'sign', '--ks', a.keystore, '--ks-key-alias', signing['alias'],
         '--ks-pass', 'env:S3CE_STORE_PASS', '--key-pass', 'env:S3CE_STORE_PASS',
         '--out', final, aligned)

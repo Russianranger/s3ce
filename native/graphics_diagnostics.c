@@ -30,7 +30,7 @@ static unsigned texture_calls, draw_calls, alpha_calls, blend_calls, logged_erro
 static unsigned context_logged;
 static int driver_pvrtc = -1;
 static char software_extensions[32768];
-static unsigned fallback_uploads, fallback_failures;
+static unsigned fallback_uploads, fallback_failures, fallback_attempts, string_calls;
 #define PVRTC_EXTENSION "GL_IMG_texture_compression_pvrtc"
 #define PVRTC_RGB_4BPP 0x8c00
 #define PVRTC_RGB_2BPP 0x8c01
@@ -106,7 +106,12 @@ static void describe_context(void) {
 }
 
 static const GLubyte *diagnosed_get_string(GLenum name) {
+    unsigned call = string_calls++;
+    if (call < 8 && log_graphics)
+        log_graphics(ANDROID_LOG_INFO, "GL GetString begin #%u name=0x%x driver=%p", call, name, (void *)real_get_string);
     const GLubyte *result = real_get_string(name);
+    if (call < 8 && log_graphics)
+        log_graphics(ANDROID_LOG_INFO, "GL GetString returned #%u result=%p", call, (const void *)result);
     describe_context();
     /* This game's verified capability initializer gates PVR asset loading on
      * this exact extension token. Advertising it is safe only because all four
@@ -150,8 +155,13 @@ static unsigned char *decode_pvrtc_image(GLenum internal, GLsizei width,
     if (output_size > MAX_DECODED_BYTES) return NULL;
     unsigned char *rgba = malloc(output_size);
     unsigned bits = (internal == PVRTC_RGB_2BPP || internal == PVRTC_RGBA_2BPP) ? 2 : 4;
+    unsigned attempt = fallback_attempts++;
+    if (attempt < 8 && log_graphics)
+        log_graphics(ANDROID_LOG_INFO, "PVRTC decode begin #%u input=%p bytes=%d %dx%d bpp=%u", attempt, pixels, bytes, width, height, bits);
     *result = rgba ? s3ce_pvrtc_decode(pixels, (size_t)bytes, bits,
         (unsigned)width, (unsigned)height, rgba, output_size) : -2;
+    if (attempt < 8 && log_graphics)
+        log_graphics(ANDROID_LOG_INFO, "PVRTC decode returned #%u result=%d output=%p", attempt, *result, (void *)rgba);
     if (*result != 0) { free(rgba); return NULL; }
     if (internal == PVRTC_RGB_4BPP || internal == PVRTC_RGB_2BPP)
         for (size_t at = 3; at < output_size; at += 4) rgba[at] = 255;
@@ -179,6 +189,8 @@ static void diagnosed_compressed_image(GLenum target, GLint level, GLenum intern
         int result;
         unsigned char *rgba = decode_pvrtc_image(internal, width, height, bytes, pixels, &result);
         if (rgba) {
+            if (fallback_uploads < 8 && log_graphics)
+                log_graphics(ANDROID_LOG_INFO, "PVRTC driver upload begin #%u driver=%p", fallback_uploads, (void *)real_tex_image);
             real_tex_image(target, level, GL_RGBA, width, height, 0,
                            GL_RGBA, GL_UNSIGNED_BYTE, rgba);
             free(rgba);
@@ -207,6 +219,8 @@ static void diagnosed_compressed_sub_image(GLenum target, GLint level, GLint x, 
         int result;
         unsigned char *rgba = decode_pvrtc_image(format, width, height, bytes, pixels, &result);
         if (rgba) {
+            if (fallback_uploads < 8 && log_graphics)
+                log_graphics(ANDROID_LOG_INFO, "PVRTC driver subimage begin #%u driver=%p", fallback_uploads, (void *)real_tex_sub_image);
             real_tex_sub_image(target, level, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba);
             free(rgba);
             if (fallback_uploads++ < 32 && log_graphics)
