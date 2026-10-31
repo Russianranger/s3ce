@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 22,
-  "frame_sha256": "202d8875b444a8ea0ce4aa8c51ac68e1b133f35599ee6b8ed4484b3469516ee4",
+  "seq": 23,
+  "frame_sha256": "cdffa64f2a894bd31b771a4e3b125fc6b84be2fc1ffa0ba0ec506f8ed19d54e4",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 500,
-    "y": 220
+    "x": 113,
+    "y": 965
   },
-  "note": "Dismiss visible Bad Mood hint before post-test save path; retain this bounded session."
+  "note": "Open Pause using ordinary HUD input before preserving this session's final save path."
 }
