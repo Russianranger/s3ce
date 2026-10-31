@@ -1,5 +1,8 @@
 # Development handoff — 0.1.3
 
+Published source `4a4e138e6a13f796355d20658cef754e3e790530`;
+publication/download-verification run `41149513664` passed.
+
 Reports now save correctly. The attached 0.1.2 report identifies a real native
 crash in platform glGetString(GL_VERSION), fault nearNULL, from original runtime
 wrapper returnoffset 0x33987, in both rendering modes. Startup had only the

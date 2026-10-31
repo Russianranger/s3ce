@@ -26,6 +26,9 @@ Completed:
 - ARM compilation, 4,247 relocation simulation, 131 import audit, native segment
   protections, asset/config integrity, APK assembly and v2/v3 signatures pass.
 - Same app ID/certificate; versionCode103. Saved data is preserved.
+- Publication run [41149513664](https://github.com/Russianranger/s3ce/actions/runs/41149513664)
+  passed reconstruction, signature/identity checks, release upload and independent
+  download/SHA-256 verification of the published APK.
 
 APK SHA-256:
 `9dd9eef9c6135f2b449b9709c7eb41a087cddc9203c2cd69aad5859b362093f3`.
