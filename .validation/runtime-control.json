@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41237818263",
-  "seq": 20,
-  "frame_sha256": "863a32e49951d7ae05b98b80fff590d1f4a944fa247767f8e4c2a58e3e638c0b",
+  "seq": 21,
+  "frame_sha256": "b96b77a86345c4215cdfa27299386ea0585dc36263c08f09d52b4c4ebfaa67d7",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 500,
-    "y": 300
+    "type": "wait",
+    "seconds": 10
   },
-  "note": "Dismiss visible Sleepy hint; preserve timed popup evidence."
+  "note": "Allow visible bed activity to finish after the timed Sleepy hint is dismissed; inspect actual pose."
 }
