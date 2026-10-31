@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41212609908",
-  "seq": 11,
-  "frame_sha256": "ec6117536931c793fac9bf1e7ab18271f71ea3bb64709d9a59b2925a573507b5",
+  "seq": 12,
+  "frame_sha256": "6e5af115041dfb54622fed7f75e83b73852c5b529de35c2e043f7503c21d6eb0",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 10
+    "type": "tap",
+    "x": 707,
+    "y": 798
   },
-  "note": "Allow normal save-and-quit loading to finish."
+  "note": "Select the visible main-menu Quit button for clean native shutdown."
 }
