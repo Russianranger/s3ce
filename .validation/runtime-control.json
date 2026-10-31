@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 20,
-  "frame_sha256": "be048235916afba008524269aa65b7d3d51012a86b194ebad6aee8f79476818d",
+  "seq": 21,
+  "frame_sha256": "ad55cc090f095c8e1f988a1c4a98074dd66831a1326afcb57c843985a2bfa352",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1124,
-    "y": 730
+    "type": "wait",
+    "seconds": 30
   },
-  "note": "Confirm the visible save-progress-and-quit prompt through its green check."
+  "note": "Wait for normal post-save loading to finish before selecting main-menu Quit."
 }
