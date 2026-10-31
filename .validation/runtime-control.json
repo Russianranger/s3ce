@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 19,
-  "frame_sha256": "d81915c5ca21fe74710814f54837184fcfdf50b11a60e557d88206d0f31d8e16",
+  "seq": 20,
+  "frame_sha256": "be048235916afba008524269aa65b7d3d51012a86b194ebad6aee8f79476818d",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 960,
-    "y": 797
+    "x": 1124,
+    "y": 730
   },
-  "note": "Choose the visible Save and Quit to menu after completing the object action."
+  "note": "Confirm the visible save-progress-and-quit prompt through its green check."
 }
