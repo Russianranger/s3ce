@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 8,
-  "frame_sha256": "62c9238f80f1715630e51a31d505287601bb02b74ce3c502625ec6d1d841fc56",
+  "seq": 9,
+  "frame_sha256": "853c4840078d2c2d26eb3c50cac94a9fe49a9af67e41d3f1d12513297d9e5a0e",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1124,
-    "y": 854
+    "x": 1448,
+    "y": 999
   },
-  "note": "Acknowledge the visible new Wish, then repeat the unobstructed strip test."
+  "note": "Repeat the now unobstructed wishes-strip tap at its visible third-slot area."
 }
