@@ -29,7 +29,10 @@ source-captured expectations before choosing another graphics change.
 
 Artifact SHA67664a9f8490e0ccb28c1f83576b478ac99a1a48a958e69850e8c7cf97f4a344;
 native SHA71bc072c1ef411542c6797e7c897a87d7df111a53814e3c234acdb3698ae0e67.
-Publication receipt pending. Keep signing material and full reports private.
+Published source `aca6af177e1f43644ef3a1cf5dee939b53297f2a`;
+publication/download-verification run `41164717515` passed. Release
+`v0.1.9-ui-rendering` size/digest match the frozen APK. Keep signing material
+and full reports private.
 
 ## Historical 0.1.8 handoff
 

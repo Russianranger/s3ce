@@ -38,7 +38,11 @@ Completed:
 Actual assembled APK touch, pointer-ID/CANCEL, lifecycle and GL-wrapper
 regressions pass. Static analysis of all310 implemented methods across both DEX
 files against Android35 framework classes reports zero errors; this is not ART
-execution. Independent publication/download verification remains pending.
+execution. Publication run
+[41164717515](https://github.com/Russianranger/s3ce/actions/runs/41164717515)
+passed reconstruction, signature/identity checks, prerelease upload and independent
+download/SHA-256 verification. Published APK size76758361 and digest match the
+frozen local artifact. Published source `aca6af177e1f43644ef3a1cf5dee939b53297f2a`.
 Same application ID/certificate/data location; versionCode109 and target28.
 
 APK SHA256:
