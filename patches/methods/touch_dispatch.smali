@@ -1,8 +1,8 @@
 .method public onTouchEvent(Landroid/view/MotionEvent;)Z
     .locals 2
     # S3CE: record before native dispatch, and never sleep the UI input thread.
-    invoke-static {p1}, Lcom/ideaworks3d/thesims3/GameDiagnostics;->touch(Landroid/view/MotionEvent;)V
     iget-boolean v0, p0, Lcom/ideaworks3d/airplay/AirplayView;->m_InputTextRunning:Z
+    invoke-static {p1, v0}, Lcom/ideaworks3d/thesims3/GameDiagnostics;->touch(Landroid/view/MotionEvent;Z)V
     if-eqz v0, :s3ce_dispatch
     # Dialog takeover still needs to release the gesture it just cancelled.
     invoke-virtual {p1}, Landroid/view/MotionEvent;->getActionMasked()I

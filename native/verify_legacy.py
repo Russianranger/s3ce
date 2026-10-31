@@ -19,6 +19,7 @@ EXPECTED_PATCH_SITES = {
     0x36434: bytes.fromhex("00b581b000f096fe"),
     0x3397c: bytes.fromhex("f0b5194e81b0336a"),
     0x169c8: bytes.fromhex("2af02abb4218034c"),
+    0x223b8: bytes.fromhex("f0b5474680b41b4c"),
 }
 
 
@@ -102,6 +103,9 @@ def main():
     assert symbol_values["g_s3eFibreGlobals"] == 0x54b68
     assert struct.unpack_from("<I", data, 0x3c964)[0] == 0x54b68
     assert symbol_values["s3eExecICacheFlush"] == 0x169c9
+    assert symbol_values["_Z12get_mem_infoRiS_"] == 0x223b9
+    assert symbol_values["AirplayView_onMotionEvent"] == 0x2148d
+    assert symbol_values["g_s3ePointerGlobals"] == 0x55d80
     assert data[0x41020:0x41028] == bytes.fromhex("f0b5051c0e1c030b")
     assert data[0x3c7f0:0x3c7fc] == bytes.fromhex("00402de997ffffeb0040bde8")
     assert struct.unpack_from("<I", data, 0x3c750)[0] == 0x56758
@@ -110,6 +114,14 @@ def main():
     assert any(p[0] == 1 and p[6] & 2 and p[2] <= dispatch_slot < p[2]+p[5]
                for p in programs), "GL dispatch slot must be in writable ELF data"
     image = virtual_bytes(data, programs)
+    assert struct.unpack_from("<III", image, 0x457d8) == (0x46140, 0x46150, 0x2148d)
+    assert image[0x46140:0x46140+14] == b"onMotionEvent\0"
+    assert image[0x46150:0x46150+8] == b"(IIII)V\0"
+    assert image[0x2148c:0x21494] == bytes.fromhex("00b5101c191c8622")
+    assert any(p[0] == 1 and p[6] & 1 and p[2] <= 0x2148c < p[2]+p[5]
+               for p in programs), "Original motion callback must be executable code"
+    assert any(p[0] == 1 and p[6] & 2 and p[2] <= 0x55d80 and 0x55d80+48 <= p[2]+p[5]
+               for p in programs), "Pointer diagnostics must sample writable runtime globals"
     tags = dynamic_tags(image, programs)
     assert tags[22], "Expected original DT_TEXTREL"
     assert all((p[6] & 3) != 3 for p in programs if p[0] == 1), "Unexpected RWX segment"

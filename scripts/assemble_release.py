@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-STAGING = ROOT / '.publish/v0.1.6-stack-startup'
+STAGING = ROOT / '.publish/v0.1.7-input-restart'
 
 def digest(path):
     with path.open('rb') as stream:

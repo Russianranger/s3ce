@@ -25,6 +25,11 @@ import java.util.concurrent.atomic.AtomicLong;
 public final class GameDiagnostics {
     private static final AtomicLong frames = new AtomicLong();
     private static final AtomicLong touches = new AtomicLong();
+    private static final AtomicLong touchDowns = new AtomicLong();
+    private static final AtomicLong touchMoves = new AtomicLong();
+    private static final AtomicLong touchUps = new AtomicLong();
+    private static final AtomicLong touchCancels = new AtomicLong();
+    private static final AtomicLong touchBlocked = new AtomicLong();
     private static volatile String lastTouch = "none";
     private static volatile long uiHeartbeat;
     private static volatile File logFile;
@@ -108,11 +113,27 @@ public final class GameDiagnostics {
     }
 
     public static void touch(MotionEvent event) {
+        touch(event, false);
+    }
+
+    public static void touch(MotionEvent event, boolean inputTextRunning) {
         // Copy values now; Android recycles MotionEvent after dispatch.
         touches.incrementAndGet();
+        int action = event.getActionMasked();
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN)
+            touchDowns.incrementAndGet();
+        else if (action == MotionEvent.ACTION_MOVE) touchMoves.incrementAndGet();
+        else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
+            touchUps.incrementAndGet();
+        else if (action == MotionEvent.ACTION_CANCEL) touchCancels.incrementAndGet();
+        boolean blocked = inputTextRunning && action != MotionEvent.ACTION_CANCEL;
+        if (blocked) touchBlocked.incrementAndGet();
         int count = event.getPointerCount();
-        lastTouch = "action=" + event.getActionMasked() + " pointers=" + count
-                + (count > 0 ? " x=" + (int) event.getX(0) + " y=" + (int) event.getY(0) : "");
+        lastTouch = "action=" + action + " pointers=" + count
+                + " source=0x" + Integer.toHexString(event.getSource())
+                + (count > 0 ? " id=" + event.getPointerId(0) + " x=" + (int) event.getX(0)
+                        + " y=" + (int) event.getY(0) : "")
+                + " inputText=" + inputTextRunning + " blocked=" + blocked;
     }
 
     private static synchronized void startWatchdog() {
@@ -126,7 +147,9 @@ public final class GameDiagnostics {
                 long now = SystemClock.elapsedRealtime();
                 long age = now - uiHeartbeat;
                 append("time=" + now + " frames=" + frames.get() + " touches=" + touches.get()
-                        + " uiAgeMs=" + age + " " + lastTouch + "\n");
+                        + " down=" + touchDowns.get() + " move=" + touchMoves.get()
+                        + " up=" + touchUps.get() + " cancel=" + touchCancels.get()
+                        + " blocked=" + touchBlocked.get() + " uiAgeMs=" + age + " " + lastTouch + "\n");
                 if (age > 6000 && now - lastDump > 15000) {
                     lastDump = now;
                     StringBuilder dump = new StringBuilder("UI stalled; Java stacks:\n");

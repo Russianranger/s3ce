@@ -40,6 +40,40 @@ original JNI version; a negative return is failure. Bootstrap must finish before
 starting the original game Activity. The original Activity's later library load
 then reuses the already loaded shim.
 
+## Preserve RAM values above the legacy signed-int limit
+
+The original `get_mem_info(int&, int&)` parses `MemTotal` and `MemFree` from
+`/proc/meminfo` and shifts their KiB values into signed 32-bit bytes. At 2 GiB
+this wraps negative; at 4 GiB it wraps to zero. Startup compares that result
+against its 65,536-byte default requirement before allocating game code, producing
+"Not enough memory to begin loading s3e file" even in a fresh process with ample
+free RAM. Executing the original Thumb reader, device-property query, and startup
+comparison reproduces the rejection at 2, 3, 4, 7, and 16 GiB.
+
+The exact guarded reader entry is now replaced by `memory_compat.c`. It parses
+the same two fields as unsigned 64-bit KiB and saturates byte results at
+`INT32_MAX`. Genuine zero and low-memory readings remain unchanged, and an
+unreadable or malformed field returns the existing unknown-value sentinel `-1`.
+The free-memory check remains enabled; this changes no allocation sizes or limits.
+Bounded native diagnostics include raw KiB and converted bytes for device checks.
+
+## Observe delivery of swipe input
+
+`input_trace.c` wraps the existing `onMotionEvent(IIII)V` native registration.
+The table's name, signature, relocated function pointer, callback instructions,
+and pointer-state address are checked against the pinned runtime before binding.
+The wrapper forwards every original JNI argument exactly once and calls no JNI
+methods. It changes neither pointer behavior nor engine locking.
+
+For the first 256 events, one record compares the primary pointer, pending
+coordinates/button, and published coordinates/button before and after dispatch.
+Later DOWN/UP boundaries include bounded action-count summaries, so later
+gestures remain observable. These concurrent state samples are diagnostic.
+Executing the original Thumb input routines confirms that pointer IDs 0, 7, and
+31 deliver down/move/up callbacks and polling state, while a second pointer
+cannot steal the primary drag. Device logs are still needed to locate the
+reported swipe failure in the running app.
+
 ## Restore the registered pthread stack for JNI (0.1.6)
 
 The preserved game always executes on an Airplay heap/fibre stack. Its
@@ -192,7 +226,8 @@ S3CE_SANITIZERS=1 native/test.sh
 These verify decoder colors, 2/4-bpp, alpha, small mip levels, invalid input and
 output guards, conditional GL fallback, native-driver pass-through, context-start
 ordering and recursion, complete generated-code flush ranges, typed JNI arguments,
-stale-cache bypass, native-only Throwable classification, and preservation of
+64-bit RAM parsing and saturation while preserving genuine low RAM, stale-cache
+bypass, exact-once bounded input tracing, native-only Throwable classification, and preservation of
 the same Throwable even if diagnostics fail. Set ANDROID_NDK_HOME
 for the typed JNI test; it uses a temporary copy of the NDK's real JNI header.
 
@@ -202,6 +237,8 @@ The optional original-Thumb proof requires Unicorn 2.1.4:
 python3 -m pip install -r native/tests/requirements-emulation.txt
 python3 native/tests/emulate_gl_start.py /path/to/source.apk
 python3 native/tests/emulate_stack_bridge.py /path/to/source.apk --ndk "$ANDROID_NDK_HOME"
+python3 native/tests/emulate_memory_preflight.py /path/to/source.apk
+python3 native/tests/emulate_pointer_input.py /path/to/source.apk
 ```
 
 The first script executes original `setViewNative`, `s3eGL_start`, and `callMethod`
@@ -212,7 +249,10 @@ config/loader-stack setup. It checks raw heap-stack rejection, real OS-stack
 callback entry, nested reentry without rewinding active frames, disabled-switch
 refusal, invalid saved SP, headroom boundaries, pthread identity, fibre-state
 restoration, r4-r11, d8-d15, and SP/return continuation. No emulator or vendor tool
-is bundled.
+is bundled. The third script executes the original RAM parser, free-memory
+property, and signed startup comparison to demonstrate overflow before allocation.
+The fourth checks the original pointer dispatch and polling behavior across IDs
+and primary/secondary pointer transitions.
 
 ## Behavior
 
@@ -257,6 +297,8 @@ NULL-string assumption, 0.1.4 showed that the old callback had not established a
 context, and 0.1.5 preserved a pre-entry Java failure that also blocked its logger.
 The 0.1.6 registered-stack bridge, original API stack switching, complete veneer
 cache maintenance, and native-only exception diagnostics pass host and ARM
-emulation checks. Android window startup and PVRTC rendering still require
-hardware confirmation. Validation must cover loading, graphics, audio, input, save/reload,
+emulation checks. The user confirmed Android window startup and PVRTC rendering
+on the Thor with 0.1.6; swipe input and relaunch still needed correction. The RAM
+reader correction is verified on the host and requires device confirmation.
+Validation must cover loading, graphics, audio, input, save/reload,
 suspend/resume, and relaunch after process death.

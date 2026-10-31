@@ -1,4 +1,48 @@
-# Candidate 0.1.6 validation
+# Candidate 0.1.7 validation
+
+Device0.1.6 evidence confirms startup/Create-a-Sim, working room/hair textures,
+PVRTC uploads and continued frames during touch arrivals. Swipes remain blocked.
+Restart shows a preallocation insufficient-memory dialog in fresh processes.
+The reports contain old0.1.5 tombstones too; those are historical failures.
+
+Completed:
+
+- Exact original RAM-reader/DeviceGetInt6/preflight Thumb execution reproduces
+  false low-memory rejection for multi-GiB values and genuine low-memory rejection.
+- Guarded64-bit MemTotal/MemFree parsing and signed-int byte saturation preserve
+  low/zero/unavailable values; host tests cover malformed/overflow input too.
+  Raw/capped readings make the next physical restart result observable.
+- Eight native ASan/UBSan suites, ARM compilation with warnings as errors,
+  exact source guards,4247 relocations,131 import/hardening audit pass.
+- Actual original JNI pointer routines publish expected single/multi movement for
+  sparse IDs and preserve secondary-finger isolation. No swipe behavior defect
+  was established by these host executions.
+- Exact JNI registration row/name/signature/function fingerprint and writable
+  globals span are checked before installing the observational wrapper. It calls
+  the original once with unchanged arguments and leaves Java exception state.
+- Java action/source/gate production counters, report retention and full-app
+  compilation pass. Native trace and report memory remain bounded.
+- Independent code/ABI review approved the RAM correction, forwarding and128KiB
+  native-log retention. Working graphics/stack configuration is unchanged.
+
+Final APK checks passed:310 executable methods with zero static DEX type/control-
+flow errors against SDK35; actual assembled touch wrapper/gesture/lifecycle/GL
+regressions, including the diagnostic descriptor, text gate and CANCEL release;
+original asset/configuration preservation, APK signature/identity(versionCode107),
+and byte-exact release reconstruction. This is host/static verification, not ART
+or Thor gesture execution.
+
+APK SHA-256:
+`202e92142bbaca64ed769a06df21e7b5f6609470330432a4d34d1def670c85fb`.
+
+Shim SHA-256:
+`215636395d2e539db5f06e23815ccb38d6b4877660a941b4a76d1c8f9ec3897e`.
+
+Publication verification is recorded after completion.
+RAM restart confirmation and the cause of the device swipe failure remain pending.
+
+## Historical 0.1.6 checks
+
 
 Device evidence: 0.1.5 resolved matching fresh/cached private method IDs, then
 both its typed Java GL wrapper and static Java exception logger failed before

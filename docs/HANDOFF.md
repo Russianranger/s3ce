@@ -1,4 +1,40 @@
-# Development handoff — 0.1.6
+# Development handoff — 0.1.7
+
+0.1.6 reached Create-a-Sim on the Thor with room/hair textures. Preserve its
+StackSwitch=1, complete veneer flush, PVRTC adapter and real-context safety.
+User still cannot swipe. Fresh subsequent processes show the early native
+insufficient-memory dialog before S3E allocation; old0.1.5 tombstones are stale.
+
+0.1.7 replaces exact get_mem_info223b9: the old MemFree%d→LSL10 signed32 bytes can
+be negative/zero for multi-GiB free RAM. DeviceGetInt6 then fails the signed64KiB
+preflight. Actual old ARM instructions reproduce those errors. New parsing uses
+uint64 KiB and saturates to INT32_MAX; real low/zero and unknown-1 are preserved.
+The failing device's actual MemFree was absent, so inspect the new raw/capped RAM
+log before attributing any later allocation failure to this overflow.
+
+No input behavior change: native ARM execution shows consistent4/5/6 events
+synthesize single0/1 callbacks for the game, with valid sparse IDs. New Java
+source/action/ID/text-gate totals and actual JNI primary/pending/published traces
+will locate the device failure. JNI row457d8, fnword457e0 is exactly guarded; the
+original is called once. Reports retain128KiB native text, others32KiB. Unsynced
+state snapshots are observations, not engine-lock synchronization.
+
+Next hardware gate: enter CAS, drag from the Sim torso left/right, save that run's
+report while stuck; then close/reopen once and save another report if memory
+warning returns. Distinguish Java-gated events, actual native ID/type/coords,
+primary-ID selection and pending-vs-published movement. Avoid duplicating primary
+single-pointer events or altering graphics based on a gesture symptom.
+
+Final APK SHA202e92142bbaca64ed769a06df21e7b5f6609470330432a4d34d1def670c85fb;
+shim SHA215636395d2e539db5f06e23815ccb38d6b4877660a941b4a76d1c8f9ec3897e.
+Eight native sanitizer suites, original ARM RAM/pointer proofs, independent
+review,310-method DEX analysis, actual assembled touch wrapper tests and final
+build/signature/reconstruction checks pass. Publication is recorded after
+completion. Same app ID/key/data.
+Full user reports and signing material stay private.
+
+## Historical 0.1.6 handoff
+
 
 Published source `1b9e216947939308327287bb76decbd035829938`.
 Publication/download-verification run `41155065375` passed.

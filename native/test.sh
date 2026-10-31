@@ -20,6 +20,9 @@ cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \
 "$test_dir/safety_test"
 cc -std=gnu11 "${flags[@]}" "$native_dir/tests/code_flush_test.c" -o "$test_dir/flush_test"
 "$test_dir/flush_test"
+cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \
+    "$native_dir/tests/memory_compat_test.c" -o "$test_dir/memory_test"
+"$test_dir/memory_test"
 c++ -std=c++14 "${flags[@]}" "$native_dir/pvrtc/test_bridge.cpp" \
     "$native_dir/pvrtc/PVRTDecompress.cpp" "$native_dir/pvrtc/pvrtc_bridge.cpp" \
     -o "$test_dir/decoder_test"
@@ -37,6 +40,10 @@ if [[ -n "${ANDROID_NDK_HOME:-}" ]]; then
         "$native_dir/tests/exception_inspect_test.c" "$native_dir/exception_inspect.c" \
         -pthread -o "$test_dir/exception_test"
     "$test_dir/exception_test"
+    cc -std=gnu11 "${flags[@]}" -I "$test_dir/jni" -I "$native_dir" \
+        "$native_dir/tests/input_trace_test.c" "$native_dir/input_trace.c" \
+        -o "$test_dir/input_test"
+    "$test_dir/input_test"
 else
     echo "SKIP typed JNI test: set ANDROID_NDK_HOME to run against its real JNI header"
 fi

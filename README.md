@@ -2,11 +2,12 @@
 
 Experimental preservation build of the user-supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) to inspect its original
-Java/JNI bridge. **Version 0.1.6 restores the Android thread stack for native
-service callbacks. The game otherwise runs on a separate heap fibre stack,
-which conflicts with ART's Java-entry stack check. Thor validation is pending.**
+Java/JNI bridge. **The Thor now reaches Create-a-Sim with room/hair textures.
+Swipes still fail. Version 0.1.7 corrects legacy RAM-reporting overflow that can
+block restarting, and records input delivery to diagnose the remaining gesture
+problem. Restart and gesture behavior need the next device test.**
 
-[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.6-stack-startup)
+[Download the APK](https://github.com/Russianranger/s3ce/releases/tag/v0.1.7-input-restart)
 
 ## Supported candidate configuration
 
@@ -40,18 +41,20 @@ not a claim of successful gameplay on all four versions.
 
 ## Latest update and Thor test
 
-The 0.1.5 report showed both the fresh GL wrapper and its Java error logger
-failing before either Java method body ran. Matching fresh/cached method IDs
-excluded the suspected stale-method cache in that run.
+The old RAM helper reads MemFree in KiB, then shifts into a signed32 byte count.
+Several multi-GiB free-memory ranges become negative or zero; the existing signed
+64 KiB preflight can then show the observed insufficient-memory warning before
+loading the game. Version 0.1.7 parses64-bit KiB values and caps results at the
+legacy signed-int maximum. Genuine low-memory and unknown readings retain their
+existing meanings.
 
-The supplied runtime always starts the game on a heap fibre. Its bundled
-StackSwitch=0 disables the native service veneers that return to the original
-Android thread stack. Version 0.1.6 enables those existing veneers and routes
-lazy GL startup through the original stack-switch mechanism when necessary.
-Thread identity and the real EGL context remain the same. Native diagnostics
-also report stack bounds and exception types without needing a Java callback.
+The working graphics/stack fixes remain. Original ARM input routines accept the
+current gesture sequence in tests, so the swipe cause is still unresolved.
+Java action/source/gate counters and bounded actual JNI before/after pointer
+state traces now make device delivery observable. Touch dispatch is unchanged.
 Install over the existing app, leave **Original rendering unchecked**, and press
-Start game. Check menu/backgrounds, Sim hair/eyes, room textures, and swipes.
+Start game. Try dragging from the Sim’s torso to the left/right, then Save report if stuck.
+Also close/reopen the game to check restarting.
 On failure, reopen the app icon and Save report. See
 [test instructions](docs/RELEASE_NOTES.md) and [native details](native/README.md).
 

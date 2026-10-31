@@ -178,3 +178,39 @@ expands known tracked allocation spans and forwards to original platform41021,
 preserving mprotect7/cacheflush and return semantics. Unknown ranges keep their
 original arguments. This covers initial and dynamic veneers without introducing
 another executable allocator.
+
+## 0.1.7 RAM preflight and gesture evidence
+
+The new Thor screenshots/reports establish normal0.1.6 GL startup, room/hair PVRTC
+uploads and Create-a-Sim rendering. Input counts increased while frames advanced
+about60fps. Later frame stops align with logged focus loss/pause/GL teardown.
+Fresh restart PIDs show the early insufficient-memory dialog before S3E code
+allocation, which separates that symptom from the working rendering path.
+
+get_mem_info(int&,int&) Thumb223b9 reads MemTotal/MemFree using signed32%d KiB
+values, then LSL#10 at22416 converts into signed32 bytes. DeviceGetInt6 returns
+free bytes;7 returns total. ExecDoInit190d8 compares the signed free result against
+MemRequired(default0x80<<9=65536) and branches via1911a on low values, eventually
+showing the reported zero-exec-size 'Not enough memory to begin loading s3e file'
+text. There are other allocation-failure callers of that dialog, so the old
+report alone does not establish the physical free-RAM value for the failing run.
+
+Actual original Thumb execution reproduces false rejection at2/3/4/7/16GiB while
+1/5GiB passes, and genuine32KiB fails. The guarded helper replacement reads64-bit
+KiB, preserves MemFree semantics and saturates only unrepresentable signed-int
+byte results. Zero/low remain low; unavailable fields remain-1. It logs raw KiB
+and capped bytes. No SkipFreeRamCheck bypass or enlarged game allocation is used.
+
+Actual original JNI/pointer ARM paths accept consistent4/5/6 events and publish
+single button/motion callbacks for primary IDs0/7/31. The game registers single
+callback events0/1; that synthesis exists. Primary matching, unchanged coordinates
+and an optional movement timer are the native filters. No specific software
+swipe defect was reproduced, so dispatch/queue/callback behavior is unchanged.
+
+A guarded JNI registration row457d8 (function word457e0) wraps the exact original
+onMotion handler once, preserving all6 JNI arguments and pending exceptions.
+Bounded combined records show ID/type/coords and observational before/after
+primary/pending/published state. Java records action/source/ID plus the actual
+text-input gate and action totals.128KiB native report retention keeps initial
+DOWN/RAM evidence alongside the compact trace. The next Thor report must locate
+where delivery diverges before another behavior patch is justified.

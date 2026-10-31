@@ -25,6 +25,8 @@
 #include "stack_bridge.h"
 #include "exception_inspect.h"
 #include "code_flush.h"
+#include "memory_compat.h"
+#include "input_trace.h"
 #include <EGL/egl.h>
 
 static char diagnostic_path[PATH_MAX];
@@ -144,6 +146,10 @@ static int flush_legacy_code(void *start, uint32_t length) {
              start, length, entry->address, entry->length, result);
     pthread_mutex_unlock(&code_lock);
     return result;
+}
+
+static void read_legacy_memory_info(int *total, int *free_bytes) {
+    s3ce_get_memory_info(total, free_bytes, diagnostic_log);
 }
 
 static int legacy_exception_status(void) {
@@ -449,11 +455,31 @@ static jint load_legacy(JNIEnv *env, JavaVM *vm, jobject asset_manager) {
     original_gl_start = (void (*)(void))(uintptr_t)(image.base + 0x210a5);
     s3ce_gl_safety_bind(get_string_slot, diagnostic_log,
         legacy_initialize_window_context, legacy_exception_status);
+    static const uint8_t memory_info_code[8] = {0xf0,0xb5,0x47,0x46,0x80,0xb4,0x1b,0x4c};
     static const uint8_t cache_flush_code[8] = {0x2a,0xf0,0x2a,0xbb,0x42,0x18,0x03,0x4c};
-    if (patch_thumb_function(&image, 0x169c8, cache_flush_code, (void *)(uintptr_t)&flush_legacy_code) ||
+    if (patch_thumb_function(&image, 0x223b8, memory_info_code, (void *)(uintptr_t)&read_legacy_memory_info) ||
+        patch_thumb_function(&image, 0x169c8, cache_flush_code, (void *)(uintptr_t)&flush_legacy_code) ||
         patch_thumb_function(&image, 0x37148, malloc_code, (void *)(uintptr_t)&allocate_game_code) ||
         patch_thumb_function(&image, 0x36434, free_code, (void *)(uintptr_t)&free_game_code) ||
         patch_thumb_function(&image, 0x3397c, get_string_code, (void *)(uintptr_t)&s3ce_safe_gl_get_string)) goto done;
+    phase = "bind bounded native input diagnostics";
+    uint32_t *motion_registration = image_pointer(&image, 0x457d8, 12);
+    const char *motion_name = image_pointer(&image, 0x46140, sizeof("onMotionEvent"));
+    const char *motion_signature = image_pointer(&image, 0x46150, sizeof("(IIII)V"));
+    const uint8_t *pointer_state = image_pointer(&image, 0x55d80, 48);
+    static const uint8_t motion_code[8] = {0x00,0xb5,0x10,0x1c,0x19,0x1c,0x86,0x22};
+    const uint8_t *motion_entry = image_pointer(&image, 0x2148c, sizeof(motion_code));
+    if (!motion_registration || !motion_name || !motion_signature || !pointer_state ||
+        !motion_entry || memcmp(motion_entry, motion_code, sizeof(motion_code)) ||
+        motion_registration[0] != (uint32_t)(uintptr_t)(image.base + 0x46140) ||
+        motion_registration[1] != (uint32_t)(uintptr_t)(image.base + 0x46150) ||
+        motion_registration[2] != (uint32_t)(uintptr_t)(image.base + 0x2148d) ||
+        memcmp(motion_name, "onMotionEvent", sizeof("onMotionEvent")) ||
+        memcmp(motion_signature, "(IIII)V", sizeof("(IIII)V"))) goto done;
+    s3ce_input_motion traced_motion = s3ce_input_trace_prepare(
+        (s3ce_input_motion)(uintptr_t)motion_registration[2], pointer_state, diagnostic_log);
+    if (!traced_motion) goto done;
+    motion_registration[2] = (uint32_t)(uintptr_t)traced_motion;
     phase = "protect legacy segments";
     if (mprotect(image.base, image.size, PROT_NONE)) goto done;
     for (size_t i = 0; i < header->e_phnum; ++i) {

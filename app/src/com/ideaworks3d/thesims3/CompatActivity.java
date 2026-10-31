@@ -47,7 +47,7 @@ public final class CompatActivity extends Activity {
         status = new TextView(this);
         status.setTextColor(0xffeeeeee);
         status.setTextSize(18);
-        status.setText("The Sims 3 CE\nCompatibility build 0.1.6\n\n"
+        status.setText("The Sims 3 CE\nCompatibility build 0.1.7\n\n"
                 + "Touch controls. Saves stay on this device.\n"
                 + "Save a report before retrying a crashed game.\n");
         layout.addView(status);
@@ -189,7 +189,7 @@ public final class CompatActivity extends Activity {
     }
 
     private String report() {
-        StringBuilder text = new StringBuilder("S3CE 0.1.6 diagnostic report\n");
+        StringBuilder text = new StringBuilder("S3CE 0.1.7 diagnostic report\n");
         text.append("Android: ").append(Build.VERSION.RELEASE).append(" API ")
                 .append(Build.VERSION.SDK_INT).append("\nDevice: ")
                 .append(Build.MANUFACTURER).append(' ').append(Build.MODEL)
@@ -201,7 +201,8 @@ public final class CompatActivity extends Activity {
         for (String name : new String[]{"compat-java-gl.log", "compat-java-crash.log", "compat-boot.log", "compat-native.log", "compat-events.log", "compat-java-launcher.log"}) {
             File log = new File(getFilesDir(), name);
             try (RandomAccessFile input = new RandomAccessFile(log, "r")) {
-                int length = (int) Math.min(input.length(), 32768);
+                int limit = name.equals("compat-native.log") ? 131072 : 32768;
+                int length = (int) Math.min(input.length(), limit);
                 input.seek(input.length() - length);
                 byte[] bytes = new byte[length];
                 input.readFully(bytes);
