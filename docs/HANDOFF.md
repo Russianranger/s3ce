@@ -34,8 +34,10 @@ Final APK SHA5889dd74a5094603e78534fcde915590ae1cb87d45c7f0252eb5fa4d51d0143a;
 shim SHA3b9397d65bafe7921185b48390183bbd006004bfd18dcf37dc50b4c990ac7912.
 Eleven sanitizer suites, eighteen compiled ARM proxy scenarios, independent
 review,310-method static DEX analysis and APK build/signature checks pass.
-Publication receipt pending. Same app ID/key/data. All full user reports and
-signing material stay private.
+Published source `583a18fb663e491992dd367cab2f6578bdabfbce`;
+publication/download-verification run `41159924448` passed. Release
+`v0.1.8-gesture-trace` asset size/digest match the frozen APK. Same app ID/key/data.
+All full user reports and signing material stay private.
 
 ## Historical 0.1.7 handoff
 

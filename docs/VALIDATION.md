@@ -40,8 +40,11 @@ APK SHA-256:
 Shim SHA-256:
 `3b9397d65bafe7921185b48390183bbd006004bfd18dcf37dc50b4c990ac7912`.
 
-Byte-exact reconstruction from the pinned0.1.0 base APK passed. Independent
-publication/download verification pending.
+Byte-exact reconstruction from the pinned0.1.0 base APK passed. Publication run
+[41159924448](https://github.com/Russianranger/s3ce/actions/runs/41159924448)
+passed reconstruction, signature/identity checks, prerelease upload and independent
+download/SHA-256 verification. Release asset size76758361 and digest match the
+frozen local APK. Published source `583a18fb663e491992dd367cab2f6578bdabfbce`.
 
 ## Historical 0.1.7 checks
 
