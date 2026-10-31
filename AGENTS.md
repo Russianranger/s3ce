@@ -1,3 +1,25 @@
+# Current assignment — Thor HUD refinement and startup attribution
+
+User authorizes focused source/docs changes, commits/pushes and next test release.
+Recover main, preserve later legitimate work, complete meaningful validation and
+explicitly deliver the signed APK/testing handoff. Physical Thor 0.1.11 confirms
+object actions and previous-save continuation; first-start failure/HUD taps remain.
+
+Read docs/HANDOFF.md. Post-install Android reason 3 means LOW_MEMORY (EXIT_SELF=1).
+Peak footprint is unknown. Do not equate it with the pre-install SIGSEGV or
+historical emulator translator abort. Retain session evidence and account for
+every cold-start attempt. Successful retry or reduced allocation is not a fix claim.
+
+Use screenshot/original ARM geometry for narrow HUD changes, preserving global
+XY and accepted object-menu anchoring. Distinguish host fixtures, Android runs,
+physical observations and uncertainty. Future APK changes need affected checks.
+If Thor is necessary, finish independent work and deliver a useful candidate,
+clear limitations and short test.
+
+Preserve app ID/key/data, ARM32/4 KiB/target 28, original assets, UI depth, camera,
+saves, walking, actions, teardown order and audio ownership. Original rendering
+stays unchecked. Keep keys/full reports outside Git; isolate build/dist paths.
+
 # Current release — 0.1.11 object actions: gate passed
 
 The user physically verified 0.1.10 UI, character creation, house, walking,

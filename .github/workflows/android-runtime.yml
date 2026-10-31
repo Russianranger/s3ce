@@ -39,15 +39,7 @@ jobs:
           printf 'ANDROID_AVD_HOME=%s\n' "$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
           mkdir -p build/runtime-evidence "$ANDROID_AVD_HOME"
           printf 'ANDROID_HOME=%s\nANDROID_AVD_HOME=%s\n' "$ANDROID_HOME" "$ANDROID_AVD_HOME" > build/runtime-evidence/setup.txt
-          python3 - <<'PYMODE'
-          import os, time
-          enabled = (os.environ['WORKFLOW_EVENT'] == 'workflow_dispatch'
-                     and os.environ.get('DISPATCH_INTERACTIVE', '').lower() == 'true')
-          with open(os.environ['GITHUB_ENV'], 'a') as env:
-              env.write('S3CE_RUNTIME_INTERACTIVE=' + str(enabled).lower() + '\n')
-              env.write('S3CE_RUNTIME_DEADLINE_EPOCH=' + str(int(time.time()) + 4800) + '\n')
-          print('Interactive frame controller:', enabled)
-          PYMODE
+          python3 scripts/android_runtime_mode.py
       - name: Prepare byte-exact internal APKs
         id: apks
         env:

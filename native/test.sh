@@ -23,6 +23,8 @@ cc -std=gnu11 "${flags[@]}" "$native_dir/tests/code_flush_test.c" -o "$test_dir/
 cc -std=gnu11 "${flags[@]}" "$native_dir/tests/ui_depth_test.c" -o "$test_dir/depth_test"
 "$test_dir/depth_test"
 cc -std=gnu11 "${flags[@]}" "$native_dir/tests/context_menu_test.c" -o "$test_dir/context_test"
+cc -std=gnu11 "${flags[@]}" "$native_dir/tests/hud_input_test.c" -o "$test_dir/hud_test"
+"$test_dir/hud_test"
 "$test_dir/context_test"
 cc -std=gnu11 "${flags[@]}" "$native_dir/tests/shutdown_order_test.c" -o "$test_dir/shutdown_test"
 "$test_dir/shutdown_test"

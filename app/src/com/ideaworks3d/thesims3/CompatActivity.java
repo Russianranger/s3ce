@@ -47,10 +47,10 @@ public final class CompatActivity extends Activity {
         status = new TextView(this);
         status.setTextColor(0xffeeeeee);
         status.setTextSize(18);
-        status.setText("The Sims 3 CE\nCompatibility build 0.1.11\n\n"
+        status.setText("The Sims 3 CE\n" + GameSession.versionLabel(this) + "\n\n"
                 + "Touch controls. Saves stay on this device.\n"
                 + "For reports during play, press Home and reopen this app icon.\n"
-                + "Save a report before retrying a crashed game.\n");
+                + "Reports retain the previous four game processes after a retry.\n");
         layout.addView(status);
         originalRendering = new CheckBox(this);
         originalRendering.setText("Original rendering (diagnostic mode)");
@@ -190,7 +190,8 @@ public final class CompatActivity extends Activity {
     }
 
     private String report() {
-        StringBuilder text = new StringBuilder("S3CE 0.1.11 diagnostic report\n");
+        StringBuilder text = new StringBuilder("S3CE diagnostic report\n");
+        text.append("Installed build: ").append(GameSession.buildIdentity(this)).append('\n');
         text.append("Android: ").append(Build.VERSION.RELEASE).append(" API ")
                 .append(Build.VERSION.SDK_INT).append("\nDevice: ")
                 .append(Build.MANUFACTURER).append(' ').append(Build.MODEL)
@@ -198,6 +199,7 @@ public final class CompatActivity extends Activity {
                 .append("\nProcess64: ").append(Process.is64Bit()).append('\n');
         text.append("Launcher selected original rendering: ")
                 .append(getPreferences(MODE_PRIVATE).getBoolean("original_rendering", false)).append('\n');
+        GameSession.appendReport(this, text);
         ExitReport.append(this, text);
         for (String name : new String[]{"compat-java-gl.log", "compat-java-crash.log", "compat-boot.log", "compat-native.log", "compat-events.log", "compat-java-launcher.log"}) {
             File log = new File(getFilesDir(), name);
@@ -241,8 +243,8 @@ public final class CompatActivity extends Activity {
             }
         } catch (Exception error) { text.append("\nLogcat unavailable: ").append(error); }
         finally { if (logcat != null) logcat.destroy(); }
-        if (text.length() > 256 * 1024)
-            return text.substring(0, 256 * 1024) + "\n[Report truncated at 256 KB]\n";
+        if (text.length() > 1024 * 1024)
+            return text.substring(0, 1024 * 1024) + "\n[Report truncated at 1 MB]\n";
         return text.toString();
     }
 }

@@ -13,5 +13,25 @@
     "smali/com/ideaworks3d/airplay/SoundPlayer.smali",
     "generateAudio([SI)V",
     "da93b6e29d082fe4af9be5b76883d437cc7879701165c5cf7014ede04149d13e"
+  ],
+  [
+    "smali/com/ideaworks3d/airplay/AirplayView.smali",
+    "surfaceDestroyed(Landroid/view/SurfaceHolder;)V",
+    "16586961925aa41b56a9ab2e974dbc2b133a1216c38134e79abd17ce403a9ebc"
+  ],
+  [
+    "smali/com/ideaworks3d/airplay/AirplayView.smali",
+    "glInit(I)V",
+    "de366cca001b3c1ac84392e629edef1eb9a430a97be2bcb369ef3d0f0c065104"
+  ],
+  [
+    "smali/com/ideaworks3d/airplay/AirplayView.smali",
+    "glReInit()V",
+    "09ff468d1827b8b739ad17b12d43f32204ff5b74461de586d0deec1a3625689f"
+  ],
+  [
+    "smali/com/ideaworks3d/airplay/AirplayView.smali",
+    "glTerm()V",
+    "8551fdde5024ad0b24bb14e25bd545d935740857dc7569731f0d8e5e5f70ac6b"
   ]
 ]

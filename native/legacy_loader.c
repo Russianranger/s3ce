@@ -27,6 +27,7 @@
 #include "code_flush.h"
 #include "ui_depth.h"
 #include "context_menu.h"
+#include "hud_input.h"
 #include "shutdown_order.h"
 #include "memory_compat.h"
 #include "input_trace.h"
@@ -98,6 +99,7 @@ struct code_allocation {
     size_t length;
     int ui_depth_status;
     int context_menu_status;
+    int hud_input_status;
     int shutdown_order_status;
 };
 static struct code_allocation *code_allocations;
@@ -123,6 +125,7 @@ static void *allocate_game_code(uint32_t requested) {
     entry->length = length;
     entry->ui_depth_status = 0;
     entry->context_menu_status = 0;
+    entry->hud_input_status = 0;
     entry->shutdown_order_status = 0;
     pthread_mutex_lock(&code_lock);
     entry->next = code_allocations;
@@ -177,6 +180,18 @@ static int flush_legacy_code(void *start, uint32_t length) {
                      entry->address, patched == 1 ? "patched" : "already patched");
             else
                 LOGE("Context menu bounds patch refused: unexpected source fingerprint at %p", entry->address);
+        }
+    }
+    if (entry && !entry->hud_input_status) {
+        int patched = s3ce_patch_hud_input(entry->address, entry->length, start, length,
+            (uintptr_t)&s3ce_hud_status_width_gateway);
+        if (patched) {
+            entry->hud_input_status = patched;
+            if (patched > 0)
+                LOGI("HUD input units fixed: %p circle radii=24 logical; bar X/status width=raw (%s)",
+                     entry->address, patched == 1 ? "patched" : "already patched");
+            else
+                LOGE("HUD input patch refused: unexpected source fingerprint at %p", entry->address);
         }
     }
     if (entry && !entry->shutdown_order_status) {

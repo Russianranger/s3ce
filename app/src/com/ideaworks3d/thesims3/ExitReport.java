@@ -14,6 +14,7 @@ public final class ExitReport {
     public static void append(Context context, StringBuilder report) {
         if (Build.VERSION.SDK_INT < 30) return;
         report.append("\nAndroid process exit history:\n");
+        report.append("Exit records survive APK updates. Match PID/time to session identity before attributing a failure.\n");
         try {
             ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             List<ApplicationExitInfo> history = manager.getHistoricalProcessExitReasons(context.getPackageName(), 0, 20);
@@ -23,6 +24,7 @@ public final class ExitReport {
                 if (exit.getProcessName().endsWith(":launcher")) continue;
                 report.append("process=").append(exit.getProcessName()).append(" pid=").append(exit.getPid())
                         .append(" time=").append(exit.getTimestamp()).append(" reason=").append(exit.getReason())
+                        .append('(').append(reasonName(exit.getReason())).append(')')
                         .append(" status=").append(exit.getStatus()).append(" description=").append(exit.getDescription())
                         .append(" rssKB=").append(exit.getRss()).append('\n');
                 if (!traced && (exit.getReason() == ApplicationExitInfo.REASON_CRASH_NATIVE
@@ -48,5 +50,25 @@ public final class ExitReport {
             }
             if (shown == 0) report.append("No retained game-process exits.\n");
         } catch (Exception error) { report.append("Exit history unavailable: ").append(error).append('\n'); }
+    }
+
+    static String reasonName(int reason) {
+        switch (reason) {
+            case ApplicationExitInfo.REASON_UNKNOWN: return "UNKNOWN";
+            case ApplicationExitInfo.REASON_EXIT_SELF: return "EXIT_SELF";
+            case ApplicationExitInfo.REASON_SIGNALED: return "SIGNALED";
+            case ApplicationExitInfo.REASON_LOW_MEMORY: return "LOW_MEMORY";
+            case ApplicationExitInfo.REASON_CRASH: return "CRASH";
+            case ApplicationExitInfo.REASON_CRASH_NATIVE: return "CRASH_NATIVE";
+            case ApplicationExitInfo.REASON_ANR: return "ANR";
+            case ApplicationExitInfo.REASON_INITIALIZATION_FAILURE: return "INITIALIZATION_FAILURE";
+            case ApplicationExitInfo.REASON_PERMISSION_CHANGE: return "PERMISSION_CHANGE";
+            case ApplicationExitInfo.REASON_EXCESSIVE_RESOURCE_USAGE: return "EXCESSIVE_RESOURCE_USAGE";
+            case ApplicationExitInfo.REASON_USER_REQUESTED: return "USER_REQUESTED";
+            case ApplicationExitInfo.REASON_USER_STOPPED: return "USER_STOPPED";
+            case ApplicationExitInfo.REASON_DEPENDENCY_DIED: return "DEPENDENCY_DIED";
+            case ApplicationExitInfo.REASON_OTHER: return "OTHER";
+            default: return "UNRECOGNIZED";
+        }
     }
 }

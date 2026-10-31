@@ -167,7 +167,7 @@ PATCHES = [('smali/com/ideaworks3d/airplay/AirplayThread.smali',
 # Input/lifecycle/diagnostic changes keep their reviewed method bodies separate.
 import json
 _PATCH_ROOT = Path(__file__).resolve().parent
-for _manifest in ("input_methods.json", "audio_methods.json"):
+for _manifest in ("input_methods.json", "audio_methods.json", "diagnostic_methods.json"):
     for _relative, _signature, _original_sha, _replacement_file in json.loads(
             (_PATCH_ROOT / _manifest).read_text(encoding="utf-8")):
         PATCHES.append((_relative, _signature, _original_sha,
@@ -178,6 +178,44 @@ METHOD_GUARDS = json.loads((_PATCH_ROOT / "method_guards.json").read_text(encodi
 def method_matches(source: str, signature: str):
     return list(re.finditer(r"^\.method (?:[^\n]* )?" + re.escape(signature)
                             + r"\n.*?^\.end method", source, re.M | re.S))
+
+
+def reduce_gl_bitmap(source: str) -> str:
+    """Skip only the unused RGB565 bitmap in a GL AirplayView.
+
+    Keep the original integer pixel array and setPixelsNative dimension/reference
+    protocol. The existing doDraw guard never consumes the bitmap in GL mode;
+    software views retain the exact original allocation and draw path.
+    """
+    signature = 'surfaceChanged(Landroid/view/SurfaceHolder;III)V'
+    matches = method_matches(source, signature)
+    if len(matches) != 1:
+        raise ValueError('Expected one original surfaceChanged method')
+    match = matches[0]
+    current = match.group()
+    before = '    .line 585\n'
+    after = '    .line 587\n'
+    start = ('    # S3CE: GL views present through EGL and never draw this CPU bitmap.\n'
+             '    iget-boolean v0, p0, Lcom/ideaworks3d/airplay/AirplayView;->m_UseGL:Z\n'
+             '    if-nez v0, :s3ce_no_software_bitmap\n\n')
+    end = '    :s3ce_no_software_bitmap\n'
+    original_sha = 'a5e33a204a0be37cceef92dda03314e77de014af98ece892eb341b6d87739c44'
+    if ':s3ce_no_software_bitmap' in current:
+        if current.count(start) != 1 or current.count(end) != 1:
+            raise ValueError('Tampered GL bitmap guard')
+        original = current.replace(start, '', 1).replace(end, '', 1)
+        if hashlib.sha256(original.encode()).hexdigest() != original_sha:
+            raise ValueError('Unexpected patched surfaceChanged method')
+        expected = original.replace(before, start + before, 1).replace(after, end + after, 1)
+        if current != expected:
+            raise ValueError('GL bitmap guard moved from its original allocation boundary')
+        return source
+    if hashlib.sha256(current.encode()).hexdigest() != original_sha:
+        raise ValueError('Unexpected original surfaceChanged method')
+    if current.count(before) != 1 or current.count(after) != 1:
+        raise ValueError('Unexpected bitmap allocation anchors')
+    replacement = current.replace(before, start + before, 1).replace(after, end + after, 1)
+    return source[:match.start()] + replacement + source[match.end():]
 
 
 def apply(decoded: Path) -> list[str]:
@@ -213,6 +251,8 @@ def apply(decoded: Path) -> list[str]:
             raise ValueError(f"Unexpected method bytes for {signature}; refusing to patch")
         sources[target] = source[:match.start()] + replacement + source[match.end():]
         changed.append(signature)
+    view = decoded / 'smali/com/ideaworks3d/airplay/AirplayView.smali'
+    sources[view] = reduce_gl_bitmap(sources[view])
     for target, source in sources.items():
         target.write_text(source, encoding="utf-8")
     return changed

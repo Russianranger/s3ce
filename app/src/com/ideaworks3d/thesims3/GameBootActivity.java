@@ -9,10 +9,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 /** Native startup runs in the game's process, independently of reports. */
 public final class GameBootActivity extends Activity {
@@ -26,19 +26,32 @@ public final class GameBootActivity extends Activity {
         try {
             if (Process.is64Bit()) throw new UnsupportedOperationException(
                     "This build requires 32-bit ARM app support.");
+            GameSession.memory(this, "before-loadLibrary");
+            GameSession.phase("System.loadLibrary airplay ENTER");
             System.loadLibrary("airplay");
+            GameSession.phase("System.loadLibrary airplay RETURN");
             boolean graphics = getIntent().getBooleanExtra("graphics_compatibility", true);
+            GameSession.phase("nativeConfigureGraphics ENTER compatibility=" + graphics);
             if (!nativeConfigureGraphics(graphics)) throw new IllegalStateException(
                     "Fully close the game before changing rendering mode, then retry.");
+            GameSession.phase("nativeConfigureGraphics RETURN success");
             writeBootLog(run + "Graphics compatibility=" + graphics + "\n");
+            GameSession.memory(this, "before-nativeBootstrap");
+            GameSession.phase("nativeBootstrap ENTER");
             int version = nativeBootstrap(getAssets(), getFilesDir().getAbsolutePath());
+            GameSession.phase("nativeBootstrap RETURN version=" + version);
             if (version < 0) throw new UnsatisfiedLinkError("The legacy runtime could not initialize.");
+            GameSession.phase("AirplayActivity class initialization ENTER");
             Class.forName("com.ideaworks3d.airplay.AirplayActivity", true, getClassLoader());
+            GameSession.phase("AirplayActivity class initialization RETURN");
             writeBootLog(run + "Native runtime initialized successfully\n");
             Intent game = new Intent();
             game.setClassName(this, "com.ideaworks3d.thesims3.Main");
             game.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            GameSession.memory(this, "before-Main-Activity");
+            GameSession.phase("Main startActivity ENTER");
             startActivity(game);
+            GameSession.phase("Main startActivity RETURN (engine entry not yet established)");
             finish();
         } catch (Throwable error) {
             StringWriter trace = new StringWriter();
@@ -58,9 +71,11 @@ public final class GameBootActivity extends Activity {
     }
 
     private void writeBootLog(String message) {
-        try {
-            Files.write(new File(getFilesDir(), "compat-boot.log").toPath(),
-                    message.getBytes(StandardCharsets.UTF_8));
+        GameSession.phase("Boot " + message);
+        File log = new File(getFilesDir(), "compat-boot.log");
+        try (FileOutputStream output = new FileOutputStream(log, log.length() < 32768)) {
+            output.write(message.getBytes(StandardCharsets.UTF_8));
+            output.getFD().sync();
         } catch (Exception ignored) { }
     }
 }

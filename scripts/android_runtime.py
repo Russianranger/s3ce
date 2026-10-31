@@ -136,6 +136,7 @@ class Android:
         self.object_actions = []
         self.quit_observation = {}
         self.interactive_observation = {'commands': [], 'frames': [], 'finish_requested': False}
+        self.cold_starts = []
         self.runtime_started = time.monotonic()
 
     def adb(self, *args, timeout=45, check=True):
@@ -187,6 +188,15 @@ class Android:
         (directory / 'app-files.txt').write_text(self.shell('ls', '-lR', f'/data/data/{PACKAGE}/files', check=False))
         self.latest_native = self.shell('cat', f'/data/data/{PACKAGE}/files/compat-native.log', check=False)
         (directory / 'native.log').write_text(self.latest_native)
+        # Only named diagnostics are collected; game saves are never copied or
+        # edited. Older baseline builds may not contain session rotation yet.
+        for filename in ('compat-session.log', 'compat-boot.log', 'compat-events.log',
+                         'compat-java-gl.log', 'compat-java-crash.log'):
+            (directory / filename).write_text(self.shell(
+                'cat', f'/data/data/{PACKAGE}/files/{filename}', check=False))
+        (directory / 'session-diagnostic-pull.txt').write_bytes(self.adb(
+            'pull', f'/data/data/{PACKAGE}/files/compat-sessions',
+            str(directory / 'previous-sessions'), check=False))
         observers = [line for line in self.latest_native.splitlines() if SCENE.search(line)]
         event = {'name': label, 'time': time.time(), 'screen_size': list(self.screen_size),
                  'scene': self.last_scene(), 'menu_state': self.last_menu_state(),
@@ -236,6 +246,76 @@ class Android:
     def launch(self):
         self.shell('am', 'start', '-W', '-n', LAUNCHER)
         self.click_text('Start game')
+
+    def observe_cold_starts(self, attempts, launch_wait):
+        """Observe every bounded normal startup; preserve data and every failure.
+
+        Readiness is a process/window observation, not visual gameplay acceptance.
+        A log marker bounds each attempt without deleting earlier logcat records.
+        The final successful attempt stays in the main menu for the normal plan.
+        """
+        if type(attempts) is not int or not 1 <= attempts <= 6:
+            raise ValueError('Cold-start observation requires 1 through 6 attempts')
+        seen_pids = set()
+        for index in range(attempts):
+            label = f'candidate-cold-start-{index + 1:02d}'
+            marker = f'S3CE-cold-start-{index + 1}-{time.time_ns()}'
+            record = {'attempt': index + 1, 'marker': marker, 'start_epoch': time.time(),
+                      'status': 'failed', 'visual_review': 'required',
+                      'scope': 'normal launcher/Start; process-cold; app data retained'}
+            self.cold_starts.append(record)
+            self.viewport = self.viewport_source = None
+            try:
+                self.shell('log', '-t', 'S3CEColdStart', marker)
+                self.shell('am', 'force-stop', PACKAGE)
+                self.wait_for('previous game process stopped',
+                              lambda: not self.shell('pidof', PACKAGE, check=False).strip(), 15)
+                self.launch()
+                time.sleep(launch_wait)
+                self.snapshot(label)
+                directory = self.output / label
+                event = self.events[-1]
+                record.update(game_pid=event.get('game_pid'), native_viewport=self.viewport,
+                              viewport_source=self.viewport_source,
+                              screenshot_sha256=sha(directory / 'screen.png'))
+                log = (directory / 'logcat.txt').read_text(errors='replace')
+                if marker not in log:
+                    raise RuntimeError('Attempt log marker is missing; log window is unknown')
+                attempt_log = log.partition(marker)[2]
+                (directory / 'attempt-logcat.txt').write_text(attempt_log)
+                fatal = [line for line in attempt_log.splitlines()
+                         if re.search(r'Fatal signal|FATAL EXCEPTION|SIGSEGV|SIGABRT|ANR in|am_crash|am_anr', line)]
+                record['fatal_or_anr_lines'] = fatal
+                activity = (directory / 'activity.txt').read_text(errors='replace')
+                resumed = [line.strip() for line in activity.splitlines()
+                           if 'mResumedActivity' in line or 'topResumedActivity' in line]
+                record['resumed_activity_lines'] = resumed
+                pid = record['game_pid']
+                if not pid or pid in seen_pids:
+                    raise RuntimeError('No distinct live game process after cold start')
+                seen_pids.add(pid)
+                if (self.viewport is None or not any('com.ideaworks3d.thesims3.Main' in line
+                                                     for line in resumed)):
+                    raise RuntimeError('No verified native game canvas and resumed Main activity')
+                if fatal:
+                    raise RuntimeError('Fatal/ANR evidence in this startup window')
+                record['status'] = 'ready-awaiting-visual-review'
+            except Exception as error:
+                record['error'] = type(error).__name__ + ': ' + str(error)
+                # Even a launch failure before the normal snapshot must remain
+                # reviewable. A capture failure is recorded, never substituted.
+                if not (self.output / label / 'screen.png').exists():
+                    try:
+                        self.snapshot(label)
+                    except Exception as capture_error:
+                        record['capture_error'] = str(capture_error)
+            finally:
+                record['end_epoch'] = time.time()
+                (self.output / 'cold-start-attempts.json').write_text(
+                    json.dumps(self.cold_starts, indent=2) + '\n')
+        failures = sum(record['status'] == 'failed' for record in self.cold_starts)
+        if failures:
+            raise RuntimeError(f'{failures} of {attempts} process-cold startup observations failed; all retained')
 
     def tap(self, position, coordinate_size):
         self.assert_native_canvas()
@@ -699,7 +779,11 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--interactive', action='store_true')
     parser.add_argument('--interactive-after', default='close-alex-context-before-object-test')
+    parser.add_argument('--cold-start-attempts', type=int,
+                        default=int(os.environ.get('S3CE_RUNTIME_COLD_START_ATTEMPTS', '0')))
     args = parser.parse_args()
+    if not 0 <= args.cold_start_attempts <= 6:
+        parser.error('--cold-start-attempts must be between 0 and 6')
     def terminate_controller(signum, frame):
         raise RuntimeError('Runtime controller received termination signal')
     signal.signal(signal.SIGTERM, terminate_controller)
@@ -779,8 +863,11 @@ def main():
             # installation delimit this run even when logd rejects a clear.
             android.adb('logcat', '-c', check=False)
             android.adb('install', '-r', '-d', apk.resolve(), timeout=120)
-            android.launch()
-            time.sleep(plan.get('launch_wait', 20))
+            if label == 'candidate' and args.cold_start_attempts:
+                android.observe_cold_starts(args.cold_start_attempts, plan.get('launch_wait', 20))
+            else:
+                android.launch()
+                time.sleep(plan.get('launch_wait', 20))
             android.snapshot(label + '-00-launched')
             result['environment'][label + '_native_viewport'] = android.viewport
             if android.viewport is None:
@@ -821,6 +908,7 @@ def main():
         result['object_actions'] = android.object_actions
         result['native_quit'] = android.quit_observation
         result['interactive'] = android.interactive_observation
+        result['cold_starts'] = android.cold_starts
         result['environment']['emulator_exit_before_cleanup'] = emulator.poll() if emulator else None
         result['environment']['live_logcat_exit_before_cleanup'] = logcat.poll() if logcat else None
         for name, command in [('host-kernel.txt', ['dmesg', '-T']),

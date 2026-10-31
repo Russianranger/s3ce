@@ -1,3 +1,43 @@
+# Current takeover — 0.1.12 HUD/startup candidate
+
+Recovered `main` at `a13b0ec799adca78edeac8ea56e69ac53c60a669` against live GitHub
+before editing. Reused original input, signing identity and prior analysis.
+Complete user reports and signing material remain outside Git. The report
+confirms installed 0.1.11, Thor/API 33, a 32-bit process and normal rendering.
+
+The user physically confirms several object actions and previous-save loading.
+Earlier UI, creation, house entry, walking, saving and camera zoom/pan remain
+preservation requirements. Remaining: the first start failed, retry succeeded,
+and circled HUD targets appear offset or inaccessible. The 1920×1080 screenshot
+circles the left status panel, chair/Buy above Pause, and wishes/plumbob panel.
+See HUD_INPUT.md for exact identities and geometry. Preserve global XY and the
+accepted object-menu anchor.
+
+The report records a post-install LOW_MEMORY exit: PID 25490 at 13:12:07 CDT,
+reason 3/status 0, after the 13:11:56 install and before successful PID 26391
+at 13:12:10. This is the strongest match for the failed start. Its peak footprint
+is absent (rssKB=0), and the successful retry overwrote earlier boot/native logs.
+The retained native SIGSEGV at 07:41:31 predates this install. The historical
+emulator translator abort is separate. Android SDK confirms LOW_MEMORY=3 and
+EXIT_SELF=1. Do not conflate these records.
+
+Candidate 0.1.12-hud-startup / code 112 is built and signed with the existing
+certificate, 76,770,649 bytes, SHA256
+`b73c15341acbb61e7fa85173eb440650c665a65df57ce1ac46caf0e2d7325b64`.
+All 15 native sanitizer suites, 20 HUD ARM cases/180 dispatch comparisons,
+20 original context-menu ARM cases, assembled input/audio/surface/session DEX
+checks, 348-method static DEX analysis, host retained-session tests and byte-exact
+release reconstruction pass. APK assets, ARMv7/4 KiB/target 28, package and signing
+identity are verified. These are host checks, not new Android gameplay evidence.
+
+Next: push the exact candidate to the established KVM Android workflow, with
+four accounted menu cold starts then normal creation/save/new-process reload
+and frame-guided HUD/object/lifecycle/Quit checks. Local KVM is unavailable.
+Publish only after reviewing available runtime evidence, or explicitly deliver
+a targeted diagnostic candidate if an environment dependency blocks execution.
+Reduced allocation and stronger diagnostics do not alone prove Thor reliability.
+Never edit game memory, phases or saves to manufacture progression.
+
 # Development handoff — 0.1.11
 
 ROOT delivery gate PASSED for C3, 76,762,457 bytes, SHA256
