@@ -1,16 +1,16 @@
 {
   "schema": 1,
-  "run_id": "41237818263",
-  "seq": 24,
-  "frame_sha256": "2f4aea5ab253f4c290d8df2bc6a39414e5b1e863ee3dde9fb972d4c24d592369",
+  "run_id": "41240915455",
+  "seq": 1,
+  "frame_sha256": "5d69b75e82eb73487b3d19f7256df7ae17d66e729473cd88e8f266a05ccaf4be",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 960,
-    "y": 637
+    "x": 1300,
+    "y": 300
   },
-  "note": "Select visible Save and Continue in final slot; this session will retain a harness-budget failure rather than claim normal Quit."
+  "note": "Select the visible bed early in this session, before extended timed-hint/game-time progression."
 }
