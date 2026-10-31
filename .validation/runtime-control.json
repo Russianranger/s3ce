@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 21,
-  "frame_sha256": "ad55cc090f095c8e1f988a1c4a98074dd66831a1326afcb57c843985a2bfa352",
+  "seq": 22,
+  "frame_sha256": "83155c6eed7dbe0d4e4c15895a2e063cb3ea35faeb6c5153b385c7238f03378a",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 30
+    "type": "tap",
+    "x": 710,
+    "y": 797
   },
-  "note": "Wait for normal post-save loading to finish before selecting main-menu Quit."
+  "note": "Choose the visible main-menu Quit to test preserved normal native shutdown."
 }
