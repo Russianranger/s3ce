@@ -625,6 +625,7 @@ class Android:
                         'coordinate_size': list(self.screen_size), 'viewport': self.viewport,
                         'scene': observation['scene'], 'menu_state': observation['menu_state'],
                         'game_pid': observation['game_pid'], 'time': time.time(),
+                        'input_observer': observation.get('observer'),
                         'control_transport': 'github-contents-api' if os.environ.get('S3CE_CONTROL_GITHUB_TOKEN') else 'public-raw',
                         'resumed_activity_lines': [line.strip() for line in activity.splitlines()
                                                   if 'mResumedActivity' in line or 'topResumedActivity' in line],

@@ -38,7 +38,7 @@ def runtime_mode(event, dispatch_interactive, raw, candidate_sha256):
 def main():
     root = Path(__file__).resolve().parents[1]
     path = root / '.validation/runtime-mode.json'
-    candidate = json.loads((root / '.validation/hud-startup/manifest.json').read_text())
+    candidate = json.loads((root / '.validation/camera-input/manifest.json').read_text())
     mode = runtime_mode(os.environ['WORKFLOW_EVENT'], os.environ.get('DISPATCH_INTERACTIVE', ''),
                         path.read_bytes() if path.exists() else None, candidate['sha256'])
     with open(os.environ['GITHUB_ENV'], 'a') as stream:

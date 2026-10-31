@@ -15,8 +15,8 @@ def main():
     cache = ROOT / 'build/runtime-internal/base'
     cache.mkdir(parents=True, exist_ok=True)
     outputs = {}
-    for label, staging in [('candidate', ROOT / '.validation/hud-startup'),
-                           ('baseline', ROOT / '.publish/v0.1.11-object-actions')]:
+    for label, staging in [('candidate', ROOT / '.validation/camera-input'),
+                           ('baseline', ROOT / '.publish/v0.1.12-hud-startup')]:
         manifest = json.loads((staging / 'manifest.json').read_text())
         base = cache / manifest['base_filename']
         if not base.exists() or hashlib.file_digest(base.open('rb'), 'sha256').hexdigest() != manifest['base_sha256']:

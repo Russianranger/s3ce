@@ -1,3 +1,19 @@
+# Current continuation — camera pan steals bottom-right taps
+
+The user reports everything seems to work except the bottom-right icon: camera
+pan captures a very large region of the lower-right screen. This follows the
+0.1.12 delivery; no fresh report is attached, so installed version is inferred
+from context. Preserve newly confirmed behavior.
+
+Camera testing precedes other HUD selection. Prior fixtures left its real
+radius zero and its enable bit off; extend coverage with enabled and expanded
+states. Do not attribute this new physical interception to tutorial gating.
+Correct the source-backed radius without shifting global XY or changing game
+state. Validate the bottom-right action plus normal camera toggle/drag/release,
+nearby world/UI targets, and preserve all saves/rendering/action fixes.
+Continue through signed APK publication and concise testing handoff; prior
+push/release authorization persists. Preserve ARM32/app ID/key/private data.
+
 # 0.1.12 targeted test candidate — exact bytes accepted for publication
 
 APK SHA256 b73c15341acbb61e7fa85173eb440650c665a65df57ce1ac46caf0e2d7325b64,

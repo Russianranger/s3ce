@@ -115,7 +115,7 @@ int s3ce_observe_game_pointer(uintptr_t base, uintptr_t original,
             || !word(read, context, scene, 0xa0, &current_x)
             || !word(read, context, scene, 0xa4, &current_y))
         return unavailable(out, capacity, "Scene gesture fields");
-    char menu[140] = "";
+    char details[200] = "";
     if (scene_vtable == menu_vtable) {
         uint32_t menu_state, menu_route, menu_transition, angle_bits;
         float angle;
@@ -125,8 +125,23 @@ int s3ce_observe_game_pointer(uintptr_t base, uintptr_t original,
                 || !word(read, context, scene, 0xe20, &angle_bits))
             return unavailable(out, capacity, "SceneMenu state/CAS angle");
         memcpy(&angle, &angle_bits, sizeof(angle));
-        snprintf(menu, sizeof(menu), " menuState=%u menuRoute=%d menu1bc=%u angleBits=0x%08x angle=%.5g",
+        snprintf(details, sizeof(details), " menuState=%u menuRoute=%d menu1bc=%u angleBits=0x%08x angle=%.5g",
                  menu_state, (int32_t)menu_route, menu_transition, angle_bits, (double)angle);
+    } else {
+        /* Read-only source-derived camera/HUD attribution. These values are
+         * sampled after callback enqueue, before a later frame consumes it. */
+        uint32_t phase, flags, camera_x, camera_y, radius, modes;
+        if (!word(read, context, scene, 0x1c0, &phase)
+                || !word(read, context, scene, 0xa40, &flags)
+                || !word(read, context, scene, 0x25c, &camera_x)
+                || !word(read, context, scene, 0x260, &camera_y)
+                || !word(read, context, scene, 0x264, &radius)
+                || !word(read, context, scene, 0x268, &modes))
+            return unavailable(out, capacity, "SceneGame phase/camera fields");
+        snprintf(details, sizeof(details),
+                 " gamePhase=%u hudFlags=0x%08x cameraCenter=%d,%d cameraStoredRadius=%d cameraMode=%u",
+                 phase, flags, (int32_t)camera_x, (int32_t)camera_y,
+                 (int32_t)radius, (modes >> 16) & 255u);
     }
     snprintf(out, capacity,
              "Game input AppEngine=0x%08x active=%u counts=%u,%u%s engine420=%u engine430=%u "
@@ -138,6 +153,6 @@ int s3ce_observe_game_pointer(uintptr_t base, uintptr_t original,
              transition424, (int32_t)direction428, speed42c,
              scene_vtable == menu_vtable ? "SceneMenu" : "SceneGame", scene,
              state, primary, (int32_t)origin_x, (int32_t)origin_y,
-             (int32_t)current_x, (int32_t)current_y, menu);
+             (int32_t)current_x, (int32_t)current_y, details);
     return 1;
 }

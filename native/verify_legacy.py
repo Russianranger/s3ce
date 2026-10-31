@@ -96,7 +96,10 @@ def main():
                          ('rect_hit', 0x11ef00, 0x38),
                          ('status_hit', 0x107834, 0x40),
                          ('status_width', 0x130a60, 0x4c),
-                         ('display_scale', 0xae348, 0x20)]),
+                         ('display_scale', 0xae348, 0x20),
+                         ('camera_hit', 0x107288, 0x74),
+                         ('camera_init', 0x105f48, 0x50),
+                         ('camera_render', 0x112f4c, 0xa8)]),
         ('shutdown_order.c', [('display_cleanup', 0x33f74, 64),
                               ('main_cleanup', 0x139260, 184),
                               ('dlc_cleanup', 0x5c52c, 28),
@@ -264,7 +267,7 @@ def main():
                "context_menu_profile": {"function": "0x857ac", "tail": "0x86310",
                    "rectangle": "0x81bc4", "anchor_y": "0xae458", "fingerprints": "pass"},
                "hud_input_profile": {"function": "0x107254", "circle_radii":
-                   ["0x1073cc", "0x107500", "0x1075e0"], "bar_choice": "0x1077e0", "status_width_gateway": "0x107844",
+                   ["0x1073cc", "0x107500", "0x1075e0"], "bar_choice": "0x1077e0", "status_width_gateway": "0x107844", "camera_logical_radius": "0x107288",
                    "fingerprints": "pass"},
                "shutdown_order_profile": {"early": "0x33f94", "late": "0x1392d8",
                    "dlc_images": "0x5c52c", "fingerprints": "pass"}}

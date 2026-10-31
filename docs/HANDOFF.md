@@ -1,3 +1,32 @@
+# Current continuation — 0.1.13 camera-input candidate
+
+Recovered live main at `4ea1ecd6b93c65b84078a1c0e653b5e25da37cb0` before editing.
+Following 0.1.12, the user reports everything seems to work except the bottom-right
+icon, intercepted by an oversized camera-pan touch region. No fresh diagnostic
+is attached; version112 is inferred from context. Do not infer a repeated-start
+count or certify memory reliability from this general positive report.
+
+Original camera hit testing runs before plumbob/Wishes. Its scaled pixel radius
+is compared with logical touch; earlier fixtures left this camera region zero
+and disabled. Investigate all field consumers, preserve camera drag/release, and
+extend the original ARM checks to real active/expanded camera states. Keep global
+XY, existing HUD/context-menu fixes, saves and compatibility behavior.
+
+Candidate0.1.13-camera-input / code113 is signed with the existing key,
+76,770,649 bytes, SHA256
+`ce8c54bffe5deeb00e6c81b3d942bfdd5f5480b63ef281d33b053cc255eb3a5e`.
+The one-instruction camera correction and expanded tests are documented in
+[PAN_HIT_TEST.md](PAN_HIT_TEST.md). Original bridge/launcher DEX are unchanged.
+All15 native sanitizer suites,20 ARM cases (800 camera comparisons/480 boundary
+checks plus180 prior HUD comparisons),22 runtime tests, source/asset/signature
+checks and exact release reconstruction pass. Read-only observer fields now
+identify actual phase/flags/camera state; their timing is not final-action proof.
+
+Next: push exact candidate to Android validation, two menu cold starts plus
+normal creation/save/reload prefix, then prioritize camera toggle/drag/release
+and bottom-right selection with actual state evidence. Publish these exact
+bytes after review and deliver a short install-over test.
+
 # Current takeover — 0.1.12 HUD/startup candidate
 
 Recovered `main` at `a13b0ec799adca78edeac8ea56e69ac53c60a669` against live GitHub

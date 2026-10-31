@@ -75,6 +75,36 @@ static const uint32_t display_scale[] = {
     0xe92d4010u, 0xe1a04000u, 0xe1a00001u, 0xeb026c9cu,
     0xe5941000u, 0xeb026cf6u, 0xe8bd4010u, 0xea026c4du,
 };
+static const uint32_t camera_hit[] = {
+    0xe5940264u, 0xe3550000u, 0x0a000003u, 0xeb0108ccu,
+    0xe3a015fdu, 0xeb010926u, 0xeb01087eu, 0xe59411c0u,
+    0xe3510006u, 0x13510015u, 0x13510007u, 0x1a000010u,
+    0xe58d0000u, 0xe2843f97u, 0xe893000cu, 0xe59d0018u,
+    0xe59d1014u, 0xeb005ef7u, 0xe3500000u, 0x0a000008u,
+    0xe5940a40u, 0xe2000a02u, 0xe1900005u, 0x0a000004u,
+    0xe5d4026au, 0xe2700001u, 0x33a00000u, 0xe5c4026au,
+    0xea00001bu,
+};
+static const uint32_t camera_init[] = {
+    0xe5940020u, 0xeb0083a9u, 0xe2401046u, 0xe5950000u,
+    0xe3a02002u, 0xebfea117u, 0xe584025cu, 0xe5940020u,
+    0xeb0083acu, 0xe2401055u, 0xe5950000u, 0xe3a02002u,
+    0xebfea136u, 0xe5840260u, 0xe5950000u, 0xe3a01023u,
+    0xebfea0eeu, 0xe5840264u, 0xe1a00004u, 0xe5c4626au,
+};
+static const uint32_t camera_render[] = {
+    0xe5940020u, 0xeb004fa8u, 0xe59f609cu, 0xe2401046u,
+    0xe5960000u, 0xe3a02002u, 0xebfe6d15u, 0xe584025cu,
+    0xe5940020u, 0xeb004faau, 0xe2401055u, 0xe5960000u,
+    0xe3a02002u, 0xebfe6d34u, 0xe5840260u, 0xe5960000u,
+    0xe3a01023u, 0xebfe6cecu, 0xe5840264u, 0xe5d4026au,
+    0xe3a03012u, 0xe58d3000u, 0xe2843f97u, 0xe893000cu,
+    0xe3500000u, 0x0a000007u, 0xe5950000u, 0xe594126cu,
+    0xe590c034u, 0xe1a00005u, 0xe1a0e00fu, 0xe12fff1cu,
+    0xe8bd40f8u, 0xe12fff1eu, 0xe5950000u, 0xe5941270u,
+    0xe590c034u, 0xe1a00005u, 0xe1a0e00fu, 0xe12fff1cu,
+    0xe8bd40f8u, 0xe12fff1eu,
+};
 struct fingerprint { uint32_t offset; const void *words; size_t length; };
 static const struct fingerprint profile[] = {
     {0x107254u, input_head, sizeof(input_head)},
@@ -88,6 +118,9 @@ static const struct fingerprint profile[] = {
     {0x107834u, status_hit, sizeof(status_hit)},
     {0x130a60u, status_width, sizeof(status_width)},
     {0xae348u, display_scale, sizeof(display_scale)},
+    {0x107288u, camera_hit, sizeof(camera_hit)},
+    {0x105f48u, camera_init, sizeof(camera_init)},
+    {0x112f4cu, camera_render, sizeof(camera_render)},
 };
 struct correction { uint32_t offset, before, after; };
 static const struct correction fixed_corrections[] = {
@@ -95,6 +128,9 @@ static const struct correction fixed_corrections[] = {
     {0x107500u, 0xebfe9b90u, 0xe3a00018u},
     {0x1075e0u, 0xebfe9b58u, 0xe3a00018u},
     {0x1077e0u, 0xe59d0018u, 0xe1a00007u},
+    /* Render stores a pixel radius in Scene+264; this early hit test consumes
+     * logical touch. Retain the original35-unit radius and75% fallback. */
+    {0x107288u, 0xe5940264u, 0xe3a00023u},
 };
 
 static uint32_t word_at(uintptr_t address) {
@@ -144,11 +180,13 @@ int s3ce_patch_hud_input(void *allocation, size_t allocation_length,
         !thumb_gateway ||
         thumb_gateway > UINT32_MAX || !(thumb_gateway & 1u))
         return 0;
-    struct correction corrections[7];
+    enum { FIXED_COUNT=sizeof(fixed_corrections)/sizeof(fixed_corrections[0]),
+           CORRECTION_COUNT=FIXED_COUNT+3 };
+    struct correction corrections[CORRECTION_COUNT];
     memcpy(corrections, fixed_corrections, sizeof(fixed_corrections));
-    corrections[4]=(struct correction){0x107844u,0xe1a00004u,0xe59fc000u};
-    corrections[5]=(struct correction){0x107848u,0xeb00a484u,0xe12fff3cu};
-    corrections[6]=(struct correction){0x10784cu,0xe88d0041u,(uint32_t)thumb_gateway};
+    corrections[FIXED_COUNT]=(struct correction){0x107844u,0xe1a00004u,0xe59fc000u};
+    corrections[FIXED_COUNT+1]=(struct correction){0x107848u,0xeb00a484u,0xe12fff3cu};
+    corrections[FIXED_COUNT+2]=(struct correction){0x10784cu,0xe88d0041u,(uint32_t)thumb_gateway};
     unsigned char *code = allocation;
     unsigned changed = 0;
     for (size_t i=0; i<sizeof(corrections)/sizeof(corrections[0]); ++i) {

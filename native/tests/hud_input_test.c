@@ -8,11 +8,13 @@
 int main(void) {
     const size_t length = 0x169000;
     const uintptr_t gateway=0x21000001;
-    struct correction corrections[7];
+    enum { FIXED_COUNT=sizeof(fixed_corrections)/sizeof(fixed_corrections[0]),
+           CORRECTION_COUNT=FIXED_COUNT+3 };
+    struct correction corrections[CORRECTION_COUNT];
     memcpy(corrections,fixed_corrections,sizeof(fixed_corrections));
-    corrections[4]=(struct correction){0x107844u,0xe1a00004u,0xe59fc000u};
-    corrections[5]=(struct correction){0x107848u,status_hit[(0x107848-0x107834)/4],0xe12fff3cu};
-    corrections[6]=(struct correction){0x10784cu,0xe88d0041u,(uint32_t)gateway};
+    corrections[FIXED_COUNT]=(struct correction){0x107844u,0xe1a00004u,0xe59fc000u};
+    corrections[FIXED_COUNT+1]=(struct correction){0x107848u,status_hit[(0x107848-0x107834)/4],0xe12fff3cu};
+    corrections[FIXED_COUNT+2]=(struct correction){0x10784cu,0xe88d0041u,(uint32_t)gateway};
     unsigned char *code=malloc(length), *before=malloc(length);
     assert(code && before);
     memset(code, 0xa5, length);
@@ -61,5 +63,5 @@ int main(void) {
         memcpy(code,before,length);
     }
     free(code);free(before);
-    puts("HUD input guards: four instructions and bounded status gateway, atomic profile refusal, bounds and idempotence PASS");
+    puts("HUD input guards: five instructions and bounded status gateway, atomic profile refusal, bounds and idempotence PASS");
 }

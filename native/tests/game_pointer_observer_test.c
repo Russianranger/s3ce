@@ -10,14 +10,20 @@ struct fixture {
     unsigned char *image, *globals, *objects;
     unsigned calls, fail_call;
     int deny_menu_fields;
+    int deny_game_fields;
 };
 
 static int read_memory(void *context, uintptr_t address, void *out, size_t size) {
     struct fixture *f = context;
     ++f->calls;
     if (f->calls == f->fail_call) return 0;
-    if (f->deny_menu_fields && address >= f->heap + 0x30a8 && address < f->heap + 0x4000)
+    if (f->deny_menu_fields && (address == f->heap + 0x31ac || address == f->heap + 0x30f8
+            || address == f->heap + 0x31bc || address == f->heap + 0x3e20))
         assert(!"Observer read menu-only fields from SceneGame/unknown Scene");
+    if (f->deny_game_fields && (address == f->heap + 0x31c0 || address == f->heap + 0x3a40
+            || address == f->heap + 0x325c || address == f->heap + 0x3260
+            || address == f->heap + 0x3264 || address == f->heap + 0x3268))
+        assert(!"Observer read game-only fields from SceneMenu/unknown Scene");
     struct { uintptr_t base; size_t size; unsigned char *bytes; } ranges[] = {
         {f->code, IMAGE_SIZE, f->image}, {f->data, DATA_SIZE, f->globals},
         {f->heap, HEAP_SIZE, f->objects}};
@@ -37,7 +43,7 @@ static void put(unsigned char *bytes, size_t offset, uint32_t value) {
 
 static struct fixture make(uintptr_t code, uintptr_t data, uintptr_t heap) {
     struct fixture f = {code, data, heap, calloc(1, IMAGE_SIZE), calloc(1, DATA_SIZE),
-                        calloc(1, HEAP_SIZE), 0, 0, 0};
+                        calloc(1, HEAP_SIZE), 0, 0, 0, 1};
     assert(f.image && f.globals && f.objects);
     memcpy(f.image + 0x3aeb4, "\x30\x40\x2d\xe9\x04\x20\x90\xe5", 8);
     memcpy(f.image + 0x3af84, "\x04\xe0\x2d\xe5\x00\x10\x90\xe5", 8);
@@ -82,10 +88,29 @@ static void run(uintptr_t code, uintptr_t data, uintptr_t heap) {
         assert(strstr(out, "unavailable"));
     }
     f.fail_call = 0; f.calls = 0;
-    f.deny_menu_fields = 1;
+    f.deny_menu_fields = 1; f.deny_game_fields = 0;
     put(f.objects, 0x3000, code + 0x15fac8);
+    put(f.objects, 0x31c0, 6); put(f.objects, 0x3a40, 0xffffffff);
+    put(f.objects, 0x325c, 1175); put(f.objects, 0x3260, 615);
+    put(f.objects, 0x3264, 118); put(f.objects, 0x3268, 0xa5015aff);
+    f.calls = 0;
     assert(s3ce_observe_game_pointer(code, code + 0x3af84, read_memory, &f, out, sizeof(out)));
+    unsigned game_reads = f.calls;
     assert(strstr(out, "Scene=SceneGame") && !strstr(out, "angle"));
+    assert(strstr(out, "gamePhase=6 hudFlags=0xffffffff"));
+    assert(strstr(out, "cameraCenter=1175,615 cameraStoredRadius=118 cameraMode=1"));
+    for (unsigned fail = 1; fail <= game_reads; ++fail) {
+        f.calls = 0; f.fail_call = fail;
+        assert(!s3ce_observe_game_pointer(code, code + 0x3af84, read_memory, &f, out, sizeof(out)));
+        assert(strstr(out, "unavailable"));
+    }
+    f.calls = 0; f.fail_call = 0;
+    for (const unsigned *offset = (const unsigned[]){0x31c0, 0x3a40, 0x325c, 0x3260, 0x3264, 0x3268, 0};
+            *offset; ++offset) put(f.objects, *offset, UINT32_MAX);
+    assert(s3ce_observe_game_pointer(code, code + 0x3af84, read_memory, &f, out, sizeof(out)));
+    assert(strstr(out, "gamePhase=4294967295") && strstr(out, "cameraMode=255"));
+    assert(strlen(out) < sizeof(out) - 1);
+    f.deny_game_fields = 1;
     put(f.objects, 0x3000, 0x12345678);
     assert(s3ce_observe_game_pointer(code, code + 0x3af84, read_memory, &f, out, sizeof(out)));
     assert(strstr(out, "Scene=other") && !strstr(out, "gesture="));
