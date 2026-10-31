@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41230641948",
-  "seq": 22,
-  "frame_sha256": "83155c6eed7dbe0d4e4c15895a2e063cb3ea35faeb6c5153b385c7238f03378a",
+  "seq": 23,
+  "frame_sha256": "e692ec54661fc4a6dadbe2138e07b9681f902e170ea10a41128f9a663016289b",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 710,
-    "y": 797
+    "x": 1124,
+    "y": 730
   },
-  "note": "Choose the visible main-menu Quit to test preserved normal native shutdown."
+  "note": "Confirm normal native Quit and verify launcher return without fatal or late audio failure."
 }
