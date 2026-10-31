@@ -8,12 +8,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from unittest.mock import patch
 
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from android_runtime import Android, CONTROL_URL, CONTROL_CONTENTS_URL, fetch_control_document, plan_execution_scope, sha
+from android_runtime_control import MAX_INTERACTIVE_COMMANDS
 
 
 class FakeAndroid(Android):
@@ -39,6 +41,59 @@ class FakeAndroid(Android):
 
 
 class InteractiveProtocolTests(unittest.TestCase):
+    def test_fortieth_frame_remains_bound_and_finish_still_calls_native_quit_guard(self):
+        self.assertEqual(MAX_INTERACTIVE_COMMANDS, 40)
+        with tempfile.TemporaryDirectory() as temporary:
+            android = FakeAndroid(Path(temporary))
+
+            def command():
+                frame = android.interactive_observation['frames'][-1]
+                operation = {'type': 'finish'} if frame['seq'] == 40 else {'type': 'wait', 'seconds': 0}
+                return json.dumps({'schema': 1, 'run_id': '123', 'seq': frame['seq'],
+                    'frame_sha256': frame['frame_sha256'], 'coordinate_size': [1920, 1080],
+                    'command': operation}).encode()
+
+            with patch('android_runtime.fetch_control_document', side_effect=command), \
+                    patch('android_runtime.time.sleep'), redirect_stdout(io.StringIO()):
+                android.interactive_loop('123')
+            self.assertEqual([f['frame'] for f in android.interactive_observation['frames']], list(range(40)))
+            self.assertEqual([c['seq'] for c in android.interactive_observation['commands']], list(range(1, 41)))
+            self.assertEqual(android.interactive_observation['commands'][-1]['command'], {'type': 'finish'})
+            self.assertTrue(android.quit_checked)
+            self.assertTrue(android.interactive_observation['finish_requested'])
+            self.assertTrue((Path(temporary) / 'live/frame-039/screen.png').is_file())
+            for count in (0, 41, True, 40.0):
+                with self.subTest(count=count), self.assertRaises(ValueError):
+                    android.interactive_loop('123', max_commands=count)
+
+    def test_workflow_and_frame_uploader_cover_the_same_bounded_budget(self):
+        import re
+        root = Path(__file__).resolve().parents[2]
+        workflow = (root / '.github/workflows/android-runtime.yml').read_text()
+        self.assertEqual([int(n) for n in re.findall(r"^          frame: '(\d+)'$", workflow, re.M)],
+                         list(range(MAX_INTERACTIVE_COMMANDS)))
+        script = root / 'scripts/android_runtime_frame.py'
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            live = output / 'live'
+            frame = live / 'frame-039'
+            frame.mkdir(parents=True)
+            (frame / 'screen.png').write_bytes(b'fixture')
+            (frame / 'frame.json').write_text('{}')
+            (live / 'ready-039.json').write_text('{"seq":40}')
+            github_output = output / 'outputs'
+            environment = {**os.environ, 'GITHUB_OUTPUT': str(github_output)}
+            result = subprocess.run([sys.executable, str(script), '--output', str(output),
+                                     '--frame', '39', '--timeout', '1'],
+                                    env=environment, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn('available=true', github_output.read_text())
+            result = subprocess.run([sys.executable, str(script), '--output', str(output),
+                                     '--frame', '40', '--timeout', '1'],
+                                    env=environment, capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('frame must be 0..39', result.stderr)
+
     def test_unattended_scope_stops_after_normal_saved_game_reload(self):
         plan = json.loads((Path(__file__).resolve().parents[1] / 'android_runtime_plan.json').read_text())
         scope = plan_execution_scope(plan, False, 'unused-interactive-endpoint')

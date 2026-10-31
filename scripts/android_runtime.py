@@ -23,6 +23,8 @@ import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 
+from android_runtime_control import MAX_INTERACTIVE_COMMANDS
+
 PACKAGE = 'io.github.russianranger.s3ce'
 LAUNCHER = PACKAGE + '/com.ideaworks3d.thesims3.CompatActivity'
 SCENE = re.compile(r'Scene=(SceneMenu|SceneGame)(?:@[^\s]+)?')
@@ -599,10 +601,11 @@ class Android:
         (self.output / (prefix + '-shutdown-observation.json')).write_text(
             json.dumps(self.quit_observation, indent=2) + '\n')
 
-    def interactive_loop(self, run_id, max_commands=24):
+    def interactive_loop(self, run_id, max_commands=MAX_INTERACTIVE_COMMANDS):
         from android_runtime_control import ControlError, validate_control
-        if not re.fullmatch(r'[1-9][0-9]*', run_id) or not 1 <= max_commands <= 24:
-            raise ValueError('Interactive mode requires a real run ID and at most24commands')
+        if (not re.fullmatch(r'[1-9][0-9]*', run_id) or type(max_commands) is not int
+                or not 1 <= max_commands <= MAX_INTERACTIVE_COMMANDS):
+            raise ValueError(f'Interactive mode requires a real run ID and at most {MAX_INTERACTIVE_COMMANDS} commands')
         live = self.output / 'live'
         live.mkdir(parents=True, exist_ok=True)
         overall = self.runtime_started + 4500
@@ -680,7 +683,7 @@ class Android:
                 time.sleep(30)
             if kind != 'wait':
                 time.sleep(2)
-        raise RuntimeError('Interactive frame budget exhausted without finish')
+        raise RuntimeError(f'Interactive frame budget ({max_commands} commands) exhausted without finish')
 
     def run_plan(self, plan, prefix, limit=None):
         checkpoints = {}

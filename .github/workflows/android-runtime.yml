@@ -255,6 +255,86 @@ jobs:
         uses: ./.github/actions/runtime-frame
         with:
           frame: '23'
+      - name: Live Android frame 24
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '24'
+      - name: Live Android frame 25
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '25'
+      - name: Live Android frame 26
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '26'
+      - name: Live Android frame 27
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '27'
+      - name: Live Android frame 28
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '28'
+      - name: Live Android frame 29
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '29'
+      - name: Live Android frame 30
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '30'
+      - name: Live Android frame 31
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '31'
+      - name: Live Android frame 32
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '32'
+      - name: Live Android frame 33
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '33'
+      - name: Live Android frame 34
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '34'
+      - name: Live Android frame 35
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '35'
+      - name: Live Android frame 36
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '36'
+      - name: Live Android frame 37
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '37'
+      - name: Live Android frame 38
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '38'
+      - name: Live Android frame 39
+        if: env.S3CE_RUNTIME_INTERACTIVE == 'true'
+        uses: ./.github/actions/runtime-frame
+        with:
+          frame: '39'
       - name: Collect persistent runtime result
         if: always() && env.S3CE_RUNTIME_INTERACTIVE == 'true'
         env:

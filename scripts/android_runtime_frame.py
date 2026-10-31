@@ -7,6 +7,8 @@ from pathlib import Path
 import sys
 import time
 
+from android_runtime_control import MAX_INTERACTIVE_COMMANDS
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -15,8 +17,8 @@ def main():
     parser.add_argument('--timeout', type=int, default=900)
     parser.add_argument('--finish', action='store_true')
     args = parser.parse_args()
-    if not args.finish and (args.frame is None or not 0 <= args.frame < 24):
-        parser.error('frame must be0..23')
+    if not args.finish and (args.frame is None or not 0 <= args.frame < MAX_INTERACTIVE_COMMANDS):
+        parser.error(f'frame must be 0..{MAX_INTERACTIVE_COMMANDS - 1}')
     deadline = time.monotonic() + args.timeout
     marker = args.output / 'live/controller-exit.json'
     ready = args.output / f'live/ready-{args.frame:03d}.json' if not args.finish else None
