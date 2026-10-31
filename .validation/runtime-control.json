@@ -1,14 +1,16 @@
 {
   "schema": 1,
-  "run_id": "41230641948",
-  "seq": 24,
-  "frame_sha256": "2e47408ff3e7315291e5063caa16e024c9537da24093b96512c90c52acca09f1",
+  "run_id": "41237818263",
+  "seq": 1,
+  "frame_sha256": "620b6ee322d06e49eb1f664335f3555e7a46d635e2470063f134a183a72dbba0",
   "coordinate_size": [
     1920,
     1080
   ],
   "command": {
-    "type": "finish"
+    "type": "tap",
+    "x": 1804,
+    "y": 965
   },
-  "note": "Collect all startup/gameplay evidence after visible HUD fixes, Bed Sit, post-action save and normal fatal-free native Quit."
+  "note": "Tap the visible bottom-right jewel in normal phase6/fullHUD flags with cameraMode0; old0.1.12 would toggle camera."
 }
