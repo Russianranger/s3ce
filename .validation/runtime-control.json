@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 6,
-  "frame_sha256": "5be569cdb5701d95e7318b5e6affc73e4ae6c3bed842440054469f45e2ab6623",
+  "seq": 7,
+  "frame_sha256": "70613cbc1739d684d8627dea44420c21a8c97947ab8e92797cee12f6336af65a",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 2168,
-    "y": 966
+    "x": 1158,
+    "y": 858
   },
-  "note": "Open the bottom-right jewel/Wishes target with camera mode off while Sit completes."
+  "note": "Dismiss the timed New Wish at its visible red X; the preceding jewel tap was interrupted, not accepted."
 }
