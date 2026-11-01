@@ -27,8 +27,8 @@ jobs:
           grep -q '3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4' dist/signature.txt
           "$sdk_tools/aapt" dump badging dist/*.apk | tee dist/badging.txt
           grep -q "name='io.github.russianranger.s3ce'" dist/badging.txt
-          grep -q "versionCode='114'" dist/badging.txt
-          grep -q "versionName='0.1.14-flip3'" dist/badging.txt
+          grep -q "versionCode='115'" dist/badging.txt
+          grep -q "versionName='0.1.15-flip3-socials'" dist/badging.txt
           grep -q "targetSdkVersion:'28'" dist/badging.txt
           cp docs/RELEASE_NOTES.md dist/S3CE-test-instructions.md
       - name: Publish experimental prerelease
@@ -36,14 +36,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view v0.1.14-flip3 --json tagName --jq .tagName >/dev/null 2>&1; then
+          if gh release view v0.1.15-flip3-socials --json tagName --jq .tagName >/dev/null 2>&1; then
             mkdir existing-release
-            gh release download v0.1.14-flip3 --dir existing-release --pattern '*.apk' --pattern SHA256SUMS
+            gh release download v0.1.15-flip3-socials --dir existing-release --pattern '*.apk' --pattern SHA256SUMS
             cmp dist/SHA256SUMS existing-release/SHA256SUMS
             (cd existing-release && sha256sum --check SHA256SUMS)
             echo 'Existing release matches the expected APK; leaving it unchanged.'
           else
-            gh release create v0.1.14-flip3 --title 'S3CE 0.1.14 — Flip3 landscape' --prerelease --target "$GITHUB_SHA" --notes-file docs/RELEASE_NOTES.md dist/*.apk dist/SHA256SUMS dist/S3CE-test-instructions.md dist/signature.txt dist/badging.txt
+            gh release create v0.1.15-flip3-socials --title 'S3CE 0.1.15 — Flip3 social-event crash fix' --prerelease --target "$GITHUB_SHA" --notes-file docs/RELEASE_NOTES.md dist/*.apk dist/SHA256SUMS dist/S3CE-test-instructions.md dist/signature.txt dist/badging.txt
           fi
       - name: Verify published bytes
         env:
@@ -51,6 +51,6 @@ jobs:
         run: |
           set -euo pipefail
           mkdir downloaded
-          gh release download v0.1.14-flip3 --dir downloaded --pattern '*.apk' --pattern SHA256SUMS
+          gh release download v0.1.15-flip3-socials --dir downloaded --pattern '*.apk' --pattern SHA256SUMS
           cd downloaded
           sha256sum --check SHA256SUMS

@@ -1,29 +1,29 @@
-# S3CE — Galaxy Z Flip3 landscape branch
+# S3CE — Galaxy Z Flip3 branch
 
-`flip3` adapts the working 0.1.13 game to the unfolded Galaxy Z Flip3 5G.
-The user confirms that the previous camera/jewel fix works and gameplay runs.
-This branch keeps a centered 16:9 game area inside the available landscape
-content, with intentional black side margins on a wide display. The actual game
-surface and view-local touches share their dimensions; individual controls are
-not stretched or moved with separate offsets.
+The user confirms that the centered 16:9 landscape UI works well on the physical
+Galaxy Z Flip3 / Android 15. The next test candidate is **0.1.15-flip3-socials /
+code 115**, addressing the reported Hot Smooch crash and separate activity
+restoration failures found in the diagnostic report. Existing proportional touch
+controls, object actions, saves and rendering compatibility are preserved.
 
-The candidate is **0.1.14-flip3 / code 114**, retaining the same application ID,
-signing identity, private saves, offline assets and ARM32 runtime. Android 15 is
-the new phone target; target SDK 28 remains required by the original runtime.
-Firmware must still support 32-bit ARM apps and 4 KiB pages. Actual Android 15
-framework/probe results are distinct from ARM32 game execution and physical
-Samsung acceptance.
+The image loader now uses the pixels it already owns, avoiding an extra buffer
+whose failed allocation matches the native crash. All nine event images share
+that loader, so other event artwork receives the same correction. Only the
+reported Hot Smooch failure is observed; exact action-to-artwork mapping and
+other possible engine faults remain qualified in the analysis.
 
-See [viewport implementation](docs/FLIP3_VIEWPORT.md),
-[Android 15 assessment](docs/FLIP3_ANDROID15.md), and
+See [crash evidence and correction](docs/SOCIAL_IMAGES.md),
+[validation and limits](docs/SOCIAL_RUNTIME_ACCEPTANCE.md),
+[viewport implementation](docs/FLIP3_VIEWPORT.md), and
 [current handoff](docs/HANDOFF.md).
 
-[Download the Flip3 test APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.14-flip3/S3CE-0.1.14-flip3-arm32.apk).
-[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.14-flip3).
-[Runtime evidence](docs/FLIP3_RUNTIME_ACCEPTANCE.md) separates full ARM32 gameplay
-from exact-helper Android15 framework tests and physical phone limitations.
-Keep **Original rendering (diagnostic mode) unchecked**. Install updates over
-the existing S3CE app without uninstalling or clearing data.
+[Download the Flip3 test APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.15-flip3-socials/S3CE-0.1.15-flip3-socials-arm32.apk).
+[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.15-flip3-socials).
+Publication remains pending until candidate Android validation is reviewed.
+Keep **Original rendering (diagnostic mode) unchecked**. Install over the existing
+S3CE app without uninstalling or clearing data. Same application ID, signing key
+and private save location; fully local ARM32 runtime, 4 KiB pages, min SDK 26 and
+target SDK 28. Cover-screen/flex-mode gameplay is not validated.
 
 # Historical Thor base — 0.1.13
 

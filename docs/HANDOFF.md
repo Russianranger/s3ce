@@ -1,22 +1,34 @@
-# Current continuation — Flip3 social crash candidate
+# Current release — Flip3 social crash candidate accepted
 
-The user physically confirms good Flip3 UI on0.1.14 and reports a Hot Smooch
-crash. Private diagnostics verify SM-F711U1/Android15/API35/ARM32/4096pages and
-normal rendering. Preserve the accepted viewport, controls, appID, key, saves
-and prior native fixes. Main remains the Thor track.
+Physical0.1.14 feedback confirms good UI on SM-F711U1/Android15/API35/ARM32/4KiB;
+reported Hot Smooch crash correlates with the original kiss-image staging
+allocation failure. Full report stays private. See SOCIAL_IMAGES.md.
 
-Recovered live flip3 at ec4ee9fc1e8e5044824ce7903852157380347f98.
-Candidate0.1.15-flip3-socials/code115 removes the duplicate immutable Image2D
-pixel staging allocation implicated in the crash, and gates restored Main
-through shared native bootstrap. See SOCIAL_IMAGES.md for evidence/limits.
-Full reports/signing files remain private. Do not edit progression/saves to force
-Hot Smooch; exact social completion remains a phone regression test.
+Frozen0.1.15-flip3-socials/code115,76,774,745bytes, source
+e2eac7e24c712ba77469794d9c802422e5e25bdc, SHA256
+a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb.
+Borrow immutable pixels from their existing owner; no duplicate staging buffer.
+Shared native bootstrap gates restored Main. Existing touch geometry, original
+assets, appID/key/data, ARM32/4KiB/target28 and all prior fixes remain.
 
-Build/host/ARM checks pass; actual candidate Android validation/publication are
-pending. Freeze tested bytes, retain all attempts, and finish signed publication
-plus direct APK/testing handoff. Original rendering stays unchecked. Install over
-without uninstall/data clear. New physical feedback confirms Samsung execution
-and good UI; do not describe all Samsung compatibility as unobserved.
+Green game run41338479517, exact APK: two normal cold starts0failures, separate
+cold Main entry, ordinary creation/save/new-process reload, Home return, visible
+Chair Sit, jewel both camera states, zoom/pan/release, walking, advancing final
+save and normal Quit. Root/independent reviews accept these exact bytes. Raw
+manual gate=false remains. Host16/native,379-method static and107-image pixel/
+mip comparisons pass. See SOCIAL_RUNTIME_ACCEPTANCE.md and evidence index.
+
+Both API35 helper runs remain red on recorded size-compat/developer-cutout limits;
+eight core input/rotation checks are supported. No original game on that64-bit-only
+image, Hot Smooch completion, prior114-save migration, final post-action save
+reload, full-game reverse rotation or universal startup reliability is claimed.
+Keep every failed/interrupted attempt. No game state/save edits to force socials.
+
+Publication and public-download verification are in progress. Reconstruct only
+these accepted signed bytes; no rebuild/resign. Complete direct APK/release/link/
+checksum/testing handoff. Next phone test: install over, Original rendering
+unchecked, load existing save/complete Hot Smooch and available socials, save/load/
+Home/three force-stop starts, export Save report + Share report file.
 
 # Historical handoff — 0.1.14 Flip3 release
 

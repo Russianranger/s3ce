@@ -2,24 +2,24 @@
 
 ## Physical evidence
 
-The user's private diagnostic export identifies S3CE0.1.14-flip3/code114,
-Samsung SM-F711U1, Android15/API35, ARM32,4096-byte pages, Adreno660 and normal
-rendering. The user reports good UI and a crash choosing Hot Smooch. This is
+The user's private diagnostic export identifies S3CE 0.1.14-flip3/code 114,
+Samsung SM-F711U1, Android 15/API 35, ARM32, 4096-byte pages, Adreno660 and normal
+rendering. The user reports good UI and a reported crash during a Hot Smooch attempt. This is
 actual Samsung gameplay evidence for the existing viewport. Full report stays
 private; no new touch-geometry change is justified.
 
-The retained native failure is SIGSEGV/SEGV_MAPERR at address0 on Thread-2.
+The retained native failure is SIGSEGV/SEGV_MAPERR at address 0 on Thread-2.
 The motion-callback identity independently locates resident game code. The fault
 is game+0xd40, a memcpy destination store; LR=game+0xb3144 is in
-midp::ByteArrayInputStream::Read (entry+b3108). Its caller is the immutable
-M3G Image2D dispatcher at+9c460. At+9c480..9c498 the original requests
+midp::ByteArrayInputStream::Read (entry +b3108). The register-matching original ARM reconstruction identifies the immutable
+M3G Image2D dispatcher at +9c460 as its caller. At+9c480..9c498 the original requests
 new byte[pixel_count], then passes the unchecked result to ReadFully. The count
-is1048576 and destination null. A controlled original-ARM fixture reproduces
+is 1048576 and destination null. A controlled original ARM fixture reproduces
 all recorded r0..r12,PC,LR andSP values when that staging allocation fails.
 
-Of107 shipped Image2D objects, four use1MiB pixel payloads: kiss event and three
+Of 107 shipped Image2D objects, four use 1 MiB pixel payloads: kiss event and three
 HUD atlases. Among nine event images, only texture_quad_event_kiss.m3g
-(res.dz entry641) is RGBA512x512/1048576bytes. Others are RGB512x512/786432bytes.
+(res.dz entry641) is RGBA 512×512 / 1048576 bytes. Others are RGB 512×512 / 786432 bytes.
 This strongly connects the user's Hot Smooch crash to the kiss event image.
 The report logs neither action ID nor asset name, so this is a correlation,
 not a captured social-dispatch trace.
@@ -27,17 +27,17 @@ not a captured social-dispatch trace.
 Allocation routes through original new[]+132ca4, veneer+139750/GOT4a168680,
 s3eMallocBase and the original runtime bucket allocator. No free-byte/largest
 block sample exists at failure; exhaustion versus fragmentation is unresolved.
-Android RSS/available physical memory cannot answer that question. GL0x503 is
+Android RSS/available physical memory cannot answer that question. GL 0x503 is
 not GL_OUT_OF_MEMORY(0x505); no causal link is established. Earlier LOW_MEMORY
 and user-requested exits are separate records.
 
 ## Ownership correction
 
 The dispatcher already owns the complete serialized object body. Its original
-ByteArrayInputStream constructor (+b321c) retains pointer(+8), zero offset(+10),
-length(+14),cursor(+1c). Image2D initialization (+a8354) allocates destination
+ByteArrayInputStream constructor (+b321c) retains pointer (+8), zero offset (+10),
+length (+14), cursor (+1c). Image2D initialization (+a8354) allocates destination
 mips; synchronous setters (+a84a0,+a8e54) read/copy pixels and retain no source
-pointer. Body deletion is later at+9d75c..9d760, after setter/palette cleanup.
+pointer. Body deletion is later at +9d75c..9d760, after setter/palette cleanup.
 
 native/image_pixels.c borrows the bounded body slice and advances the stream
 cursor instead of allocating/copying duplicate pixel staging. Array-delete is
@@ -87,7 +87,7 @@ Normal mode and initialized same-process runtime reuse remain preserved.
 ## Checks and limits
 
 native/tests/emulate_image_pixels.py takes SHA-pinned original inputs, NDK and
-Unicorn; no original binary/report is bundled. All107 original initializers,
+Unicorn; no original binary/report is bundled. All 107 original initializers,
 setters and mip outputs match using aligned staging versus the unaligned body
 slice. Sources remain unchanged/unretained and stack restores. Twelve compiled
 production cases cover low/high game and adapter addresses, normal ownership,
@@ -99,3 +99,15 @@ profile refusal and idempotence. Final host/DEX/native/Android results belong in
 SOCIAL_RUNTIME_ACCEPTANCE.md. Hot Smooch completion with the user's relationship
 and save still needs a phone regression; no game phase/save edits are used to
 manufacture it. Keep keys, full reports and original asset dumps outside Git.
+
+## Analysis tooling
+
+REA repository instructions and provider guidance were reviewed. No configured
+Hopper/Ghidra/IDA native provider was available in this recovered environment.
+The existing SHA-pinned S3CE extraction, Capstone, Unicorn and NDK workflows were
+used for these narrow native questions; original DEX/resource analysis used the
+existing Apktool/dexlib tools. No REA integration or new provider was added.
+An independent reviewer additionally executed the original image/palette/stream
+cleanup routines in four address mappings, with exact-once frees and preserved
+registers/stack. Allocator/free/memcpy endpoints remain modeled. See
+[sanitized cleanup receipt](social-cleanup-review.json).

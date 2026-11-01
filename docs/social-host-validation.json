@@ -1,0 +1,186 @@
+{
+  "schema": 1,
+  "candidate_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+  "source": "e2eac7e24c712ba77469794d9c802422e5e25bdc",
+  "boundaries": [
+    "Host JVM/C service doubles and DEX subset interpreters; no Android execution in this receipt.",
+    "boot-assembled-dex-fixture is an unsigned bridge-only fixture; candidate-* entries use the complete signed candidate.",
+    "Static dexlib analysis uses Android35 SDK class metadata and is not ART verification, JNI execution, or physical Samsung acceptance."
+  ],
+  "checks": [
+    {
+      "name": "boot-host",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS host bootstrap scenario=gate assertions=13",
+        "PASS host bootstrap scenario=normal assertions=16",
+        "PASS host bootstrap scenario=original assertions=16",
+        "PASS host bootstrap scenario=restored-failure assertions=10",
+        "PASS host bootstrap scenario=boot-failure assertions=9",
+        "PASS: production Java bootstrap owner/admission/failure UI; Android/native/prefs are host boundaries."
+      ]
+    },
+    {
+      "name": "boot-assembled-dex-fixture",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS actual onCreate/onStart DEX: bootstrap and per-Activity admission precede native view/thread; failed startup retains super/sensor cleanup and skips native consumers."
+      ]
+    },
+    {
+      "name": "runtime-guards",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS startup applicability/idempotence and four atomic unknown/reversed-boundary refusals"
+      ]
+    },
+    {
+      "name": "viewport-guards",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS viewport repeat application and two atomic unknown-method refusals"
+      ]
+    },
+    {
+      "name": "native-suite",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "GL transparency/errors/bounds and conditional PVRTC fallback: PASS",
+        "Real context before driver query, nested safety, explicit init failures and legacy filter: PASS",
+        "Full generated-veneer allocation mprotect/cache range and original return semantics: PASS",
+        "Guarded UI XY-only scale: exact four-byte change, full profile, bounds, tamper refusal and idempotence: PASS",
+        "HUD input guards: five instructions and bounded status gateway, atomic profile refusal, bounds and idempotence PASS",
+        "Context menu patch: source tamper rejection, bounds, ABI thunk and idempotence passed",
+        "Image2D pixel views and patch guards: body/class/cursor/count limits, atomic fingerprint refusal and idempotence PASS",
+        "Shutdown order patch: source guards, bounds, two-location atomicity, thunk and idempotence passed",
+        "64-bit MemFree/MemTotal parsing, legacy-int saturation and genuine low-RAM preservation: PASS",
+        "PASS callback proxies: exact forwarding/returns/cookies, multiple registrations, duplicates, unregister/reentry, permanent failure and bounded pass-through",
+        "PASS game observer: split code/data, high addresses, exact profile guards, all failed reads, Scene classes, bounds, and no direct runtime dereferences",
+        "PASS readable-map snapshots merge adjacent regions, reject gaps/overflow, and bound real self-memory reads",
+        "PVRTC bridge: solid-colour 2/4bpp, crop, output guard and invalid-buffer tests passed",
+        "Typed JNI arguments/cache output and same-Throwable persistence/restoration: PASS",
+        "PASS: native-only Throwable type/detail, partial cache recovery, bounded strings, and same-pending preservation across diagnostic failures.",
+        "PASS bounded native input trace preserves every call/argument and uses no JNI"
+      ]
+    },
+    {
+      "name": "runtime-harness",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "Ran 52 tests in 2.838s",
+        "OK"
+      ]
+    },
+    {
+      "name": "diff-check",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": []
+    },
+    {
+      "name": "candidate-boot",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS actual onCreate/onStart DEX: bootstrap and per-Activity admission precede native view/thread; failed startup retains super/sensor cleanup and skips native consumers."
+      ]
+    },
+    {
+      "name": "candidate-input",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS: actual APK MultiTouch preserves swipe down/move/up, sparse IDs, pointer removal, and cancel releases.",
+        "PASS: actual APK touch-wrapper DEX resolves touch(MotionEvent,Z), records the exact event/gate, preserves swipe dispatch, blocks text input, and delivers CANCEL releases.",
+        "PASS: original early-notify race reproduced; predicate skips lost wake, resists spurious wake, resumes normally; 250ms wait returns without game notification.",
+        "PASS: actual GL wrapper DEX calls original once, records entry/exit or failure, and rethrows the same Throwable."
+      ]
+    },
+    {
+      "name": "candidate-audio",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS: actual assembled SoundPlayer DEX covers lifecycle, paused/stale/1000 late callbacks, restart identity, concurrent generation/write drain, reentrant retirement, and exact Throwable/monitor release."
+      ]
+    },
+    {
+      "name": "candidate-surface_memory",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS: actual surfaceChanged DEX: GL bitmap allocations=0; software allocations, pixel arrays, JNI dimensions and lock/notify ordering preserved. Avoids 4,147,200 CPU bytes at 1920x1080; Android/EGL/native services are doubles.",
+        "PASS: pinned surface guard, exact idempotence, changed opcode/anchor/target rejection, all-file no-write on failure."
+      ]
+    },
+    {
+      "name": "candidate-native_session",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS: actual native-run DEX preserves arguments/locals/cleanup and records ENTER/normal RETURN without swallowing failure."
+      ]
+    },
+    {
+      "name": "candidate-viewport",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS viewport install DEX and 24 original orientation paths; sensor landscape retains engine preference2."
+      ]
+    },
+    {
+      "name": "candidate-assets-package",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "PASS: ZIP CRC, 35 unchanged assets + guarded GL/native-stack config, all stored, legacy ELF identity, ARM32 shim, NX stack, no W+X load segments/text relocations."
+      ]
+    },
+    {
+      "name": "candidate-identity",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": []
+    },
+    {
+      "name": "session-persistence-host",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "Session diagnostics migration/retry/retention/export/save/failure/exit-label checks passed"
+      ]
+    },
+    {
+      "name": "viewport-host",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": [
+        "{\"sdkContract\":26,\"assertions\":171,\"passed\":true,\"boundary\":\"Android view/window/input doubles; no EGL, ART, hardware or native engine\"}",
+        "{\"sdkContract\":28,\"assertions\":172,\"passed\":true,\"boundary\":\"Android view/window/input doubles; no EGL, ART, hardware or native engine\"}",
+        "{\"sdkContract\":30,\"assertions\":173,\"passed\":true,\"boundary\":\"Android view/window/input doubles; no EGL, ART, hardware or native engine\"}",
+        "{\"sdkContract\":35,\"assertions\":173,\"passed\":true,\"boundary\":\"Android view/window/input doubles; no EGL, ART, hardware or native engine\"}"
+      ]
+    },
+    {
+      "name": "old-114-boot-expected-rejection",
+      "outcome": "expected-rejection",
+      "exit_code": 1,
+      "summary": [
+        "Exception in thread \"main\" java.lang.AssertionError: view created only after successful bootstrap admission"
+      ]
+    },
+    {
+      "name": "candidate-static-MethodAnalyzer",
+      "outcome": "pass",
+      "exit_code": 0,
+      "summary": "Both candidate DEX: 379 implementations analyzed, 0 errors/throws, 0 unresolved requested classpath types; 21 native/abstract declarations have no body."
+    }
+  ]
+}

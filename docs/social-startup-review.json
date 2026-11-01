@@ -1,0 +1,101 @@
+{
+  "scope": "Independent raw capture/log startup review; no source modifications",
+  "run": "41338479517",
+  "artifact": "13097214463",
+  "archive_sha256": "0442a771abc9108c2484fc4bf1422e2ea34a41641ea73448e128186e1283a902",
+  "source": "e2eac7e24c712ba77469794d9c802422e5e25bdc",
+  "candidate_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+  "environment": {
+    "image_properties": "Pkg.Desc=System Image x86 with Google APIs.\nPkg.Revision=16\nPkg.Dependencies=emulator#30.8.0\nAndroidVersion.ApiLevel=30\nSystemImage.Abi=x86\nSystemImage.TagId=google_apis\nSystemImage.TagDisplay=Google APIs\nSystemImage.GpuSupport=true\nAddon.VendorId=google\nAddon.VendorDisplay=Google Inc.\n\n",
+    "abi_list": "x86,armeabi-v7a,armeabi",
+    "native_bridge": "libndk_translation.so",
+    "page_size": "4096"
+  },
+  "normal_boot_cold_attempts": [
+    {
+      "attempt": 1,
+      "pid": "3871",
+      "screenshot_sha256": "884c0bb27afd2ed47db7c70399eb761d2f4b96de4a1b2607705efaac0255303e",
+      "raw_menu_visual": "Reviewed ordinary main menu with Start Game/Goals/Options/Help/Quit",
+      "actual_child_bounds": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "session_identity": "SESSION package=io.github.russianranger.s3ce version=0.1.15-flip3-socials code=115 firstInstallMs=1793559022340 lastUpdateMs=1793559022340 process=io.github.russianranger.s3ce process64=false pid=3871 wallMs=1793559029159 elapsedMs=45382",
+      "startup_phases": [
+        "wallMs=1793559029622 elapsedMs=45844 nativeConfigureGraphics ENTER compatibility=true",
+        "wallMs=1793559029903 elapsedMs=46125 nativeBootstrap RETURN version=65538",
+        "wallMs=1793559030382 elapsedMs=46605 Native Main ENTER"
+      ],
+      "fatal_or_anr_count": 0
+    },
+    {
+      "attempt": 2,
+      "pid": "6193",
+      "screenshot_sha256": "42c8bf6ef168f0ffb479135fa32034768ca48ad65548c5324f0b19fbb30a9f60",
+      "raw_menu_visual": "Reviewed ordinary main menu with Start Game/Goals/Options/Help/Quit",
+      "actual_child_bounds": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "session_identity": "SESSION package=io.github.russianranger.s3ce version=0.1.15-flip3-socials code=115 firstInstallMs=1793559022340 lastUpdateMs=1793559022340 process=io.github.russianranger.s3ce process64=false pid=6193 wallMs=1793559068965 elapsedMs=85188",
+      "startup_phases": [
+        "wallMs=1793559069172 elapsedMs=85395 nativeConfigureGraphics ENTER compatibility=true",
+        "wallMs=1793559069251 elapsedMs=85474 nativeBootstrap RETURN version=65538",
+        "wallMs=1793559069359 elapsedMs=85582 Native Main ENTER"
+      ],
+      "fatal_or_anr_count": 0
+    }
+  ],
+  "normal_boot_attempt_count": 2,
+  "normal_boot_failures": 0,
+  "direct_main": {
+    "pid": "6771",
+    "previous_pid": "6193",
+    "am_start_output": "Starting: Intent { cmp=io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main }\nStatus: ok\nLaunchState: COLD\nActivity: io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main\nTotalTime: 1469\nWaitTime: 1479\nComplete\n",
+    "session_phases": {
+      "session_identity": "SESSION package=io.github.russianranger.s3ce version=0.1.15-flip3-socials code=115 firstInstallMs=1793559022340 lastUpdateMs=1793559022340 process=io.github.russianranger.s3ce process64=false pid=6771 wallMs=1793559106536 elapsedMs=122759",
+      "ordered_phases": [
+        "Main entry requires native bootstrap (process restoration)",
+        "nativeBootstrap RETURN version=65538",
+        "Native Main ENTER"
+      ]
+    },
+    "raw_menu_visual": "Reviewed ordinary main menu with same centered game canvas",
+    "created_restored": false,
+    "normal_cold_attempt_counted": false,
+    "capture": "candidate-direct-cold-main-00"
+  },
+  "full_log_fatal_or_anr_count": 0,
+  "game_pid_NPE_link_audio_warning_count": 0,
+  "raw_gate_passed": false,
+  "limits": [
+    "Actual runtime is API30 x86 with ARMv7 translation, not Samsung/Android15 gameplay.",
+    "Direct Main is an intentionally root-emulator cold entry, not Android saved-instance-state Bundle recreation.",
+    "Two normal attempts plus one direct probe are bounded observations, not a physical startup reliability guarantee.",
+    "Automated gate remains false; this receipt records a separate independent visual review.",
+    "Fresh validation installation and newly created save do not demonstrate upgrade of a physical114 save."
+  ],
+  "save_reload_home_review": {
+    "receipt": "social-save-home-review.json",
+    "sha256": "e4b11cd0a707d4c0cdf4af1bd26795c4ee606c9045cfe17dc620227b190129ea",
+    "conclusion": "Independent screenshots/logs support normal prefix SaveQuit, save mtime advance, existing Alex reload in new PID12437, same-PID Home return, then ordinary UI back-arrow exposing live gameplay.",
+    "prefix_save_pid": "6771",
+    "reloaded_and_home_pid": "12437",
+    "save_mtime_before": 1793559477,
+    "save_mtime_after": 1793559770,
+    "save_sizes_bytes": {
+      "sim3dat0": 2562,
+      "sim3set": 90
+    },
+    "limits": [
+      "Save was created in115 in fresh emulator installation, not an imported114 physical save.",
+      "Post-action save completed later, but a reload of that final save was not exercised.",
+      "No social interaction or HotSmooch execution was reviewed in this run."
+    ]
+  }
+}

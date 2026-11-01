@@ -1,0 +1,309 @@
+{
+  "scope": "Independent manual screenshot review plus read-only captured diagnostics; prefix save/new-process reload/Home and post-action save only; startup/direct-Main excluded",
+  "artifact": {
+    "run_id": "41338479517",
+    "source_commit": "e2eac7e24c712ba77469794d9c802422e5e25bdc",
+    "candidate_apk_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+    "archive_sha256_reported_by_owner": "0442a771abc9108c2484fc4bf1422e2ea34a41641ea73448e128186e1283a902",
+    "acceptance_json_sha256": "b18de9be24b3c458cbdfd602a65c186fbda5e19802c6f63282e6025a863f6223"
+  },
+  "environment": {
+    "api": 30,
+    "emulator": "Android emulator31.1.4.0; Google APIs x86 Android11 image",
+    "screen": [
+      2640,
+      1080
+    ],
+    "game_canvas": [
+      360,
+      0,
+      2280,
+      1080
+    ],
+    "native_bridge": "libndk_translation.so",
+    "abi_list": "x86,armeabi-v7a,armeabi",
+    "page_size": "4096"
+  },
+  "conclusions": {
+    "prefix_save_and_new_process_reload": {
+      "supported": true,
+      "save_pid": "6771",
+      "reload_pid": "12437",
+      "observations": [
+        "Visible Save Game confirmation over the original female Sim house scene; two stable complete main-menu captures follow.",
+        "Select Game visibly contains existing Alex slot; after selection female Sim with matching appearance resumes in the same kitchen/house context in a new process.",
+        "sim3dat0 and sim3set both advance from captured18:57 to19:02 mtimes and keep2562/90-byte sizes; those save metadata remain at19:02 through new-process reload."
+      ],
+      "before_save_stats": {
+        "sim3dat0": {
+          "bytes": 2562,
+          "mtime_epoch_seconds": 1793559477
+        },
+        "sim3set": {
+          "bytes": 90,
+          "mtime_epoch_seconds": 1793559477
+        }
+      },
+      "after_save_stats": {
+        "sim3dat0": {
+          "bytes": 2562,
+          "mtime_epoch_seconds": 1793559770
+        },
+        "sim3set": {
+          "bytes": 90,
+          "mtime_epoch_seconds": 1793559770
+        }
+      },
+      "observer_limitation": "Raw sampled observer remains SceneGame callback#2048 at saved-to-menu; it is not current menu proof. Visual main-menu/save-mtime fallback is explicit, and manual frames confirm it."
+    },
+    "home_return": {
+      "supported": true,
+      "same_pid": "12437",
+      "observations": [
+        "Before Home shows live female Sim and house; Home capture visibly shows Android launcher.",
+        "Persisted Main lifecycle records paused/stopped then started/resumed in the same PID.",
+        "Returned native frame visibly shows the game Pause panel, then interactive command1 taps the visible back arrow and live-frame-001 shows resumed unobscured game at09:45."
+      ],
+      "ordinary_action_after_return": "Visible Pause-panel close using Android UI tap at[704,244] with resulting actual frame; acceptance is stronger than nonblack-pixel readiness alone."
+    },
+    "post_action_save": {
+      "supported": true,
+      "pid": "12437",
+      "observations": [
+        "After later ordinary play, live-frame-018 shows Pause and019 shows Save Game confirmation.",
+        "live-frame-020 retains a black loading transition; it is not accepted as save completion.",
+        "live-frame-021 shows complete main menu, while captured save metadata advance from19:02 to19:23 for both files."
+      ],
+      "limit": "No second new-process reload of this final19:23 save is included in the reviewed artifact."
+    }
+  },
+  "evidence": [
+    {
+      "capture": "candidate-21-clear-gameplay-onboarding-popups",
+      "game_pid": "6771",
+      "time_epoch": 1793559691.2318943,
+      "screen_sha256": "03ce39b8d729d80351eec51286435f32e18536ff00d5deb78df6b76db7ed91a7",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "candidate-23-choose-save-and-quit-to-menu",
+      "game_pid": "6771",
+      "time_epoch": 1793559758.1492505,
+      "screen_sha256": "9eb497a1cf98bceac25b199875a9d495c0346823bedd91356b4b847088a1cc38",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "candidate-24-confirm-save-and-quit-main-menu-visual-00-0",
+      "game_pid": "6771",
+      "time_epoch": 1793559805.1689303,
+      "screen_sha256": "f65e2b47c449eb5e8fbd4cd43d139eb42bf39226fe2faff3c86976be7431cfe3",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "candidate-24-confirm-save-and-quit-main-menu-visual-00-1",
+      "game_pid": "6771",
+      "time_epoch": 1793559814.5023482,
+      "screen_sha256": "75ed0a776b9b0e08c9fc52cb6a3f916e1aec8d3c09b72cda4abd7f5c69b2935c",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "visual-main-menu-and-save-mtime"
+    },
+    {
+      "capture": "candidate-25-restart-from-saved-game",
+      "game_pid": "12437",
+      "time_epoch": 1793559859.9314597,
+      "screen_sha256": "d81ecab5ecd56decd4333c1092b4a3bac28f04e006289e30fad2c2f00a0bb4de",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneMenu",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "candidate-26-reopened-main-menu-start",
+      "game_pid": "12437",
+      "time_epoch": 1793559874.300839,
+      "screen_sha256": "493786541ec7256331919d53246b47d6053091d16788b01b107bee967d7d74a2",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneMenu",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "candidate-27-load-existing-saved-female-sim",
+      "game_pid": "12437",
+      "time_epoch": 1793559915.9140642,
+      "screen_sha256": "e19d546a1aefc6e90e8400739a06d6cef0f60be910732e3de016e24212606621",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "home-return-before",
+      "game_pid": "12437",
+      "time_epoch": 1793559947.285679,
+      "screen_sha256": "233d98a5c3f923884c6effa404e6e20f93b5a89264535067f688248991d84509",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "home-return-home",
+      "game_pid": "12437",
+      "time_epoch": 1793559953.1692088,
+      "screen_sha256": "e7ef015b4c633a42ec24dd54b9b6ff42f896046d47833badfb4d7e91e01c0b14",
+      "viewport": null,
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "home-return-visible-00",
+      "game_pid": "12437",
+      "time_epoch": 1793559973.1310794,
+      "screen_sha256": "6b630b465d68a899e6e984881a1c844739d6d226eeba16c09436ea22a0e36fb6",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "live-frame-000",
+      "game_pid": "12437",
+      "time_epoch": 1793560037.9563236,
+      "screen_sha256": "6b630b465d68a899e6e984881a1c844739d6d226eeba16c09436ea22a0e36fb6",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "live-frame-001",
+      "game_pid": "12437",
+      "time_epoch": 1793560100.574846,
+      "screen_sha256": "88058c80a65378d7fabff7c23ebd6ddb553f4357602e1e12729db5f780166685",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "live-frame-018",
+      "game_pid": "12437",
+      "time_epoch": 1793560925.0530953,
+      "screen_sha256": "502a2f95277ab92b702dfb1f8b654297ab3be8141326f926fa5c50079bbd7d8a",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "live-frame-019",
+      "game_pid": "12437",
+      "time_epoch": 1793560977.8173237,
+      "screen_sha256": "97a422ab2084227ed55c875af43fc9e2dedd4dedb9cdd8435917457d3d8ee456",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "live-frame-020",
+      "game_pid": "12437",
+      "time_epoch": 1793561028.5467346,
+      "screen_sha256": "0c1937735248e3fd6ad56a901bf93ba7b9ab22ca104214dad69025a49069f91a",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    },
+    {
+      "capture": "live-frame-021",
+      "game_pid": "12437",
+      "time_epoch": 1793561087.0785642,
+      "screen_sha256": "a27b01e5d043abae802b870ba59069622383a1c6dfab85cbb6a705b190e55d89",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "raw_scene": "SceneGame",
+      "scene_source": "sampled-native-input-observer"
+    }
+  ],
+  "limits": [
+    "Actual engine execution is Android11/API30 ARM32 translation in an x86 emulator; not physical Flip3/Thor or Android15 engine execution.",
+    "The saved Alex game was created in this115 test installation, not imported from the user114 physical save; this check does not prove install-over migration by itself.",
+    "Save evidence consists of captured file stats and visible successful reload, not saved payload copies or content hashes.",
+    "Observer samples are stale across several menu/lifecycle frames; accepted visual outcomes are grounded in screenshots and explicit transitions.",
+    "Hot Smooch and other social interactions were not exercised by this save/Home review.",
+    "Overall acceptance.json remains runtime-progression-observed-awaiting-visual-review; this receipt approves only the scoped observations above."
+  ]
+}

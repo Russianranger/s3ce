@@ -1,0 +1,72 @@
+{
+  "archive_sha256": "0442a771abc9108c2484fc4bf1422e2ea34a41641ea73448e128186e1283a902",
+  "candidate_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+  "workflow_source": "e2eac7e24c712ba77469794d9c802422e5e25bdc",
+  "run_id": "41338479517",
+  "independent_review": "targeted gameplay regressions accepted within recorded API30 emulator scope",
+  "environment": "API30 x86/ARM32 translation emulator31.1.4, SwiftShader,2640x1080 screen,1920x1080 native child,4KiB pages",
+  "starts": {
+    "normal_launcher_process_cold": 2,
+    "normal_launcher_failures": 0,
+    "direct_Main_process_cold": 1,
+    "direct_Main_failures": 0,
+    "later_save_resume_new_process": 1,
+    "later_save_resume_failures": 0,
+    "pids": [
+      3871,
+      6193,
+      6771,
+      12437
+    ],
+    "saved_Bundle_restoration_tested": false
+  },
+  "visual_findings": [
+    "Two launcher cold starts and direct cold Main show complete main menu",
+    "Existing candidate-created save reopened in new PID12437; gameplay visible",
+    "Home-return same PID then ordinary actions visibly work",
+    "Chair menu4; Sit selected5; visible seated pose5/7/9",
+    "Zoom ladder2 to3 changes magnification",
+    "Jewel Wishes opens pan-off8 and pan-on14",
+    "Pan12 to13 visibly changes world angle; static crop identical13 to15 after release",
+    "Walking16 to17 moves character from chair to kitchen floor",
+    "Post-action Save/Quit dialog19, black20, complete main menu21",
+    "Normal Quit dialog22 then Compat115 launcher23; Original rendering unchecked"
+  ],
+  "all_24_interactive_commands_and_frame_hashes_accounted": true,
+  "retained_intermediate_attempts": {
+    "2": "chair-back tap did not open desired menu",
+    "6": "New Wish interrupted jewel test",
+    "11": "Go to Town interrupted pan test",
+    "20": "post-save black transition not accepted alone"
+  },
+  "image_diagnostics": {
+    "production_hook_patched": true,
+    "final_process_borrow_log_lines": 41,
+    "final_process_one_MiB_borrow_log_lines": 3,
+    "pixel_body_rejections": 0,
+    "boundary": "Production hook execution; not Hot Smooch completion or allocation-failure injection"
+  },
+  "save_evidence": {
+    "earlier_save_reloaded": true,
+    "post_action_sim3dat0_bytes": 2562,
+    "post_action_sim3set_bytes": 90,
+    "post_action_mtime": "19:23 versus earlier19:02",
+    "post_action_save_menu_visible": true,
+    "post_action_save_reloaded": false
+  },
+  "normal_exit": {
+    "native_Main_return": true,
+    "Main_destroyed_finishing": true,
+    "CompatActivity_resumed": true,
+    "retained_process": 12437,
+    "fatal_or_anr_count": 0,
+    "java_crash_log_empty": true
+  },
+  "limits": [
+    "Hot Smooch/social event completion not exercised",
+    "No physical Flip3 execution",
+    "Actual game reverse rotation3 unavailable; helper probe covers framework rotation separately",
+    "Final post-action save not reopened",
+    "Existing GL0x500 diagnostics remain; visible frames reviewed"
+  ]
+}

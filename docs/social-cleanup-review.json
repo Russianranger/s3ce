@@ -1,0 +1,33 @@
+{
+  "cases": [
+    {
+      "high_game_and_split_data": false,
+      "hook_text": "0x21000000",
+      "result": 0,
+      "all_allocations_freed": true,
+      "actual_original_cleanup_instructions": true
+    },
+    {
+      "high_game_and_split_data": true,
+      "hook_text": "0x21000000",
+      "result": 0,
+      "all_allocations_freed": true,
+      "actual_original_cleanup_instructions": true
+    },
+    {
+      "high_game_and_split_data": false,
+      "hook_text": "0xdb000000",
+      "result": 0,
+      "all_allocations_freed": true,
+      "actual_original_cleanup_instructions": true
+    },
+    {
+      "high_game_and_split_data": true,
+      "hook_text": "0xdb000000",
+      "result": 0,
+      "all_allocations_freed": true,
+      "actual_original_cleanup_instructions": true
+    }
+  ],
+  "limit": "Allocator/free/memcpy endpoints modeled; original constructors and complete Image2D, palette and DataInputStream cleanup instructions executed; direct helper call, production gateway unwind validated separately."
+}

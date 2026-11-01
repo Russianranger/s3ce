@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "candidate": {
+    "filename": "S3CE-0.1.15-flip3-socials-arm32.apk",
+    "code": 115,
+    "bytes": 76774745,
+    "sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+    "source": "e2eac7e24c712ba77469794d9c802422e5e25bdc"
+  },
+  "full_game": {
+    "run": 41338479517,
+    "conclusion": "success",
+    "artifact": 13097214463,
+    "bytes": 193634600,
+    "sha256": "0442a771abc9108c2484fc4bf1422e2ea34a41641ea73448e128186e1283a902",
+    "verified_members": 2551,
+    "raw_acceptance_sha256": "b18de9be24b3c458cbdfd602a65c186fbda5e19802c6f63282e6025a863f6223",
+    "raw_gate_passed": false,
+    "manual_decision": "accepted scoped candidate by root and independent reviews",
+    "normal_cold_pids": [
+      "3871",
+      "6193"
+    ],
+    "failures": 0,
+    "separate_cold_main_pid": "6771",
+    "save_restart_pids": [
+      "6771",
+      "12437"
+    ],
+    "commands": 24,
+    "native_quit": {
+      "native_main_returned": true,
+      "activity_finish_requested": true,
+      "resumed_activity_lines": [
+        "mResumedActivity: ActivityRecord{36d8cad u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.CompatActivity t14}"
+      ],
+      "game_main_resumed": false,
+      "compat_launcher_resumed": true,
+      "retained_package_pid": "12437",
+      "fatal_or_anr_lines": []
+    },
+    "log_bytes": 43875407,
+    "log_sha256": "d98d8c1c4bced813dde4e238963a245f5a83a23dcde42d501d21956ea5b93e20",
+    "fatal_anr": 0,
+    "borrow_messages": 112,
+    "one_mib_borrows": 9,
+    "rejections": 0,
+    "pan_release": {
+      "frames": [
+        13,
+        15
+      ],
+      "static_world_crop": [
+        800,
+        30,
+        1650,
+        520
+      ],
+      "identical": true,
+      "seconds": 93.81194472312927
+    },
+    "limits": [
+      "No Hot Smooch completion",
+      "Final post-action save not reloaded",
+      "Full game rotation3 unavailable in API30 emulator",
+      "Direct Main is not Bundle restoration",
+      "Save created115, not114 migration"
+    ]
+  },
+  "physical_evidence": "0.1.14/code114 SM-F711U1 Android15/API35 ARM32/4096/normal rendering; good UI and reported Hot Smooch crash. Complete report private;115 physical test pending."
+}

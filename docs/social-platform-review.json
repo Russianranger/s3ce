@@ -1,0 +1,25 @@
+{
+  "archive_sha256": "0578eba6df1185e0593c53a2426d0d9a3a4c1a82f247354bcd5d6218849dfafb",
+  "candidate_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+  "independent_core_acceptance": true,
+  "overall_platform_run": "blocked",
+  "blocker": "ValueError: Physical activity content overlaps the measured display cutout",
+  "gameplay_tested": false,
+  "environment": "API35 x86_64 arm64-v8a emulator with no 32-bit ABI; exact ARM32 candidate install rejected NO_MATCHING_ABIS",
+  "verified": [
+    "exact candidate classes2 identity",
+    "physical 1824x1026 16:9 child and black margins",
+    "margin taps inert; center input child-local",
+    "drag exit CANCEL without outside MOVE/UP",
+    "lifted pointer retired; CANCEL only remaining pointer",
+    "Home focus-loss CANCEL, same PID return and identical child pixels",
+    "live resize CANCEL only; resized geometry verified in distinct fresh PID",
+    "actual reverse rotation3, child-local center tap and rotation1 restoration"
+  ],
+  "processes": {
+    "initial_home_live_resize": 2217,
+    "resized_fresh": 4073,
+    "restored_reverse": 4377
+  },
+  "cutout_limit": "Strict measured cutout acceptance failed after overlay changed Android activity placement; do not claim cutout validation or successful final restoration. Core checks predate the overlay."
+}
