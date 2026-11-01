@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 1,
-  "frame_sha256": "24feb1d46e7272640e82ef338660a533cbc467eb63b8faa1347457b4432f3833",
+  "seq": 2,
+  "frame_sha256": "5fd0a2cc411f11d846028e9f12e6b5243fab60942b4a0bc5a07c96dd200ed8ec",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 703,
-    "y": 235
+    "type": "swipe",
+    "x1": 2190,
+    "y1": 273,
+    "x2": 2190,
+    "y2": 600,
+    "duration_ms": 900
   },
-  "note": "Close the rendered Pause menu at its visible back arrow after lifecycle checks."
+  "note": "Use the visible zoom slider to zoom out proportionally before the object-action check."
 }
