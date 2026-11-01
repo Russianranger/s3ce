@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 14,
-  "frame_sha256": "3fa3dae25548cb8a1e4507f507e40843406822b9aceb4c6fa9bdf43bff4d40a3",
+  "seq": 15,
+  "frame_sha256": "e86eb2f9dab186e230b258cedba11cde4e94dc536414a1c18a9e77449fc686a9",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 2168,
-    "y": 966
+    "x": 636,
+    "y": 218
   },
-  "note": "Select the bottom-right jewel with camera mode on after the completed pan."
+  "note": "Close Wishes after verifying jewel selection with camera mode on."
 }
