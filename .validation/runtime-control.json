@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 12,
-  "frame_sha256": "64991ed7b282096935cf462c7658636d12b558e19d69ef4005a2c5d6c7b62dfb",
+  "seq": 13,
+  "frame_sha256": "4de41f00c9458258151e096fd4e4ba4b2604f3156359a1ea0581a3342ce5bfb8",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 860,
-    "y": 300
+    "type": "swipe",
+    "x1": 1250,
+    "y1": 650,
+    "x2": 1490,
+    "y2": 650,
+    "duration_ms": 1000
   },
-  "note": "Close the timed Go to Town hint at its rendered X; pan attempt was interrupted."
+  "note": "Repeat the camera pan now that the timed hint is closed; compare the actual scene angle."
 }
