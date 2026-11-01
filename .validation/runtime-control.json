@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 17,
-  "frame_sha256": "34b16bb2e5dac1eb375c921ac4d0f878a03c7353438395cf91508306f53f408c",
+  "seq": 18,
+  "frame_sha256": "087c39458f64ede1d5fa2dcfaf38a0029095c20bc24f86bcd1c8657505c72f0e",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 455,
-    "y": 330
+    "x": 1157,
+    "y": 854
   },
-  "note": "Select the upper-left status tab at its visible center, preserving neighboring world input."
+  "note": "Close the new timed wish popup before retrying status selection; popup interruption is retained."
 }
