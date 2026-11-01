@@ -1,16 +1,14 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 23,
-  "frame_sha256": "7affaa2b9736c2ef034b529bb30d58fe6b4e64f43d1e3316a84b657b726e6b1b",
+  "seq": 24,
+  "frame_sha256": "4c20fcd4782fcb217683e4bece9a1b5755730932490ac5135adea625eebc3093",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1482,
-    "y": 735
+    "type": "finish"
   },
-  "note": "Confirm the visible normal game Quit dialog using its green check; require Native Main return and Activity finish."
+  "note": "Finish after normal Quit: Native Main returned, Activity finish requested, Compat115 visible, Original rendering unchecked and zero fatal/ANR."
 }
