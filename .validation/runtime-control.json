@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 9,
-  "frame_sha256": "e4cc25a993e9795ffb8ecf15d0627633247f2b699585cd6b2789bfb9811e92a5",
+  "seq": 10,
+  "frame_sha256": "469092ec8852d7e9bef1d4d29ef35ba2c5ef52c08abb5a6ce585ceaaf3a26712",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 2045,
-    "y": 793
+    "type": "swipe",
+    "x1": 1100,
+    "y1": 600,
+    "x2": 1300,
+    "y2": 680,
+    "duration_ms": 900
   },
-  "note": "Enable the visible camera-pan button without selecting the neighboring bottom-right Wishes jewel."
+  "note": "Pan the world using the enabled camera control, then release the drag."
 }
