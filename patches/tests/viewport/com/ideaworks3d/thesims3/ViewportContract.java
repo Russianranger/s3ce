@@ -11,6 +11,10 @@ import android.view.WindowManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /** Executes production GameViewport. Framework and Surface behavior are fixtures. */
 public final class ViewportContract {
@@ -19,11 +23,29 @@ public final class ViewportContract {
     private static void same(float expected,float actual,String reason){check(Math.abs(expected-actual)<.0001f,reason+": "+expected+" != "+actual);}
     private static final class Child extends View {
         final List<MotionEvent> events=new ArrayList<>();
+        // Existing MultiTouch CANCEL sends a native UP for each supplied ID.
+        final Set<Integer> nativeActive=new HashSet<>();
+        final Map<Integer,Integer> nativeUps=new HashMap<>();
+        int duplicateNativeUps;
         Child(Activity activity){super(activity);}
-        @Override public boolean onTouchEvent(MotionEvent event){events.add(MotionEvent.obtain(event));return true;}
+        private void release(int id){
+            if(!nativeActive.remove(id))duplicateNativeUps++;
+            nativeUps.put(id,nativeUps.containsKey(id)?nativeUps.get(id)+1:1);
+        }
+        @Override public boolean onTouchEvent(MotionEvent event){
+            events.add(MotionEvent.obtain(event));int a=event.getActionMasked();
+            if(a==MotionEvent.ACTION_DOWN||a==MotionEvent.ACTION_POINTER_DOWN)
+                check(nativeActive.add(event.getPointerId(event.getActionIndex())),"native pointer starts once");
+            else if(a==MotionEvent.ACTION_UP||a==MotionEvent.ACTION_POINTER_UP)
+                release(event.getPointerId(event.getActionIndex()));
+            else if(a==MotionEvent.ACTION_CANCEL)
+                for(int i=0;i<event.getPointerCount();i++)release(event.getPointerId(i));
+            return true;
+        }
+        int ups(int id){return nativeUps.containsKey(id)?nativeUps.get(id):0;}
         int cancels(){int n=0;for(MotionEvent e:events)if(e.getActionMasked()==MotionEvent.ACTION_CANCEL)n++;return n;}
         MotionEvent last(){return events.get(events.size()-1);}
-        void clear(){for(MotionEvent e:events)e.recycle();events.clear();}
+        void clear(){check(nativeActive.isEmpty(),"no native finger stuck");check(duplicateNativeUps==0,"no duplicate native UP");for(MotionEvent e:events)e.recycle();events.clear();nativeUps.clear();}
     }
     private static final class Fixture {
         final Activity activity;
@@ -114,7 +136,7 @@ public final class ViewportContract {
         same(70,f.child.last().getX(1),"cancel uses previous valid child space");
         f.send(MotionEvent.ACTION_MOVE,l+12,t+34);f.up();check(f.child.events.size()==3,"reentry swallowed until up");f.recovered();f.child.clear();
         f.down();f.send(MotionEvent.ACTION_CANCEL,l+12,t+34);f.send(MotionEvent.ACTION_CANCEL,l+12,t+34);
-        check(f.child.cancels()==1,"explicit cancel once");f.recovered();f.child.clear();
+        check(f.child.cancels()==1,"explicit cancel once");same(12,f.child.last().getX(0),"incoming CANCEL child-local X once");same(34,f.child.last().getY(0),"incoming CANCEL child-local Y once");f.recovered();f.child.clear();
         f.down();f.send(MotionEvent.ACTION_CANCEL,l-2,t+34);check(f.child.cancels()==1,"outside cancel once");f.recovered();
     }
     private static void lifecycle(File files){
@@ -149,10 +171,45 @@ public final class ViewportContract {
         check(f.child.events.size()==3&&f.child.cancels()==1,"secondary historical excursion cancels whole gesture");
         check(f.child.last().getPointerId(1)==29,"historical cancel retains secondary ID");f.up();f.recovered();
     }
+    private static void ownership(File files){
+        Fixture f=new Fixture(files,2640,1007,37,19);int l=f.child.getLeft(),t=f.child.getTop();
+        f.root.dispatchTouchEvent(event(MotionEvent.ACTION_DOWN,new int[]{7},new float[]{l+11},new float[]{t+21}));
+        f.root.dispatchTouchEvent(event(MotionEvent.ACTION_POINTER_DOWN|(1<<8),new int[]{7,31},new float[]{l+11,l+61},new float[]{t+21,t+71}));
+        f.root.dispatchTouchEvent(event(MotionEvent.ACTION_POINTER_DOWN|(2<<8),new int[]{7,31,3},new float[]{l+11,l+61,l+111},new float[]{t+21,t+71,t+121}));
+        MotionEvent ended=event(MotionEvent.ACTION_POINTER_UP|(1<<8),new int[]{7,31,3},new float[]{l+12,l+62,l+112},new float[]{t+22,t+72,t+122});
+        ended.testRawOrigin(37,19);f.root.dispatchTouchEvent(ended);
+        check(f.child.ups(31)==1,"nonzero-index pointer ends once before cancel");
+        f.root.onWindowFocusChanged(false);
+        MotionEvent cancel=f.child.last();check(cancel.getActionMasked()==MotionEvent.ACTION_CANCEL,"focus emits CANCEL");
+        check(cancel.getPointerCount()==2&&cancel.getPointerId(0)==7&&cancel.getPointerId(1)==3,"retired pointer31 excluded from cancellation");
+        same(12,cancel.getX(0),"remaining primary cancel child-local X");same(22,cancel.getY(0),"remaining primary cancel child-local Y");
+        same(112,cancel.getX(1),"remaining secondary cancel child-local X");same(122,cancel.getY(1),"remaining secondary cancel child-local Y");
+        same(l+12+37,cancel.getRawX(),"rebuilt CANCEL preserves raw screen X");same(t+22+19,cancel.getRawY(),"rebuilt CANCEL preserves raw screen Y");
+        MotionEvent.PointerProperties property=new MotionEvent.PointerProperties();cancel.getPointerProperties(1,property);
+        check(property.id==3&&property.toolType==3,"remaining secondary properties retained");
+        MotionEvent.PointerCoords coords=new MotionEvent.PointerCoords();cancel.getPointerCoords(1,coords);same(.6f,coords.pressure,"pointer pressure retained");
+        check(cancel.getDownTime()==123&&cancel.getEventTime()==456&&cancel.getSource()==0x1002,"event time/source retained");
+        check(cancel.getMetaState()==5&&cancel.getButtonState()==6&&cancel.getDeviceId()==7&&cancel.getEdgeFlags()==8&&cancel.getFlags()==9,"event metadata retained");
+        same(.5f,cancel.getXPrecision(),"X precision retained");same(.75f,cancel.getYPrecision(),"Y precision retained");
+        check(f.child.nativeActive.isEmpty()&&f.child.duplicateNativeUps==0,"all remaining native IDs released once");
+        check(f.child.ups(31)==1&&f.child.ups(7)==1&&f.child.ups(3)==1,"one native UP per physical pointer");
+        f.up();f.root.onWindowFocusChanged(true);f.recovered();f.child.clear();
+        // Pointer31's signed bit is negative. Preserve it after pointer7 ends.
+        f.down();f.root.dispatchTouchEvent(event(MotionEvent.ACTION_POINTER_DOWN|(1<<8),new int[]{7,31},new float[]{l+12,l+72},new float[]{t+34,t+84}));
+        ended=event(MotionEvent.ACTION_POINTER_UP,new int[]{7,31},new float[]{l+13,l+73},new float[]{t+35,t+85});ended.testRawOrigin(37,19);f.root.dispatchTouchEvent(ended);
+        f.root.onWindowFocusChanged(false);cancel=f.child.last();
+        check(cancel.getPointerCount()==1&&cancel.getPointerId(0)==31,"pointer31 retained after primary-up");
+        same(73,cancel.getX(0),"pointer31 cancel local X");same(85,cancel.getY(0),"pointer31 cancel local Y");
+        same(l+73+37,cancel.getRawX(),"new first pointer raw X retained");same(t+85+19,cancel.getRawY(),"new first pointer raw Y retained");
+        check(f.child.ups(7)==1&&f.child.ups(31)==1&&f.child.duplicateNativeUps==0&&f.child.nativeActive.isEmpty(),"primary-up then cancel owns remaining ID only");
+        f.root.dispatchTouchEvent(event(MotionEvent.ACTION_UP,new int[]{31},new float[]{l+73},new float[]{t+85}));
+        f.root.onWindowFocusChanged(true);f.recovered();f.child.clear();
+    }
     public static void main(String[] args){
         Build.VERSION.SDK_INT=Integer.parseInt(args[0]);
         File files=new File(System.getProperty("s3ce.viewport.work"),"sdk"+args[0]);check(files.mkdirs()||files.isDirectory(),"fixture log directory");
-        geometry(files);window(files);input(files);lifecycle(files);historicalBoundary(files);
+        if(args.length>1&&args[1].equals("ownership"))ownership(files);
+        else{geometry(files);window(files);input(files);lifecycle(files);historicalBoundary(files);ownership(files);}
         System.out.println("{\"sdkContract\":"+Build.VERSION.SDK_INT+",\"assertions\":"+assertions+",\"passed\":true,\"boundary\":\"Android view/window/input doubles; no EGL, ART, hardware or native engine\"}");
     }
 }

@@ -3,7 +3,14 @@ name: Flip3 Android 15 platform validation
 on:
   push:
     branches: [flip3]
-    paths: ['.github/workflows/flip3-platform.yml']
+    paths:
+      - '.validation/flip3/**'
+      - '.github/workflows/flip3-platform.yml'
+      - 'scripts/flip3_platform.py'
+      - 'scripts/platform_probe/**'
+      - 'scripts/android_runtime_prepare.py'
+      - 'scripts/android_runtime_profile.py'
+      - 'scripts/assemble_release.py'
   workflow_dispatch:
 
 permissions:
@@ -63,7 +70,7 @@ jobs:
         env:
           CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}
         run: |
-          /usr/bin/python3 scripts/android_runtime_platform.py --avd S3CE_PLATFORM35 --candidate "$CANDIDATE_APK" --sdk "$ANDROID_HOME" --emulator-dir "$ANDROID_HOME/emulator" --port 5556 --output build/platform-evidence --build-dir build/platform-probe
+          /usr/bin/python3 scripts/flip3_platform.py --avd S3CE_PLATFORM35 --candidate "$CANDIDATE_APK" --sdk "$ANDROID_HOME" --emulator-dir "$ANDROID_HOME/emulator" --port 5556 --output build/platform-evidence --build-dir build/platform-probe
       - name: Upload Android 15 platform evidence only
         if: always()
         uses: actions/upload-artifact@v4

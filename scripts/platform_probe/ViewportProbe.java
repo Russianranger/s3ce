@@ -1,6 +1,7 @@
 package io.github.russianranger.s3ce.viewportprobe;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,10 +9,12 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.AtomicFile;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.InputDevice;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -28,12 +31,14 @@ import org.json.JSONObject;
 /** Real framework fixture: candidate helper bytes run; the game engine never runs. */
 public final class ViewportProbe extends Activity {
     private final JSONArray events = new JSONArray();
+    private final JSONArray fixtureSequences = new JSONArray();
     private final Handler handler = new Handler();
     private ProbeSurface child;
     private JSONObject identity;
     private String failure;
     private boolean focused, resumed;
     private int reports;
+    private String fixtureOrigin;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -65,6 +70,71 @@ public final class ViewportProbe extends Activity {
             Log.e("S3CEPlatformProbe", "Candidate helper probe failed", error);
             writeReport();
         }
+    }
+
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        // This separate test APK accepts one fixed fixture, never arbitrary
+        // event/action/coordinate instructions and never a game/native call.
+        if ("multi-pointer-cancel".equals(intent.getStringExtra("probe_action")))
+            handler.post(this::multiPointerCancelFixture);
+    }
+
+    private void multiPointerCancelFixture() {
+        try {
+            if (fixtureSequences.length() >= 4) throw new IllegalStateException("Probe fixture bound exceeded");
+            if (child == null || !(child.getParent() instanceof View) || child.getWidth() < 400
+                    || child.getHeight() < 250 || child.getLeft() < 1 || !resumed || !focused)
+                throw new IllegalStateException("Multi-pointer fixture requires a focused laid-out wide viewport");
+            JSONObject sequence = new JSONObject();
+            sequence.put("action", "multi-pointer-cancel");
+            sequence.put("scope", "Probe fixture dispatches real Android MotionEvents into exact candidate viewport; no game/native execution");
+            sequence.put("state", "running");
+            sequence.put("touch_event_start", events.length());
+            fixtureSequences.put(sequence);
+            fixtureOrigin = "probe-fixture:multi-pointer-cancel";
+            View parent = (View) child.getParent();
+            float left = child.getLeft(), top = child.getTop();
+            long downTime = SystemClock.uptimeMillis();
+            dispatchFixture(parent, downTime, downTime, MotionEvent.ACTION_DOWN,
+                    new int[] {7}, new float[] {left + 300}, new float[] {top + 200});
+            dispatchFixture(parent, downTime, downTime + 1,
+                    MotionEvent.ACTION_POINTER_DOWN | (1 << MotionEvent.ACTION_POINTER_INDEX_SHIFT),
+                    new int[] {7, 13}, new float[] {left + 300, left + 380}, new float[] {top + 200, top + 230});
+            dispatchFixture(parent, downTime, downTime + 2,
+                    MotionEvent.ACTION_POINTER_UP | (0 << MotionEvent.ACTION_POINTER_INDEX_SHIFT),
+                    new int[] {7, 13}, new float[] {left + 300, left + 380}, new float[] {top + 200, top + 230});
+            // No valid MOVE intervenes: cancellation must use only the pointer
+            // still active immediately after POINTER_UP(index0 retires ID7).
+            dispatchFixture(parent, downTime, downTime + 3, MotionEvent.ACTION_MOVE,
+                    new int[] {13}, new float[] {left - 20}, new float[] {top + 230});
+            dispatchFixture(parent, downTime, downTime + 4, MotionEvent.ACTION_UP,
+                    new int[] {13}, new float[] {left - 20}, new float[] {top + 230});
+            sequence.put("touch_event_end", events.length());
+            sequence.put("state", "completed");
+        } catch (Throwable error) {
+            failure = Log.getStackTraceString(error);
+            Log.e("S3CEPlatformProbe", "Fixed multi-pointer fixture failed", error);
+        } finally { fixtureOrigin = null; writeReport(); }
+    }
+
+    private static void dispatchFixture(View parent, long downTime, long eventTime, int action,
+                                        int[] ids, float[] x, float[] y) {
+        MotionEvent.PointerProperties[] properties = new MotionEvent.PointerProperties[ids.length];
+        MotionEvent.PointerCoords[] coordinates = new MotionEvent.PointerCoords[ids.length];
+        for (int index = 0; index < ids.length; ++index) {
+            properties[index] = new MotionEvent.PointerProperties();
+            properties[index].id = ids[index];
+            properties[index].toolType = MotionEvent.TOOL_TYPE_FINGER;
+            coordinates[index] = new MotionEvent.PointerCoords();
+            coordinates[index].x = x[index]; coordinates[index].y = y[index];
+            coordinates[index].pressure = 1; coordinates[index].size = 1;
+        }
+        MotionEvent event = MotionEvent.obtain(downTime, eventTime, action, ids.length,
+                properties, coordinates, 0, 0, 1, 1, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0);
+        try { parent.dispatchTouchEvent(event); }
+        finally { event.recycle(); }
     }
 
     private byte[] readAsset(String name) throws java.io.IOException {
@@ -128,6 +198,7 @@ public final class ViewportProbe extends Activity {
                 report.put("surface_frame", new JSONArray(new int[] {child.getHolder().getSurfaceFrame().width(), child.getHolder().getSurfaceFrame().height()}));
             }
             report.put("touch_events", events);
+            report.put("fixture_sequences", fixtureSequences);
             byte[] encoded = (report.toString(2) + "\n").getBytes(StandardCharsets.UTF_8);
             AtomicFile target = new AtomicFile(new File(getFilesDir(), "probe.json"));
             FileOutputStream out = target.startWrite();
@@ -151,9 +222,20 @@ public final class ViewportProbe extends Activity {
             try {
                 if (events.length() >= 256) throw new IllegalStateException("Probe event bound exceeded");
                 JSONObject item = new JSONObject(); item.put("action", event.getActionMasked());
+                item.put("action_index", event.getActionIndex());
                 item.put("x", event.getX()); item.put("y", event.getY());
                 item.put("raw_x", event.getRawX()); item.put("raw_y", event.getRawY());
-                item.put("pointer_count", event.getPointerCount()); events.put(item); writeReport();
+                item.put("pointer_count", event.getPointerCount());
+                JSONArray pointers = new JSONArray();
+                for (int index = 0; index < event.getPointerCount(); ++index) {
+                    JSONObject pointer = new JSONObject();
+                    pointer.put("id", event.getPointerId(index));
+                    pointer.put("x", event.getX(index)); pointer.put("y", event.getY(index));
+                    pointers.put(pointer);
+                }
+                item.put("pointers", pointers);
+                item.put("origin", fixtureOrigin == null ? "android-system-input" : fixtureOrigin);
+                events.put(item); writeReport();
             } catch (Throwable error) { failure = Log.getStackTraceString(error); writeReport(); }
             return true;
         }

@@ -80,6 +80,15 @@ def plan_execution_scope(plan, interactive, interactive_after):
     return {'mode': mode, 'endpoint': endpoint, 'limit': matches[0] + 1}
 
 
+def saved_main_menu_visual_allowed(step):
+    """Only the source-proven SaveQuit→main-menu boundary has this fallback."""
+    return (step.get('name') == 'confirm-save-and-quit'
+            and step.get('confirm_save_visually') is True
+            and step.get('expect_scene') == 'SceneMenu'
+            and step.get('expect_menu_state') in (None, 5)
+            and step.get('checkpoint') == 'saved-to-menu')
+
+
 def game_viewport(hierarchy, windows, viewport_events='', screen_size=None):
     """Prefer actual child bounds; a wide Activity frame is never a game canvas."""
     candidates = []
@@ -196,6 +205,7 @@ class Android:
         self.letterbox_observation = {}
         self.home_return_observation = {}
         self.rotation_observations = []
+        self.saved_menu_visual_attempts = 0
         self.runtime_started = time.monotonic()
 
     def adb(self, *args, timeout=45, check=True):
@@ -263,6 +273,7 @@ class Android:
         observers = [line for line in self.latest_native.splitlines() if SCENE.search(line)]
         event = {'name': label, 'time': time.time(), 'screen_size': list(self.screen_size),
                  'scene': self.last_scene(), 'menu_state': self.last_menu_state(),
+                 'scene_source': 'sampled-native-input-observer' if observers else 'unobserved',
                  'native_viewport': self.viewport, 'viewport_source': self.viewport_source,
                  'keyboard_visible': keyboard_is_visible(windows),
                  'game_pid': self.shell('pidof', PACKAGE, check=False).strip(),
@@ -470,6 +481,77 @@ class Android:
             self.adb('emu', 'sensor', 'set', 'acceleration', '-9.8:0:0', check=False)
             self.shell('settings', 'put', 'system', 'user_rotation', 1)
             (self.output / 'landscape-rotations.json').write_text(json.dumps(self.rotation_observations, indent=2) + '\n')
+
+    def save_fingerprints(self):
+        """Read only size/mtime facts; never read or modify save contents."""
+        names = ('sim3dat0', 'sim3set')
+        text = self.shell('stat', '-c', '%n:%s:%Y',
+                          *(f'/data/data/{PACKAGE}/files/{name}' for name in names), check=False)
+        facts = {}
+        for line in text.splitlines():
+            parts = line.rsplit(':', 2)
+            if len(parts) != 3:
+                continue
+            name = parts[0].rsplit('/', 1)[-1]
+            if name in names and all(re.fullmatch(r'[0-9]+', value) for value in parts[1:]):
+                facts[name] = {'bytes': int(parts[1]), 'mtime_epoch_seconds': int(parts[2])}
+        return facts
+
+    def observe_saved_main_menu(self, prefix, before_save, expected_pid, expected_bounds):
+        """Confirm two real main-menu frames and a newer normal progress save.
+
+        This does not alter the sampled native observer or game state. Its
+        separately labeled conclusion is available only to the SaveQuit step.
+        """
+        from android_runtime_visual import analyze_context_menu
+        attempt = self.saved_menu_visual_attempts
+        self.saved_menu_visual_attempts += 1
+        result = {'source': 'visual-main-menu-and-save-mtime', 'accepted': False,
+                  'before_save': before_save, 'captures': [], 'expected_pid': expected_pid}
+        path = self.output / f'{prefix}-main-menu-visual-{attempt:02d}.json'
+        try:
+            if set(before_save) != {'sim3dat0', 'sim3set'} or not expected_pid or expected_bounds is None:
+                return None
+            point = None
+            for index in range(2):
+                if index:
+                    time.sleep(2)
+                label = f'{prefix}-main-menu-visual-{attempt:02d}-{index}'
+                self.snapshot(label)
+                directory = self.output / label
+                observed = self.events[-1]
+                activity = (directory / 'activity.txt').read_text(errors='replace')
+                resumed = [line for line in activity.splitlines()
+                           if 'mResumedActivity' in line or 'topResumedActivity' in line]
+                menu = analyze_context_menu(directory / 'screen.png', directory / 'main-menu-ocr',
+                                            self.viewport, layout='main')
+                saves = self.save_fingerprints()
+                row = {'capture': label, 'frame_sha256': sha(directory / 'screen.png'),
+                       'raw_scene': observed.get('scene'), 'raw_menu_state': observed.get('menu_state'),
+                       'raw_observer': observed.get('observer'), 'game_pid': observed.get('game_pid'),
+                       'native_viewport': self.viewport, 'viewport_source': self.viewport_source,
+                       'menu_kind': menu.get('kind'),
+                       'quit_point': menu.get('point'), 'save_fingerprints': saves}
+                result['captures'].append(row)
+                if (observed.get('game_pid') != expected_pid
+                        or tuple(self.viewport or ()) != tuple(expected_bounds)
+                        or self.viewport_source not in ('SurfaceView hierarchy',
+                            'GameViewport actual child layout witness',
+                            'Main BASE_APPLICATION frame', 'largest Main native frame')
+                        or not any('com.ideaworks3d.thesims3.Main' in line for line in resumed)
+                        or menu.get('kind') != 'main-menu' or not menu.get('point')
+                        or set(saves) != {'sim3dat0', 'sim3set'}
+                        or any(saves[name]['bytes'] <= 0 for name in saves)
+                        or saves['sim3dat0']['mtime_epoch_seconds'] <= before_save['sim3dat0']['mtime_epoch_seconds']
+                        or saves['sim3set']['mtime_epoch_seconds'] < before_save['sim3set']['mtime_epoch_seconds']):
+                    return None
+                if point is not None and any(abs(a - b) > 4 for a, b in zip(point, menu['point'])):
+                    return None
+                point = menu['point']
+            result['accepted'] = True
+            return result
+        finally:
+            path.write_text(json.dumps(result, indent=2) + '\n')
 
     def tap(self, position, coordinate_size):
         self.assert_native_canvas()
@@ -843,6 +925,10 @@ class Android:
         for index, step in enumerate(plan['steps'][:limit]):
             name = f'{prefix}-{index:02d}-{step["name"]}'
             previous_pid = next((event['game_pid'] for event in reversed(self.events) if event.get('game_pid')), None)
+            saved_menu_fallback = saved_main_menu_visual_allowed(step)
+            before_save = self.save_fingerprints() if saved_menu_fallback else None
+            before_bounds = self.viewport
+            visual_main_menu = None
             if step.get('when_menu_state') is not None:
                 self.native_scene()
                 if self.last_menu_state() not in step['when_menu_state']:
@@ -899,6 +985,17 @@ class Android:
                 expected_menu = step.get('expect_menu_state')
                 before_probe = self.latest_native
                 def scene_ready():
+                    nonlocal visual_main_menu
+                    # Original pointer logging is deliberately sampled. After a
+                    # long game its last SceneGame callback can outlive SaveQuit.
+                    # At this one boundary require the rendered complete menu,
+                    # same process/canvas and newer normal save, rather than
+                    # pretending an unchanged native sample is fresh evidence.
+                    if saved_menu_fallback:
+                        visual_main_menu = self.observe_saved_main_menu(
+                            name, before_save, previous_pid, before_bounds)
+                        if visual_main_menu is not None:
+                            return True
                     if step.get('probe_swipe'):
                         self.swipe(step['probe_swipe'], plan['coordinate_size'])
                         if step.get('probe_return'):
@@ -915,10 +1012,22 @@ class Android:
                     return matches and fresh
                 self.wait_for(name + ' scene/menu observation', scene_ready,
                               step.get('timeout', 90), interval=step.get('probe_interval', 2))
-            self.snapshot(name)
+            if visual_main_menu is None:
+                self.snapshot(name)
+            else:
+                # Keep the exact second OCR-verified capture as the checkpoint;
+                # retain the raw observer verbatim beside the visual conclusion.
+                event = self.events[-1]
+                event.update(raw_scene=event.get('scene'), raw_menu_state=event.get('menu_state'),
+                             scene='SceneMenu', menu_state=5,
+                             scene_source=visual_main_menu['source'],
+                             scene_evidence=visual_main_menu, step_name=name)
+                (self.output / event['name'] / 'observation.json').write_text(json.dumps(event, indent=2) + '\n')
+                print(json.dumps(event), flush=True)
             if step.get('expect_same_pid') and (not previous_pid or self.events[-1]['game_pid'] != previous_pid):
                 raise RuntimeError(f'{name}: game process changed across Home/reopen')
-            if step.get('expect_menu_state') is not None and self.last_menu_state() != step['expect_menu_state']:
+            if (step.get('expect_menu_state') is not None
+                    and (5 if visual_main_menu is not None else self.last_menu_state()) != step['expect_menu_state']):
                 raise RuntimeError(f'{name}: expected menu state {step["expect_menu_state"]}, '
                                    f'observed {self.last_menu_state()}')
             if 'checkpoint' in step:

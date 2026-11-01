@@ -108,6 +108,22 @@ public final class ViewportDexRegression {
             layoutCalls.add(((MethodReference)((ReferenceInstruction)item).getReference()).getName());
         check(layoutCalls.contains("getLocationOnScreen")&&layoutCalls.indexOf("cancelGesture")<layoutCalls.indexOf("layout"),
                 "cancel must precede relocated child layout");
+        Method cancel=find(all,VIEWPORT,"cancelGesture");
+        List<String> cancelCalls=new ArrayList<>();
+        for(Instruction item:cancel.getImplementation().getInstructions())if(item.getOpcode().name.startsWith("invoke-"))
+            cancelCalls.add(((MethodReference)((ReferenceInstruction)item).getReference()).getName());
+        check(cancelCalls.containsAll(Arrays.asList("getLeft","getTop","offsetLocation","dispatchTouchEvent"))
+                &&cancelCalls.indexOf("offsetLocation")<cancelCalls.indexOf("dispatchTouchEvent"),
+                "owned CANCEL must be child-local before ViewGroup fast path");
+        Method pointers=find(all,VIEWPORT,"rememberActivePointers");
+        Set<String> pointerCalls=new HashSet<>();
+        for(Instruction item:pointers.getImplementation().getInstructions())if(item.getOpcode().name.startsWith("invoke-")){
+            MethodReference ref=(MethodReference)((ReferenceInstruction)item).getReference();
+            check(!ref.getName().equals("split")&&!ref.getName().equals("getPointerIdBits"),"hidden pointer API");
+            pointerCalls.add(ref.getName());
+        }
+        check(pointerCalls.containsAll(Arrays.asList("getActionIndex","getPointerProperties","getPointerCoords","obtain")),
+                "post-POINTER_UP snapshot must retain only active public pointer representation");
         Method create=find(all,ACTIVITY,"createView");
         List<String> calls=new ArrayList<>();int installs=0;
         for(Instruction item:create.getImplementation().getInstructions())if(item.getOpcode().name.startsWith("invoke-")){

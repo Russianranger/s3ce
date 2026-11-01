@@ -24,7 +24,9 @@ public class ViewGroup extends View {
         View child=touchTarget;
         if(child==null)return onTouchEvent(event);
         MotionEvent local=MotionEvent.obtain(event);
-        local.offsetLocation(-child.left,-child.top);
+        // Android ViewGroup's dispatchTransformedTouchEvent CANCEL fast path
+        // bypasses the usual child translation, as confirmed by the API35 probe.
+        if(action!=MotionEvent.ACTION_CANCEL)local.offsetLocation(-child.left,-child.top);
         boolean handled=child.dispatchTouchEvent(local);
         local.recycle();
         if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL)touchTarget=null;

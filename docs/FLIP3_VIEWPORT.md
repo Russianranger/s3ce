@@ -81,8 +81,9 @@ the window or margin origin.
 The wrapper forwards the original event through `ViewGroup`, with pointer
 splitting disabled. Normal Android dispatch owns the child translation for all
 pointer indices and historical coordinates; the original bridge continues to
-consume current samples. Its saved `obtainNoHistory` copy is used only for a
-synthetic cancellation, not as a replacement for forwarded move history.
+consume current samples. The saved current-sample copy is used only for
+cancellation, not as a replacement for forwarded move history. Android's
+separate CANCEL fast path is normalized explicitly, as established below.
 
 Touches starting in margins are consumed. Moving any active pointer outside the
 child, including an excursion recorded in move history, cancels the entire
@@ -92,6 +93,55 @@ the old local coordinates. A changed parent screen origin also cancels when
 child-relative bounds stay the same. Focus loss, hidden windows and detach cancel.
 The existing input-text gate still delivers CANCEL releases. This avoids a
 stuck camera/drag when a fold, window change or system UI interrupts a gesture.
+
+## Actual Android CANCEL counterexample and repair
+
+API 35 [run 41259363699](https://github.com/Russianranger/s3ce/actions/runs/41259363699)
+loaded the then-candidate helper directly from its fingerprinted DEX. Candidate
+`f5a85314647cd3699800dff54a3f9f7c0c67fcffb4eeee5a7d4cea522679bd3c`
+is superseded. The retained archive SHA-256 is
+`79d26b6be1f2c67f6d9f47a4e9d613737fa57123d61ea976d1c59e332329ae98`.
+It demonstrates correct normal child translation, but exposes a cancellation
+defect that the first host ViewGroup double had masked:
+
+| Observation | Child X/Y before CANCEL | Received CANCEL X/Y |
+| --- | --- | --- |
+| Drag leaves child | 139.17, 513 (raw 547.17, 516) | 547.17, 516 |
+| Home during touch | 912, 513 (raw 1320, 516) | 1320, 516 |
+
+The original helper passed a parent-local saved event into
+`super.dispatchTouchEvent(CANCEL)`. Android's CANCEL path skips the normal child
+offset; the received X/Y therefore remained in parent coordinates. The existing
+MultiTouch bridge turns every CANCEL pointer into a native UP, so occurrence of
+CANCEL alone is insufficient validation. The original probe assertions checked
+release occurrence but missed the wrong position. Its later resize timeout is a
+separate harness failure; neither issue is relabeled as a passing complete run.
+
+The corrected helper owns one cancellation boundary for incoming CANCEL and
+margin/geometry/focus/lifecycle interruptions. It changes the saved event to
+CANCEL, offsets that owned copy by the old child's negative left/top once, and
+calls `super` so framework touch-target bookkeeping is retired. Normal events
+remain unmodified and use normal framework translation. Incoming CANCEL uses
+the last valid owned snapshot rather than trusting its supplied coordinates.
+
+Pointer ownership also advances after `ACTION_POINTER_UP`: its ending index is
+excluded from the retained snapshot, so a later CANCEL cannot release that ID
+twice. The implementation copies remaining `PointerProperties`/`PointerCoords`
+through the public 14-argument `MotionEvent.obtain` API. It preserves metadata
+and uses raw-coordinate seeding followed by a parent-local offset, preserving
+raw screen coordinates even when pointer index zero was the finger removed.
+It uses no hidden `split`/pointer-bit APIs. Tests retain sparse IDs 7/31/3, both
+ending-index cases, native-UP accounting and the old helper's counterexamples.
+
+Current rebuilt APK SHA-256 is
+`ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b`;
+its `classes2.dex` is
+`61daef3156c105392db9046f9564c460379a374c20a3235d5f1391a35d272f30`.
+The reviewed helper source SHA-256 is
+`cd4c39b560c85ca9e8d40a1dc3fd36d11cc1526b49e2864622477cce9ebd6307`.
+These identities pass independent host/assembled checks below. Fresh actual
+Android testing of these corrected bytes remains required; the superseded
+candidate's platform observations do not establish the repair on Android.
 
 ## Shared UI coverage and evidence limits
 
@@ -111,17 +161,30 @@ retain the original integer/soft-float quantization (up to three pixels).
 Surface-property imports and GL service calls are modeled, so these are host
 control-flow results, not Android/EGL or physical phone proof.
 
-Independent `verify_viewport_host.py` execution passes 345 assertions across
-API-level contracts 26/28/30/35 (85/86/87/87). It compiles the production helper
+Two additional original-ARM cases use the API 35 probe's measured 1824×1026
+child: the 2640×1080 display's bottom navigation inset is 48 pixels, so available
+parent content is 2640×1032 and the fitted child bounds are [408,3]–[2232,1029].
+Both low/high mappings compute uniform scale 3.206249952316284 (approximately
+3.20625). Input/inverse-render results remain identical before/after the
+preserved depth correction: center [912,513] round-trips exactly; sampled corner
+[1823,1025] returns [1822,1022] through original quantization. These bring the
+independent dimension/mapping cases to ten. They connect measured Android child
+geometry to original native calculations on the host, while native engine
+execution on API 35 remains unverified.
+
+Independent `verify_viewport_host.py` execution passes 689 assertions across
+API-level contracts 26/28/30/35 (171/172/173/173). It compiles the production helper
 against explicit Android doubles: exact/nonintegral fit, already consumed
 asymmetric insets, nonzero screen origin, both pointer indices and history,
 margin entry/exit/reentry, cancellation/recovery, focus/visibility/detach,
-resize/origin changes and software-to-GL replacement. Those doubles model the
-framework boundary; they do not execute Android or EGL. The initial 114 APK's
-`verify_viewport.py` passes assembled installation order and 24 original
-orientation paths, plus source guard reconstruction. Its installation precedes
-diagnostic attachment and thread view publication. The later history/origin
-helper refinement requires a rebuilt APK before actual runtime acceptance.
+resize/origin changes, software-to-GL replacement and pointer ownership after
+POINTER_UP. The corrected ViewGroup double reproduces Android's untranslated
+CANCEL fast path; the prior helper fails against it. Those doubles model the
+framework boundary; they do not execute Android or EGL. Current rebuilt APK
+`verify_viewport.py` passes assembled installation order, cancellation/public
+pointer-API freshness checks and 24 original orientation paths, plus source
+guard reconstruction. Its installation precedes diagnostic attachment and
+thread view publication.
 
 Native sources are unchanged from accepted 0.1.13. Initial 114's rebuilt shim
 SHA-256 differs only because the PVRTC assertion embeds the absolute worktree

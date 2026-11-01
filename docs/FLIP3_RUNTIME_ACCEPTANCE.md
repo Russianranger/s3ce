@@ -1,4 +1,13 @@
-# Flip3 test candidate — runtime review in progress
+# Flip3 runtime review in progress
+
+The corrected signed candidate is `0.1.14-flip3` / code114, SHA256
+`ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b`,
+76,770,649 bytes. It corrects the actual API35 CANCEL-coordinate counterexample
+and post-POINTER_UP ownership; 689 corrected host assertions, assembled DEX/24
+orientation paths and366-method static DEX analysis pass. Fresh Android execution
+is pending. The older candidate and its results are retained below.
+
+## Superseded initial candidate identity
 
 | Identity | Value |
 | --- | --- |
@@ -37,3 +46,21 @@ Publication is pending actual runtime review. Record all attempts and original
 automated results. No game memory, phases or save contents may be edited to
 manufacture progression. Physical Flip3 native-driver/firmware compatibility
 remains a final device test after completing the available checks.
+
+## Superseded first candidate
+
+The API35 retry41259363699 ran Android15 successfully and established the
+expected ARM32 install limitation plus proportional geometry with48px navigation
+insets, inert margins, center coordinates, cancellation occurrence and Home return.
+Cancellation position was wrong, as described below; it is not accepted.
+Its whole job remains red at a simulated-resize validation mismatch involving
+Android size-compat coordinates. Artifact13064362924 is1,335,918 bytes, ZIP SHA256
+79d26b6be1f2c67f6d9f47a4e9d613737fa57123d61ea976d1c59e332329ae98.
+
+Independent inspection found a production cancellation-coordinate defect: Android
+ViewGroup sends CANCEL through a special path without the normal child offset.
+The native bridge treats CANCEL as finger release and reads its coordinates.
+The host double had modelled that special path incorrectly. This supersedes
+APK f5a853…bd3c before publication; it will not be delivered as the candidate.
+Correct the owned cancellation boundary and host/platform regressions, rebuild,
+and validate the new exact bytes. Keep all original results and artifacts.

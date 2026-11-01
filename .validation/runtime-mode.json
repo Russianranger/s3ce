@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "candidate_sha256": "f5a85314647cd3699800dff54a3f9f7c0c67fcffb4eeee5a7d4cea522679bd3c",
+  "candidate_sha256": "ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b",
   "interactive": true,
   "cold_start_attempts": 2
 }

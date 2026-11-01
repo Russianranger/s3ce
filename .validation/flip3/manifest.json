@@ -6,10 +6,10 @@
   "base_sha256": "0605ca913169bc5f17ee2291c6ef20208322676f49e21489ceb8fb2f7ddb0381",
   "filename": "S3CE-0.1.14-flip3-arm32.apk",
   "size": 76770649,
-  "sha256": "f5a85314647cd3699800dff54a3f9f7c0c67fcffb4eeee5a7d4cea522679bd3c",
+  "sha256": "ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b",
   "literal_filename": "literals.bin",
   "literal_size": 494137,
-  "literal_sha256": "99d4107dbf1219580682c3db779d4a597e2ae282d2cef33b4ccbadd194a289e0",
+  "literal_sha256": "0e4abadbe842182ebba1f67bac3515662710643359404b158750e332b19324d5",
   "operations": [
     {
       "literal": [

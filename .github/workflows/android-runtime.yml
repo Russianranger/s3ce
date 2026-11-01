@@ -7,7 +7,13 @@ on:
       - '.validation/**'
       - '.github/workflows/android-runtime.yml'
       - '.github/actions/runtime-frame/**'
-      - 'scripts/android_runtime*.py'
+      - 'scripts/android_runtime.py'
+      - 'scripts/android_runtime_control.py'
+      - 'scripts/android_runtime_frame.py'
+      - 'scripts/android_runtime_mode.py'
+      - 'scripts/android_runtime_prepare.py'
+      - 'scripts/android_runtime_profile.py'
+      - 'scripts/android_runtime_visual.py'
       - 'scripts/android_runtime_plan.json'
   workflow_dispatch:
     inputs:
@@ -364,63 +370,5 @@ jobs:
         with:
           name: android-runtime-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/runtime-evidence/
-          if-no-files-found: error
-          retention-days: 14
-  platform35:
-    if: github.ref_name == 'flip3'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-      - name: Prepare exact candidate for Android 15 platform measurement
-        id: apks
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          mkdir -p build/platform-evidence
-          python3 scripts/android_runtime_prepare.py 2>&1 | tee build/platform-evidence/setup.txt
-      - name: Prepare actual Android 15 emulator
-        shell: bash
-        run: |
-          set -euo pipefail
-          exec > >(tee -a build/platform-evidence/setup.txt) 2>&1
-          test -c /dev/kvm
-          sudo chmod a+rw /dev/kvm
-          export ANDROID_AVD_HOME="$RUNNER_TEMP/s3ce-platform35-avd"
-          printf 'ANDROID_AVD_HOME=%s\n' "$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
-          mkdir -p "$ANDROID_AVD_HOME"
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platform-tools' 'emulator' 'build-tools;35.0.0' 'platforms;android-35' 'system-images;android-35;google_apis;x86_64'
-          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --force --name S3CE_PLATFORM35 --path "$ANDROID_AVD_HOME/S3CE_PLATFORM35.avd" --package 'system-images;android-35;google_apis;x86_64' --device pixel_2
-          python3 - <<'PY'
-          import os
-          from pathlib import Path
-          avd_root = Path(os.environ['ANDROID_AVD_HOME'])
-          avd = avd_root / 'S3CE_PLATFORM35.avd/config.ini'
-          values = dict(line.split('=', 1) for line in avd.read_text().splitlines() if '=' in line)
-          values.update({'hw.lcd.width': '1080', 'hw.lcd.height': '2640', 'hw.lcd.density': '320',
-                         'hw.initialOrientation': 'landscape', 'hw.cpu.ncore': '4', 'hw.ramSize': '3072',
-                         'hw.gpu.enabled': 'yes', 'hw.gpu.mode': 'swiftshader_indirect',
-                         'hw.audioInput': 'no', 'hw.audioOutput': 'no', 'hw.camera.back': 'none',
-                         'hw.camera.front': 'none', 'disk.dataPartition.size': '6442450944',
-                         'showDeviceFrame': 'no', 'fastboot.forceColdBoot': 'yes'})
-          avd.write_text(''.join(f'{key}={value.strip()}\n' for key, value in values.items()))
-          (avd_root / 'S3CE_PLATFORM35.ini').write_text(
-              'avd.ini.encoding=UTF-8\npath=' + str(avd.parent) + '\ntarget=android-35\n')
-          print('Configured actual API35 AVD:', avd)
-          PY
-      - name: Measure Android 15 ABI limit and exact-candidate viewport code
-        env:
-          CANDIDATE_APK: ${{ steps.apks.outputs.candidate }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python3-pil
-          /usr/bin/python3 scripts/android_runtime_platform.py --avd S3CE_PLATFORM35 --candidate "$CANDIDATE_APK" --sdk "$ANDROID_HOME" --emulator-dir "$ANDROID_HOME/emulator" --port 5556 --output build/platform-evidence --build-dir build/platform-probe
-      - name: Upload Android 15 platform evidence only
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-platform35-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/platform-evidence/
           if-no-files-found: error
           retention-days: 14

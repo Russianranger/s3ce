@@ -7,6 +7,7 @@ a SurfaceView input fixture; no native engine or game progression is exercised.
 import argparse
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -38,12 +39,53 @@ def candidate_identity(candidate):
             'classes2_sha256': hashlib.sha256(dex).hexdigest(), 'helper': HELPER}, dex
 
 
+def physical_size_from_wm(text, rotation):
+    """WindowManager reports natural dimensions; apply actual display rotation."""
+    if type(rotation) is not int or rotation not in (0, 1, 2, 3):
+        raise ValueError('Actual display rotation is unavailable')
+    physical = re.findall(r'^Physical size: (\d+)x(\d+)\s*$', text, re.M)
+    override = re.findall(r'^Override size: (\d+)x(\d+)\s*$', text, re.M)
+    if len(physical) != 1 or len(override) > 1:
+        raise ValueError('WindowManager natural display size is missing or ambiguous')
+    width, height = map(int, (override or physical)[0])
+    if min(width, height) <= 0:
+        raise ValueError('WindowManager display dimensions are not positive')
+    return [height, width] if rotation in (1, 3) else [width, height]
+
+
+def geometry_projection(report):
+    """Own the boundary between legacy app-compatible and physical coordinates.
+
+    A nonresizable target28 Activity may retain virtual Display/View dimensions
+    after wm-size changes. Keep all View/Insets/Surface facts in that app space;
+    only uniformly project screenshot rectangles into WindowManager's physical
+    space. Unequal scaling is rejected, never treated as an acceptable stretch.
+    """
+    app = report.get('display_size')
+    physical = report.get('physical_display_size', app)
+    for size in (app, physical):
+        if type(size) is not list or len(size) != 2 or any(type(v) is not int or v <= 0 for v in size):
+            raise ValueError('App and physical display dimensions must be explicit positive pairs')
+    sx, sy = physical[0] / app[0], physical[1] / app[1]
+    if abs(sx - sy) > .001:
+        raise ValueError('App-compatible to physical display mapping is not uniform')
+    return app, physical, (sx, sy)
+
+
+def projected_bounds(report, key):
+    _, _, (sx, sy) = geometry_projection(report)
+    bounds = report[key]
+    return [bounds[0] * sx, bounds[1] * sy, bounds[2] * sx, bounds[3] * sy]
+
+
 def validate_geometry(report, identity, expected_display):
     """Check actual framework measurements against the exact fitted-content rule."""
     if report.get('failure'):
         raise ValueError('Android probe failure: ' + str(report['failure']))
-    if report.get('api') != 35 or report.get('display_size') != list(expected_display):
-        raise ValueError('Unexpected Android API or physical display size')
+    app_display, physical_display, _ = geometry_projection(report)
+    if report.get('api') != 35 or physical_display != list(expected_display):
+        raise ValueError(f'Unexpected Android API/display: api={report.get("api")} physical={physical_display} '
+                         f'app-compatible={app_display}, expected physical={list(expected_display)}')
     if (report.get('target_sdk') != 28 or report.get('hardware_accelerated') is not False
             or report.get('requested_orientation') != 6 or report.get('window_cutout_mode') != 2):
         raise ValueError('Probe window differs from candidate target28/software/sensorLandscape/cutoutNEVER policy')
@@ -61,20 +103,26 @@ def validate_geometry(report, identity, expected_display):
                 or bounds[2] <= bounds[0] or bounds[3] <= bounds[1]):
             raise ValueError('Missing positive actual view bounds')
     left, top, right, bottom = parent
-    if not 0 <= left < right <= expected_display[0] or not 0 <= top < bottom <= expected_display[1]:
-        raise ValueError('Activity content is outside the physical display')
+    if not 0 <= left < right <= app_display[0] or not 0 <= top < bottom <= app_display[1]:
+        raise ValueError('Activity content is outside its reported app-compatible display')
     insets = report.get('system_insets')
     if (type(insets) is not list or len(insets) != 4
             or any(type(v) is not int or v < 0 for v in insets)):
         raise ValueError('Actual root-window insets are unavailable')
+    if (left < insets[0] or top < insets[1] or right > app_display[0] - insets[2]
+            or bottom > app_display[1] - insets[3]):
+        raise ValueError('Fitted activity content overlaps a reported system inset')
+    # Root WindowInsets use the same translated app space as View bounds.
+    # Display.getCutout is a separate display-level physical observation.
     cutout = report.get('display_cutout_insets')
     if cutout is not None:
         if type(cutout) is not list or len(cutout) != 4 or any(type(v) is not int or v < 0 for v in cutout):
             raise ValueError('Malformed actual display cutout insets')
-        insets = [max(a, b) for a, b in zip(insets, cutout)]
-    if (left < insets[0] or top < insets[1] or right > expected_display[0] - insets[2]
-            or bottom > expected_display[1] - insets[3]):
-        raise ValueError('Fitted activity content overlaps a reported system inset')
+        physical_parent = projected_bounds(report, 'parent_bounds')
+        if (physical_parent[0] < cutout[0] or physical_parent[1] < cutout[1]
+                or physical_parent[2] > physical_display[0] - cutout[2]
+                or physical_parent[3] > physical_display[1] - cutout[3]):
+            raise ValueError('Physical activity content overlaps the measured display cutout')
     unit = min((right - left) // 16, (bottom - top) // 9)
     width, height = unit * 16, unit * 9
     x, y = left + (right - left - width) // 2, top + (bottom - top - height) // 2
@@ -86,14 +134,18 @@ def validate_geometry(report, identity, expected_display):
 
 
 def validate_black_margins(path, report):
-    """Inspect every physical pixel in both actual side-margin rectangles."""
-    parent, child = report['parent_bounds'], report['child_bounds']
-    rectangles = [(parent[0], parent[1], child[0], parent[3]),
-                  (child[2], parent[1], parent[2], parent[3])]
+    """Inspect physical pixels strictly inside both actual side margins."""
+    _, physical_display, scales = geometry_projection(report)
+    parent, child = projected_bounds(report, 'parent_bounds'), projected_bounds(report, 'child_bounds')
+    # In size compatibility mode the compositor can filter one boundary pixel.
+    # Exclude that edge; every interior pixel still must be black.
+    edge = 1 if scales != (1., 1.) else 0
+    rectangles = [(math.ceil(parent[0]), math.ceil(parent[1]), math.floor(child[0]) - edge, math.floor(parent[3])),
+                  (math.ceil(child[2]) + edge, math.ceil(parent[1]), math.floor(parent[2]), math.floor(parent[3]))]
     checks = []
     with Image.open(path) as image:
         image = image.convert('RGB')
-        if list(image.size) != report['display_size']:
+        if list(image.size) != physical_display:
             raise ValueError('Screenshot and measured physical display dimensions differ')
         for rectangle in rectangles:
             if rectangle[2] <= rectangle[0]:
@@ -102,7 +154,8 @@ def validate_black_margins(path, report):
             if any(high > 3 for low, high in extrema):
                 raise ValueError('Physical side-margin pixels are not black')
             checks.append({'rectangle': list(rectangle), 'rgb_extrema': extrema,
-                           'pixels': (rectangle[2] - rectangle[0]) * (rectangle[3] - rectangle[1])})
+                           'pixels': (rectangle[2] - rectangle[0]) * (rectangle[3] - rectangle[1]),
+                           'app_to_physical_scale': scales})
     return checks
 
 
@@ -114,6 +167,22 @@ def validate_center_tap(events, child):
         raise ValueError('Framework did not deliver correct child-local center coordinates')
 
 
+def validate_visible_restoration(before_path, before, after_path, after):
+    """Require actual static fixture pixels to survive Home/return unchanged."""
+    def crop(path, report):
+        box = tuple(round(v) for v in projected_bounds(report, 'child_bounds'))
+        with Image.open(path) as image:
+            result = image.convert('RGB').crop(box)
+        if result.getextrema() == ((0, 0), (0, 0), (0, 0)):
+            raise ValueError('Actual fixture child is entirely black')
+        return result
+    first, second = crop(before_path, before), crop(after_path, after)
+    if first.size != second.size or first.tobytes() != second.tobytes():
+        raise ValueError('Visible fixture pixels did not survive Home/return unchanged')
+    return {'child_pixels_sha256': hashlib.sha256(first.tobytes()).hexdigest(),
+            'child_pixels_size': first.size, 'identical_after_return': True}
+
+
 def validate_cancel(events, child, label):
     actions = [e.get('action') for e in events]
     if not actions or actions[0] != 0 or actions[-1] != 3 or actions.count(3) != 1 or 1 in actions:
@@ -121,6 +190,31 @@ def validate_cancel(events, child, label):
     width, height = child[2] - child[0], child[3] - child[1]
     if any(e.get('action') == 2 and not (0 <= e['x'] < width and 0 <= e['y'] < height) for e in events):
         raise ValueError(label + ' forwarded an out-of-bounds MOVE before cancellation')
+    previous = events[-2] if len(events) >= 2 else {}
+    expected, actual = previous.get('pointers'), events[-1].get('pointers')
+    if type(expected) is not list or not expected or type(actual) is not list or not actual:
+        raise ValueError(label + ' lacks actual pointer-ID/child-coordinate samples')
+    for points in (expected, actual):
+        ids = []
+        for point in points:
+            if (type(point) is not dict or type(point.get('id')) is not int
+                    or not 0 <= point['id'] <= 31
+                    or any(type(point.get(axis)) not in (int, float)
+                           or not math.isfinite(point[axis]) for axis in ('x', 'y'))):
+                raise ValueError(label + ' has invalid pointer-ID/coordinate facts')
+            ids.append(point['id'])
+        if len(ids) != len(set(ids)):
+            raise ValueError(label + ' has duplicate pointer IDs')
+    if previous.get('action') == 6:
+        index = previous.get('action_index')
+        if type(index) is not int or not 0 <= index < len(expected):
+            raise ValueError(label + ' has an invalid POINTER_UP index')
+        expected = [point for i, point in enumerate(expected) if i != index]
+    if [p.get('id') for p in actual] != [p.get('id') for p in expected]:
+        raise ValueError(label + ' changed active pointer IDs or retained a lifted pointer')
+    for original, cancelled in zip(expected, actual):
+        if any(abs(original.get(axis, -9999) - cancelled.get(axis, -19999)) > .01 for axis in ('x', 'y')):
+            raise ValueError(label + ' CANCEL coordinates differ from the last valid child-local sample')
 
 
 def build_probe(candidate, sdk, directory):
@@ -188,19 +282,35 @@ class Platform:
         raise TimeoutError(description + ': ' + str(last))
 
     def report(self):
-        return json.loads(self.adb('exec-out', 'run-as', PACKAGE, 'cat', 'files/probe.json').stdout)
+        report = json.loads(self.adb('exec-out', 'run-as', PACKAGE, 'cat', 'files/probe.json').stdout)
+        report['wm_size'] = self.shell('wm', 'size')
+        try:
+            report['physical_display_size'] = physical_size_from_wm(report['wm_size'], report.get('display_rotation'))
+        except ValueError as error:
+            report['physical_display_size'] = None
+            report['physical_geometry_error'] = str(error)
+        report['coordinate_spaces'] = {'view_display_and_root_insets': 'app-compatible',
+            'wm_size_and_screenshot': 'physical', 'app_display_size': report.get('display_size'),
+            'physical_display_size': report['physical_display_size']}
+        try:
+            report['coordinate_spaces']['app_to_physical_scale'] = geometry_projection(report)[2]
+        except ValueError as error:
+            report['coordinate_spaces']['mapping_error'] = str(error)
+        return report
 
     def capture(self, label):
         directory = self.output / label
         directory.mkdir(exist_ok=True)
-        report = self.report()
-        (directory / 'probe.json').write_text(json.dumps(report, indent=2) + '\n')
         png = self.adb('exec-out', 'screencap', '-p').stdout
         if not png.startswith(b'\x89PNG\r\n\x1a\n'):
             raise ValueError('No actual screenshot for ' + label)
         (directory / 'screen.png').write_bytes(png)
+        report = self.report()
+        (directory / 'probe.json').write_text(json.dumps(report, indent=2) + '\n')
+        (directory / 'wm-size.txt').write_text(report['wm_size'])
         for name, command in [('windows.txt', ('dumpsys', 'window', 'windows')),
-                              ('activity.txt', ('dumpsys', 'activity', 'activities'))]:
+                              ('activity.txt', ('dumpsys', 'activity', 'activities')),
+                              ('display.txt', ('dumpsys', 'display'))]:
             (directory / name).write_text(self.shell(*command))
         return report
 
@@ -297,6 +407,22 @@ def main():
         validate_cancel(outside['touch_events'][before:], child, 'Drag leaving child')
         result['checks'].append('drag-leaves-child-cancels-without-outside-move-or-up')
         before = len(outside['touch_events'])
+        device.shell('am', 'start', '-W', '-n', ACTIVITY, '-f', '0x20000000',
+                     '--es', 'probe_action', 'multi-pointer-cancel')
+        def multi_ready():
+            report = device.report()
+            sequences = report.get('fixture_sequences', [])
+            return report if (sequences and sequences[-1].get('state') == 'completed'
+                and sequences[-1].get('touch_event_start') == before
+                and len(report.get('touch_events', [])) >= before + 4) else None
+        device.wait('fixed real-framework multi-pointer fixture completed', multi_ready)
+        multi = device.capture('multi-pointer-cancel')
+        sequence = multi['touch_events'][before:]
+        if [event.get('action') for event in sequence] != [0, 5, 6, 3]:
+            raise ValueError('Fixed multi-pointer fixture did not preserve the expected real dispatch sequence')
+        validate_cancel(sequence, child, 'POINTER_UP followed by out-of-child MOVE')
+        result['checks'].append('real-framework-lifted-pointer-retired-and-child-local-cancel-preserved')
+        before = len(multi['touch_events'])
         device.shell('input', 'motionevent', 'DOWN', cx, cy)
         device.shell('input', 'keyevent', '3')
         time.sleep(.5)
@@ -307,21 +433,54 @@ def main():
         restored = device.wait('Home return', ready)
         if len(restored['touch_events']) < len(background['touch_events']):
             raise ValueError('Home return created a new fixture instead of resuming the same input owner')
-        device.capture('home-return')
+        returned = device.capture('home-return')
+        result['home_visible_restoration'] = validate_visible_restoration(
+            output / 'initial/screen.png', initial, output / 'home-return/screen.png', returned)
         result['checks'].append('home-focus-loss-cancel-and-same-fixture-return')
         before = len(restored['touch_events'])
         device.shell('input', 'motionevent', 'DOWN', cx, cy)
-        device.shell('wm', 'size', '1080x2160')
-        resized = device.wait('resize to2160x1080', lambda: ready((2160, 1080)))
+        before_resize = device.report()
+        natural_target = (1080, 2160) if restored['display_rotation'] in (1, 3) else (2160, 1080)
+        result['resize_request'] = {'natural_dimensions': natural_target,
+                                    'expected_physical_dimensions': [2160, 1080],
+                                    'actual_rotation_before': restored['display_rotation']}
+        device.shell('wm', 'size', f'{natural_target[0]}x{natural_target[1]}')
+        def resized_report():
+            report = device.report()
+            return report if (report['physical_display_size'] == [2160, 1080]
+                and report.get('report_sequence', 0) > before_resize.get('report_sequence', 0)) else None
+        device.wait('actual physical resize and fresh framework report', resized_report)
+        resized = device.capture('live-resized')
         validate_cancel(resized['touch_events'][before:], child, 'Viewport resize')
-        resized = device.capture('resized')
-        result['physical_black_margins']['resized'] = validate_black_margins(output / 'resized/screen.png', resized)
         device.shell('input', 'motionevent', 'UP', cx, cy)
+        result['resize_request']['raw_live_coordinate_spaces'] = resized['coordinate_spaces']
+        # Legacy nonresizable Activities may expose mixed/latched app geometry
+        # during live wm-size changes. Retain that observation; do not reinterpret
+        # old app pixels as physical coordinates or waive a helper-fit failure.
+        try:
+            geometry_projection(resized)
+        except ValueError as error:
+            result['resize_request']['live_geometry_limit'] = str(error)
+            device.shell('am', 'force-stop', PACKAGE)
+            device.shell('am', 'start', '-W', '-n', ACTIVITY)
+            resized = device.wait('fresh fixture at resized physical display', lambda: ready((2160, 1080)))
+            resized = device.capture('resized-fresh-fixture')
+            result['resize_request']['geometry_scope'] = 'New fixture process at resized display; live CANCEL tested separately'
+            capture = 'resized-fresh-fixture'
+        else:
+            validate_geometry(resized, identity, (2160, 1080))
+            result['resize_request']['geometry_scope'] = 'Live fixture; app-compatible bounds uniformly mapped to physical pixels'
+            capture = 'live-resized'
+        result['physical_black_margins']['resized'] = validate_black_margins(output / capture / 'screen.png', resized)
         device.shell('wm', 'size', 'reset')
+        # Start clean after restoring physical geometry, preserving the exact
+        # candidate helper bytes and all prior process evidence.
+        device.shell('am', 'force-stop', PACKAGE)
+        device.shell('am', 'start', '-W', '-n', ACTIVITY)
         device.wait('restore2640x1080', ready)
         restored = device.capture('restored')
         result['physical_black_margins']['restored'] = validate_black_margins(output / 'restored/screen.png', restored)
-        result['checks'].append('real-framework-resize-cancels-and-restores-centered-surface')
+        result['checks'].append('real-framework-resize-cancel-and-observed-resized-restored-fitted-surfaces')
         def rotation_ready(rotation):
             report = device.report()
             return report if report.get('display_rotation') == rotation else None
@@ -401,6 +560,11 @@ def main():
         raise
     finally:
         if emulator is not None:
+            try:
+                final = device.capture('final-platform-state')
+                result['final_coordinate_spaces'] = final.get('coordinate_spaces')
+            except (OSError, RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
+                result['final_capture_error'] = str(error)
             for name, command in [('logcat.txt', ('logcat', '-d', '-v', 'threadtime')),
                                   ('properties.txt', ('shell', 'getprop'))]:
                 try:

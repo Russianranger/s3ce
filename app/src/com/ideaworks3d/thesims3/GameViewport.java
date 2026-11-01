@@ -17,8 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 /** Owns a real, unstretched16:9 child surface and inert surrounding margins.
  * Android's window decor fits system bars/cutouts once. This container fits its
  * actual measured content, without subtracting root-window insets a second time.
- * ViewGroup supplies every pointer's child-local coordinates; no input rescaling
- * or second offset is applied to the original Airplay touch bridge.
+ * Normal events use ViewGroup's child-local dispatch without another offset.
+ * CANCEL's separate framework fast path is normalized at its owning boundary.
+ * No input rescaling is applied to the original Airplay touch bridge.
  */
 public final class GameViewport extends ViewGroup {
     private static final AtomicInteger layoutLogs = new AtomicInteger();
@@ -122,8 +123,15 @@ public final class GameViewport extends ViewGroup {
             cancelGesture();
             blocked = false;
         }
+        // ViewGroup's CANCEL fast path deliberately skips normal child offsets.
+        // Retire this container's owned active snapshot at that boundary.
+        if (action == MotionEvent.ACTION_CANCEL) {
+            cancelGesture();
+            blocked = false;
+            return true;
+        }
         if (blocked) {
-            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) blocked = false;
+            if (action == MotionEvent.ACTION_UP) blocked = false;
             return true;
         }
         if (!allInside(event)) {
@@ -131,19 +139,48 @@ public final class GameViewport extends ViewGroup {
             blocked = action != MotionEvent.ACTION_UP && action != MotionEvent.ACTION_CANCEL;
             return true;
         }
-        if (action == MotionEvent.ACTION_CANCEL) {
-            if (forwarding) super.dispatchTouchEvent(event);
-            finishGesture();
-            return true;
-        }
         // A pointer born in a margin cannot acquire the child by moving inside.
         if (!forwarding && action != MotionEvent.ACTION_DOWN) return true;
         forwarding = true;
-        if (lastEvent != null) lastEvent.recycle();
-        lastEvent = MotionEvent.obtainNoHistory(event);
+        rememberActivePointers(event);
         super.dispatchTouchEvent(event);
         if (action == MotionEvent.ACTION_UP) finishGesture();
         return true;
+    }
+
+    /** Retain post-event ownership, excluding the finger a POINTER_UP retires.
+     * Legacy MultiTouch turns every CANCEL pointer into native UP; retaining
+     * the just-ended finger would release it twice.
+     */
+    private void rememberActivePointers(MotionEvent event) {
+        MotionEvent next;
+        int count = event.getPointerCount();
+        int ended = event.getActionIndex();
+        if (event.getActionMasked() == MotionEvent.ACTION_POINTER_UP && count > 1 && ended < count) {
+            MotionEvent.PointerProperties[] properties = new MotionEvent.PointerProperties[count - 1];
+            MotionEvent.PointerCoords[] coordinates = new MotionEvent.PointerCoords[count - 1];
+            // Public obtain has no raw-offset argument. Seed screen coordinates,
+            // then restore parent-local positions; offsetLocation retains raw X/Y.
+            float rawOffsetX = event.getRawX() - event.getX(0);
+            float rawOffsetY = event.getRawY() - event.getY(0);
+            int out = 0;
+            for (int i = 0; i < count; ++i) if (i != ended) {
+                properties[out] = new MotionEvent.PointerProperties();
+                coordinates[out] = new MotionEvent.PointerCoords();
+                event.getPointerProperties(i, properties[out]);
+                event.getPointerCoords(i, coordinates[out]);
+                coordinates[out].x += rawOffsetX;
+                coordinates[out].y += rawOffsetY;
+                ++out;
+            }
+            next = MotionEvent.obtain(event.getDownTime(), event.getEventTime(), MotionEvent.ACTION_MOVE,
+                    count - 1, properties, coordinates, event.getMetaState(), event.getButtonState(),
+                    event.getXPrecision(), event.getYPrecision(), event.getDeviceId(), event.getEdgeFlags(),
+                    event.getSource(), event.getFlags());
+            next.offsetLocation(-rawOffsetX, -rawOffsetY);
+        } else next = MotionEvent.obtainNoHistory(event);
+        if (lastEvent != null) lastEvent.recycle();
+        lastEvent = next;
     }
 
     private void finishGesture() {
@@ -161,8 +198,10 @@ public final class GameViewport extends ViewGroup {
         if (previous == null) return;
         try {
             previous.setAction(MotionEvent.ACTION_CANCEL);
-            // The old child bounds are still installed, so cancellation uses
-            // exactly the same framework-local coordinate space as the gesture.
+            // Android's CANCEL fast path does not offset coordinates. Convert
+            // this owned copy once while the old child bounds are installed.
+            // Super still retires its touch-target bookkeeping.
+            previous.offsetLocation(-game.getLeft(), -game.getTop());
             super.dispatchTouchEvent(previous);
         } finally {
             previous.recycle();
