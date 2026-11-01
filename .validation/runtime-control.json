@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 2,
-  "frame_sha256": "88058c80a65378d7fabff7c23ebd6ddb553f4357602e1e12729db5f780166685",
+  "seq": 3,
+  "frame_sha256": "e45a2ac3604715f736f6f77f2c639c3813dd0dbe0cc270e0298f7a09a79c3ad6",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1400,
-    "y": 876
+    "type": "swipe",
+    "x1": 2190,
+    "y1": 270,
+    "x2": 2190,
+    "y2": 780,
+    "duration_ms": 1200
   },
-  "note": "Select the visible dining-chair back at its rendered location for an object action."
+  "note": "Use the visible zoom ladder to expose the chair and nearby floor for action testing."
 }
