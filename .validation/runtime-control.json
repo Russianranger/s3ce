@@ -1,19 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 3,
-  "frame_sha256": "e45a2ac3604715f736f6f77f2c639c3813dd0dbe0cc270e0298f7a09a79c3ad6",
+  "seq": 4,
+  "frame_sha256": "e589624f7e7314753f626211f93db362b9355838d1b515b030bb0955307f4106",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "swipe",
-    "x1": 2190,
-    "y1": 270,
-    "x2": 2190,
-    "y2": 780,
-    "duration_ms": 1200
+    "type": "tap",
+    "x": 1375,
+    "y": 722
   },
-  "note": "Use the visible zoom ladder to expose the chair and nearby floor for action testing."
+  "note": "Select the fully visible dining-chair seat after zooming out."
 }
