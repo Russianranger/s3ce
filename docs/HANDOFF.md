@@ -18,8 +18,9 @@ save and normal Quit. Root/independent reviews accept these exact bytes. Raw
 manual gate=false remains. Host16/native,379-method static and107-image pixel/
 mip comparisons pass. See SOCIAL_RUNTIME_ACCEPTANCE.md and evidence index.
 
-Both API35 helper runs remain red on recorded size-compat/developer-cutout limits;
-eight core input/rotation checks are supported. No original game on that64-bit-only
+First two API35 attempts remain red with recorded size-compat/cutout limits.
+Publication repeat41342413593 is green: nine scoped checks including actual3/input/
+visible1 and enabled96px cutout fit. Post-overlay restoration remains invalid. No original game on that64-bit-only
 image, Hot Smooch completion, prior114-save migration, final post-action save
 reload, full-game reverse rotation or universal startup reliability is claimed.
 Keep every failed/interrupted attempt. No game state/save edits to force socials.

@@ -90,5 +90,19 @@
     "bytes": 196101490,
     "sha256": "cbd1e87dd53b595b89b1a1cfa9ef697b20aa2952bf35e6d26d597b2b80d11895",
     "scope": "complete game and both pre-publication platform archives, retained privately without keys/APKs/assets/save contents"
+  },
+  "publication_platform_repeat": {
+    "run": 41342413593,
+    "source": "4f591682e28d35a081281a5dd0b574c4c59641b5",
+    "conclusion": "success",
+    "artifact": 13097364777,
+    "bytes": 1598350,
+    "sha256": "dbf20cfa9b2e24725cb2ae8dd430d2084e2825258b4b1780ba4f5082d29124f5",
+    "verified_members": 112,
+    "scope": "unchanged exact Java helper; no original ARM32 game on64-bit-only API35 image",
+    "accepted": "nine scoped checks: core input/actual3/visible1 plus enabled96px stock cutout fit",
+    "limit": "cutout-restored/final parent outside app display, black PNG; no post-overlay restoration acceptance; live-resize geometry uses fresh fixture",
+    "initial_preparation": "not-needed",
+    "global_fatal_anr": 0
   }
 }

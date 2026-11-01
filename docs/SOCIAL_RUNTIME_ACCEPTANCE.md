@@ -110,3 +110,20 @@ Complete QA archives/receipts are retained privately as S3CE-0.1.15-private-QA-e
 (SHA256cbd1e87dd53b595b89b1a1cfa9ef697b20aa2952bf35e6d26d597b2b80d11895),
 without APKs, assets, keys or save contents. Evidence index contains public receipt.
 Next is the focused phone test above; release completion does not prove Hot Smooch.
+
+## Publication-triggered Android 15 repeat
+
+Green [run41342413593](https://github.com/Russianranger/s3ce/actions/runs/41342413593)
+uses the unchanged exact APK/helper/harness; initial reset not needed. Artifact
+13097364777:1,598,350bytes,112 CRC-verified members, SHA256
+ dbf20cfa9b2e24725cb2ae8dd430d2084e2825258b4b1780ba4f5082d29124f5.
+Root/independent review accepts nine scoped checks: core input/cancellation/Home,
+samePID4397 actual3/input/visible1, and enabled stock96px cutout fitted once.
+Parent[96,0,2640,1032], child[456,3,2280,1029], exact teal pixels/black margins.
+Zero fatal/ANR. See [independent receipt](social-platform-repeat-review.json).
+
+Green job does not prove post-overlay restoration: final parent[100,20,2740,1051]
+fails strict geometry and PNG is black; readiness returned before that later
+transition. Retain both earlier red attempts, this limit and fresh-resize scope.
+No original ARM32 game executes on this64-bit-only API35 image; install remains
+NO_MATCHING_ABIS. No APK/helper change or universal certification is implied.

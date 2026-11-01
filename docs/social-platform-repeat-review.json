@@ -1,0 +1,46 @@
+{
+  "run_id": "41342413593",
+  "archive_sha256": "dbf20cfa9b2e24725cb2ae8dd430d2084e2825258b4b1780ba4f5082d29124f5",
+  "candidate_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+  "independent_acceptance": "Nine core and stock-cutout-enabled checks verified",
+  "environment": "API35 x86_64/arm64 emulator; exact candidate GameViewport loaded from classes2.dex",
+  "processes": {
+    "initial_home_live_resize": 2450,
+    "resized_fresh": 4056,
+    "restored_rotation_cutout": 4397
+  },
+  "actual_rotation3_and_back": true,
+  "stock_cutout_enabled": {
+    "display_insets": [
+      96,
+      0,
+      0,
+      0
+    ],
+    "parent": [
+      96,
+      0,
+      2640,
+      1032
+    ],
+    "child": [
+      456,
+      3,
+      2280,
+      1029
+    ],
+    "surface": [
+      1824,
+      1026
+    ],
+    "visible_teal_child_and_black_margins_verified": true
+  },
+  "fatal_or_anr_count": 0,
+  "limits": [
+    "Exact ARM32 game install rejected NO_MATCHING_ABIS; no API35 gameplay",
+    "One stock developer cutout overlay only; no physical Samsung certification",
+    "Overlay removal final frame still shifted parent[100,20,2740,1051], child[508,22,2332,1048]; final restoration not accepted",
+    "Live resize only CANCEL; resized geometry verified in fresh process",
+    "Earlier platform1 and platform2 failures retained in original QA bundle"
+  ]
+}
