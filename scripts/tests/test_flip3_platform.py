@@ -5,13 +5,14 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from flip3_platform import (HELPER, candidate_identity, validate_black_margins, validate_cancel,
                            validate_center_tap, validate_geometry, physical_size_from_wm,
-                           projected_bounds, validate_visible_restoration)
+                           projected_bounds, validate_visible_restoration, capture_settled_geometry)
 
 
 class PlatformProbeTests(unittest.TestCase):
@@ -151,6 +152,61 @@ class PlatformProbeTests(unittest.TestCase):
                 out.writestr('classes.dex', b'dex\n035\0fixture')
             with self.assertRaises(ValueError):
                 candidate_identity(apk)
+
+
+class GeometrySettlingTests(unittest.TestCase):
+    report = PlatformProbeTests.report
+    def test_initial_capture_replaces_ephemeral_fullscreen_geometry(self):
+        settled, identity = self.report()
+        settled.update(window_focused=True, resumed=True, display_rotation=1,
+                       parent_bounds=[0, 0, 2640, 1032], child_bounds=[408, 3, 2232, 1029],
+                       child_measured_size=[1824, 1026], surface_frame=[1824, 1026],
+                       system_insets=[0, 0, 0, 48])
+        early = copy.deepcopy(settled)
+        early.update(parent_bounds=[0, 0, 2640, 984], child_bounds=[448, 1, 2192, 982],
+                     child_measured_size=[1744, 981], surface_frame=[1744, 981], system_insets=[0, 0, 0, 96])
+        clock = [0]
+        class Device:
+            def __init__(self, output):
+                self.output, self.captures = output, []
+            def report(self):
+                return copy.deepcopy(early if clock[0] < 4 else settled)
+            def wait(self, label, predicate, timeout):
+                for _ in range(int(timeout) + 1):
+                    report = predicate()
+                    if report:
+                        return report
+                    clock[0] += 1
+                raise TimeoutError(label)
+            def capture(self, label):
+                self.captures.append(label)
+                clock[0] += 1
+                return copy.deepcopy(settled)
+        with tempfile.TemporaryDirectory() as temporary:
+            device = Device(Path(temporary))
+            with patch('flip3_platform.time.monotonic', side_effect=lambda: clock[0]):
+                report, label = capture_settled_geometry(device, identity, (2640, 1080), 'initial')
+            self.assertEqual(report['child_bounds'], [408, 3, 2232, 1029])
+            self.assertEqual(label, 'initial-settling-01')
+            self.assertEqual(device.captures, ['initial', 'initial-settling-01'])
+            proof = json.loads((Path(temporary) / 'initial-geometry-settling.json').read_text())
+            self.assertTrue(proof['accepted'])
+            self.assertEqual([c['matches_quiet_layout'] for c in proof['captures']], [False, True])
+
+    def test_invalid_geometry_cannot_be_accepted_as_settled(self):
+        report, identity = self.report()
+        report.update(window_focused=True, resumed=True, child_bounds=[0, 0, 2640, 1080])
+        class Device:
+            def __init__(self, output): self.output = output
+            def report(self): return report
+            def wait(self, label, predicate, timeout): return predicate()
+            def capture(self, label): raise AssertionError('Invalid report must fail before capture')
+        with tempfile.TemporaryDirectory() as temporary:
+            device = Device(Path(temporary))
+            with self.assertRaisesRegex(ValueError, 'stretched'):
+                capture_settled_geometry(device, identity, (2640, 1080), 'initial')
+            proof = json.loads((Path(temporary) / 'initial-geometry-settling.json').read_text())
+            self.assertFalse(proof['accepted'])
 
 
 if __name__ == '__main__':

@@ -217,6 +217,61 @@ def validate_cancel(events, child, label):
             raise ValueError(label + ' CANCEL coordinates differ from the last valid child-local sample')
 
 
+def geometry_key(report):
+    """Only actual layout/window facts participate in the settling observation."""
+    names = ('display_size', 'physical_display_size', 'display_rotation',
+             'parent_bounds', 'child_bounds', 'child_measured_size', 'surface_frame',
+             'system_insets', 'display_cutout_insets')
+    return json.dumps({name: report.get(name) for name in names}, sort_keys=True)
+
+
+def capture_settled_geometry(device, identity, expected_display, label, timeout=30):
+    """Capture valid geometry after three quiet seconds, within thirty seconds.
+
+    A focused API35 layout may precede fullscreen system-bar settling. Compare
+    the actual capture again and retain/retry any changed capture.
+    """
+    deadline = time.monotonic() + timeout
+    previous = quiet_since = None
+    evidence = {'quiet_seconds': 3, 'timeout_seconds': timeout, 'captures': [], 'accepted': False}
+    try:
+        for attempt in range(6):
+            def settled():
+                nonlocal previous, quiet_since
+                report = device.report()
+                try:
+                    validate_geometry(report, identity, expected_display)
+                except ValueError:
+                    previous = quiet_since = None
+                    raise
+                if not report.get('window_focused') or not report.get('resumed'):
+                    previous = quiet_since = None
+                    return None
+                key, now = geometry_key(report), time.monotonic()
+                if key != previous:
+                    previous, quiet_since = key, now
+                    return None
+                return report if now - quiet_since >= 3 else None
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError('Actual captured viewport did not settle: ' + label)
+            ready = device.wait('settled actual geometry ' + label, settled, remaining)
+            capture_label = label if attempt == 0 else f'{label}-settling-{attempt:02d}'
+            captured = device.capture(capture_label)
+            validate_geometry(captured, identity, expected_display)
+            matches = (captured.get('window_focused') and captured.get('resumed')
+                       and geometry_key(captured) == geometry_key(ready))
+            evidence['captures'].append({'capture': capture_label, 'matches_quiet_layout': bool(matches),
+                'parent_bounds': captured['parent_bounds'], 'child_bounds': captured['child_bounds']})
+            if matches:
+                evidence.update(accepted=True, accepted_capture=capture_label)
+                return captured, capture_label
+            previous = quiet_since = None
+        raise TimeoutError('Captured viewport repeatedly changed after readiness: ' + label)
+    finally:
+        (device.output / f'{label}-geometry-settling.json').write_text(json.dumps(evidence, indent=2) + '\n')
+
+
 def build_probe(candidate, sdk, directory):
     identity, dex = candidate_identity(candidate)
     directory.mkdir(parents=True, exist_ok=True)
@@ -379,9 +434,9 @@ def main():
             report = device.report()
             validate_geometry(report, identity, size)
             return report if report.get('window_focused') and report.get('resumed') else None
-        initial = device.wait('actual candidate viewport laid out on API35', ready)
+        initial, initial_capture = capture_settled_geometry(device, identity, (2640, 1080), 'initial')
+        result['initial_geometry_capture'] = initial_capture
         child = validate_geometry(initial, identity, (2640, 1080))
-        device.capture('initial')
         parent = initial['parent_bounds']
         cy, cx = (child[1] + child[3]) // 2, (child[0] + child[2]) // 2
         if not child[0] > parent[0] or not child[2] < parent[2]:
@@ -391,6 +446,8 @@ def main():
             device.shell('input', 'tap', x, cy)
         time.sleep(1)
         bars = device.capture('black-margins')
+        if geometry_key(bars) != geometry_key(initial):
+            raise ValueError('Actual geometry changed after settled initial capture; margin input evidence retained')
         if len(bars['touch_events']) != before:
             raise ValueError('Black-margin tap reached SurfaceView fixture')
         result['physical_black_margins'] = {'black-margins': validate_black_margins(output / 'black-margins/screen.png', bars)}
@@ -398,6 +455,8 @@ def main():
         device.shell('input', 'tap', cx, cy)
         time.sleep(.5)
         center = device.capture('center-tap')
+        if geometry_key(center) != geometry_key(initial):
+            raise ValueError('Actual geometry changed during center tap; input evidence retained')
         validate_center_tap(center['touch_events'][before:], child)
         result['checks'].append('center-tap-real-child-local-coordinates')
         before = len(center['touch_events'])
@@ -434,8 +493,9 @@ def main():
         if len(restored['touch_events']) < len(background['touch_events']):
             raise ValueError('Home return created a new fixture instead of resuming the same input owner')
         returned = device.capture('home-return')
+        validate_geometry(returned, identity, (2640, 1080))
         result['home_visible_restoration'] = validate_visible_restoration(
-            output / 'initial/screen.png', initial, output / 'home-return/screen.png', returned)
+            output / initial_capture / 'screen.png', initial, output / 'home-return/screen.png', returned)
         result['checks'].append('home-focus-loss-cancel-and-same-fixture-return')
         before = len(restored['touch_events'])
         device.shell('input', 'motionevent', 'DOWN', cx, cy)
@@ -463,10 +523,8 @@ def main():
             result['resize_request']['live_geometry_limit'] = str(error)
             device.shell('am', 'force-stop', PACKAGE)
             device.shell('am', 'start', '-W', '-n', ACTIVITY)
-            resized = device.wait('fresh fixture at resized physical display', lambda: ready((2160, 1080)))
-            resized = device.capture('resized-fresh-fixture')
+            resized, capture = capture_settled_geometry(device, identity, (2160, 1080), 'resized-fresh-fixture')
             result['resize_request']['geometry_scope'] = 'New fixture process at resized display; live CANCEL tested separately'
-            capture = 'resized-fresh-fixture'
         else:
             validate_geometry(resized, identity, (2160, 1080))
             result['resize_request']['geometry_scope'] = 'Live fixture; app-compatible bounds uniformly mapped to physical pixels'
@@ -477,9 +535,8 @@ def main():
         # candidate helper bytes and all prior process evidence.
         device.shell('am', 'force-stop', PACKAGE)
         device.shell('am', 'start', '-W', '-n', ACTIVITY)
-        device.wait('restore2640x1080', ready)
-        restored = device.capture('restored')
-        result['physical_black_margins']['restored'] = validate_black_margins(output / 'restored/screen.png', restored)
+        restored, restored_capture = capture_settled_geometry(device, identity, (2640, 1080), 'restored')
+        result['physical_black_margins']['restored'] = validate_black_margins(output / restored_capture / 'screen.png', restored)
         result['checks'].append('real-framework-resize-cancel-and-observed-resized-restored-fitted-surfaces')
         def rotation_ready(rotation):
             report = device.report()
