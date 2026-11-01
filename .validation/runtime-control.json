@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 26,
-  "frame_sha256": "ae24b9abae63fa1cd146e8da2e977188094e85e99aebb4e2eb38a7a321e8b0fc",
+  "seq": 27,
+  "frame_sha256": "11732a51ec2960d6dbaad21576445011d1f0473a07a565d09870e2fdc26a84e5",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 473,
-    "y": 965
+    "x": 860,
+    "y": 245
   },
-  "note": "Open Pause from the lower-left ellipsis for an ordinary post-test save and exit."
+  "note": "Dismiss the ordinary Lonely gameplay hint before reopening Pause; no save is claimed yet."
 }
