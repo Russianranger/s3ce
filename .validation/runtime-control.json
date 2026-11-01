@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 18,
-  "frame_sha256": "087c39458f64ede1d5fa2dcfaf38a0029095c20bc24f86bcd1c8657505c72f0e",
+  "seq": 19,
+  "frame_sha256": "30ae22b93a4465b2249eb60d47e9e23f6399f857e52a236db2c967ce1dd6f947",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1157,
-    "y": 854
+    "x": 455,
+    "y": 330
   },
-  "note": "Close the new timed wish popup before retrying status selection; popup interruption is retained."
+  "note": "Retry the visible upper-left status tab after dismissing the timed popup."
 }
