@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 6,
-  "frame_sha256": "a7688fc3d2690ce0713f71b34b7da36523e01fd112bcd1bf523c8817c44018a6",
+  "seq": 7,
+  "frame_sha256": "4bf5f86f86f9bb413738e491897292bf02e2974e0f641752960f2327b115ccc8",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1593,
-    "y": 356
+    "x": 2164,
+    "y": 965
   },
-  "note": "Select the visible Cheap Dining Chair / Sit row; require a resulting seated pose."
+  "note": "Open the bottom-right Wishes jewel with camera mode off after visible Chair Sit completion."
 }
