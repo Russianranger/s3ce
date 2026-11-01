@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 13,
-  "frame_sha256": "a4fd8a20621c1ffbb395fafa1a9221d79a6fe8061fe7a010459dfa1ab5ae8405",
+  "seq": 14,
+  "frame_sha256": "efb410dbf1d053f14d5ef3e0f8976348813b0cf231d17c40c0ea3720c057bc5a",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 3
+    "type": "tap",
+    "x": 2164,
+    "y": 965
   },
-  "note": "Observe released camera stability without sending further touch input."
+  "note": "Open the bottom-right Wishes jewel while camera mode remains visibly enabled."
 }
