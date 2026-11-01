@@ -167,7 +167,7 @@ PATCHES = [('smali/com/ideaworks3d/airplay/AirplayThread.smali',
 # Input/lifecycle/diagnostic changes keep their reviewed method bodies separate.
 import json
 _PATCH_ROOT = Path(__file__).resolve().parent
-for _manifest in ("input_methods.json", "audio_methods.json", "diagnostic_methods.json"):
+for _manifest in ("input_methods.json", "audio_methods.json", "diagnostic_methods.json", "viewport_methods.json"):
     for _relative, _signature, _original_sha, _replacement_file in json.loads(
             (_PATCH_ROOT / _manifest).read_text(encoding="utf-8")):
         PATCHES.append((_relative, _signature, _original_sha,

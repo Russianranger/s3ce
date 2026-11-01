@@ -1,4 +1,26 @@
-# Current 0.1.13 runtime continuation
+# Current assignment — Flip3 landscape adaptation
+
+Branch `flip3` starts at current main1561a3bac5f85974a2f41c4959f77093038018ad.
+The user physically confirms that0.1.13 fixed the camera/jewel issue and the
+game now runs. Preserve that result; no new diagnostic/repeated-start count was
+supplied. Main and its releases remain the accepted Thor track.
+
+Create0.1.14-flip3/code114 for Galaxy Z Flip3 5G, Android15, unfolded landscape.
+Use a centered aspect-preserving16:9 actual game surface within the safe content
+area, with inert side margins on2640×1080. Keep native-reported dimensions and
+view-local touch coordinates identical; avoid per-control offsets/stretching.
+Exercise both landscape directions, safe insets, cancellation, multitouch and
+Home/return. Preserve appID/key/save location, ARM32/4KiB/target28 and every prior
+native/render/input/action/audio/teardown fix. Original rendering stays unchecked.
+
+Autonomously implement/build/test/sign and publish a Flip3 test APK from this
+branch, then deliver its direct link, checksum and short phone test. Record full
+gameplay evidence separately from Android15 platform/probe tests. A 64-bit-only
+API35 emulator cannot establish ARM32 gameplay on the phone; retain measured
+ABI/page-size/install results and any failures. No game-state/save edits to
+manufacture progression. Keep private reports/keys out of Git.
+
+# Historical 0.1.13 runtime continuation
 
 Frozen signed APK SHA256ce8c54bffe5deeb00e6c81b3d942bfdd5f5480b63ef281d33b053cc255eb3a5e,
 code113, production sourceb76f771113032361de079ee360588e0990426c08.

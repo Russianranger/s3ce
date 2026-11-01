@@ -22,7 +22,8 @@
             android:authorities="io.github.russianranger.s3ce.reports"
             android:exported="false" android:grantUriPermissions="true" android:process=":launcher" />
         <activity android:name="com.ideaworks3d.thesims3.Main" android:exported="false"
-            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
+            android:screenOrientation="sensorLandscape" android:maxAspectRatio="3.0"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:resizeableActivity="false" />
     </application>
 </manifest>

@@ -24,6 +24,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 from android_runtime_control import MAX_INTERACTIVE_COMMANDS
+from android_runtime_profile import runtime_profile
 
 PACKAGE = 'io.github.russianranger.s3ce'
 LAUNCHER = PACKAGE + '/com.ideaworks3d.thesims3.CompatActivity'
@@ -79,8 +80,8 @@ def plan_execution_scope(plan, interactive, interactive_after):
     return {'mode': mode, 'endpoint': endpoint, 'limit': matches[0] + 1}
 
 
-def game_viewport(hierarchy, windows):
-    """Prefer the actual native view; otherwise use its fullscreen Main window."""
+def game_viewport(hierarchy, windows, viewport_events='', screen_size=None):
+    """Prefer actual child bounds; a wide Activity frame is never a game canvas."""
     candidates = []
     try:
         for node in ET.fromstring(hierarchy).iter('node'):
@@ -89,7 +90,7 @@ def game_viewport(hierarchy, windows):
                 match = BOUNDS.fullmatch(node.get('bounds', ''))
                 if match:
                     bounds = tuple(map(int, match.groups()))
-                    if valid_native_canvas(bounds):
+                    if valid_native_canvas(bounds) and within_screen(bounds, screen_size):
                         candidates.append(bounds)
     except ET.ParseError:
         pass
@@ -103,18 +104,71 @@ def game_viewport(hierarchy, windows):
         match = re.search(r'(?:mFrame=|\bframe=)(\[-?\d+,\s*-?\d+\]\[-?\d+,\s*-?\d+\])', section)
         if match:
             bounds = tuple(map(int, BOUNDS.fullmatch(match[1]).groups()))
-            if valid_native_canvas(bounds):
+            if within_screen(bounds, screen_size):
                 base = 'ty=BASE_APPLICATION' in section
                 frames.append((base, (bounds[2] - bounds[0]) * (bounds[3] - bounds[1]), bounds))
+    # Animated SurfaceViews may never idle for UIAutomator. The candidate's
+    # bounded layout witness records its real child location/size, not a fitted
+    # rectangle inferred from display or Activity dimensions. Require both its
+    # parent and child to remain inside an observed Main window and actual PNG.
+    layout = re.compile(r'VIEWPORT child=([A-Za-z0-9_.$]+) bounds=(\[-?\d+,\s*-?\d+\]\[-?\d+,\s*-?\d+\])'
+                        r' parent=(\[-?\d+,\s*-?\d+\]\[-?\d+,\s*-?\d+\])')
+    for match in reversed(list(layout.finditer(viewport_events))):
+        name, child_text, parent_text = match.groups()
+        if not (name.startswith('com.ideaworks3d.airplay.') or name == 'android.view.SurfaceView'):
+            continue
+        child = tuple(map(int, BOUNDS.fullmatch(child_text).groups()))
+        parent = tuple(map(int, BOUNDS.fullmatch(parent_text).groups()))
+        if (valid_native_canvas(child) and within_screen(parent, screen_size)
+                and contains_bounds(parent, child)
+                and any(contains_bounds(window, parent) for _, _, window in frames)):
+            return child, 'GameViewport actual child layout witness'
     if frames:
-        base, _, bounds = max(frames)
-        return bounds, 'Main BASE_APPLICATION frame' if base else 'largest Main native frame'
+        compatible = [row for row in frames if valid_native_canvas(row[2])]
+        if compatible:
+            base, _, bounds = max(compatible)
+            return bounds, 'Main BASE_APPLICATION frame' if base else 'largest Main native frame'
     return None, None
+
+
+def contains_bounds(outer, inner):
+    return outer[0] <= inner[0] < inner[2] <= outer[2] and outer[1] <= inner[1] < inner[3] <= outer[3]
+
+
+def within_screen(bounds, size):
+    return size is None or contains_bounds((0, 0, *size), bounds)
+
+
+def letterbox_probe_points(screen_size, viewport):
+    """Select one physical point strictly inside each vertical black margin."""
+    if not valid_native_canvas(viewport) or not within_screen(viewport, screen_size):
+        raise ValueError('Letterbox probes require actual in-screen native bounds')
+    left, top, right, bottom = viewport
+    width, _ = screen_size
+    if left < 2 or right > width - 2:
+        raise ValueError('Both visible vertical margins are required')
+    return [(left // 2, (top + bottom) // 2), ((right + width) // 2, (top + bottom) // 2)]
 
 
 def valid_native_canvas(bounds):
     left, top, right, bottom = bounds
     return right > left and bottom > top and abs((right - left) / (bottom - top) - 16 / 9) <= .002
+
+
+def main_window_rotation(windows):
+    """Read the actual Main window configuration, never the requested setting."""
+    observations = []
+    for section in re.split(r'(?=\n\s*Window #\d+ Window\{)', windows):
+        if not any('com.ideaworks3d.thesims3.Main}' in line for line in section.splitlines()[:2]):
+            continue
+        match = re.search(r'\bmFullConfiguration=[^\n]*\bmRotation=(?:ROTATION_(0|90|180|270)|([0-3]))\b', section)
+        if match:
+            observations.append(('ty=BASE_APPLICATION' in section,
+                                 int(match[1]) // 90 if match[1] is not None else int(match[2])))
+    if any(base for base, _ in observations):
+        observations = [row for row in observations if row[0]]
+    rotations = {rotation for _, rotation in observations}
+    return rotations.pop() if len(rotations) == 1 else None
 
 
 def keyboard_is_visible(windows):
@@ -139,6 +193,9 @@ class Android:
         self.quit_observation = {}
         self.interactive_observation = {'commands': [], 'frames': [], 'finish_requested': False}
         self.cold_starts = []
+        self.letterbox_observation = {}
+        self.home_return_observation = {}
+        self.rotation_observations = []
         self.runtime_started = time.monotonic()
 
     def adb(self, *args, timeout=45, check=True):
@@ -181,11 +238,15 @@ class Android:
         (directory / 'hierarchy.xml').write_bytes(hierarchy)
         windows = self.shell('dumpsys', 'window', 'windows', check=False)
         (directory / 'windows.txt').write_text(windows)
-        observed_viewport, observed_source = game_viewport(hierarchy, windows)
+        viewport_events = self.shell('cat', f'/data/data/{PACKAGE}/files/compat-events.log', check=False)
+        (directory / 'viewport-events.log').write_text(viewport_events)
+        observed_viewport, observed_source = game_viewport(hierarchy, windows, viewport_events, self.screen_size)
         if observed_viewport is not None:
             self.viewport, self.viewport_source = observed_viewport, observed_source
-        elif self.viewport is not None:
+        elif self.viewport is not None and within_screen(self.viewport, self.screen_size):
             self.viewport_source = 'retained last verified native canvas through Android UI'
+        else:
+            self.viewport = self.viewport_source = None
         (directory / 'activity.txt').write_text(self.shell('dumpsys', 'activity', 'activities', check=False))
         (directory / 'app-files.txt').write_text(self.shell('ls', '-lR', f'/data/data/{PACKAGE}/files', check=False))
         self.latest_native = self.shell('cat', f'/data/data/{PACKAGE}/files/compat-native.log', check=False)
@@ -249,7 +310,7 @@ class Android:
         self.shell('am', 'start', '-W', '-n', LAUNCHER)
         self.click_text('Start game')
 
-    def observe_cold_starts(self, attempts, launch_wait):
+    def observe_cold_starts(self, attempts, launch_wait, expected_bounds=None):
         """Observe every bounded normal startup; preserve data and every failure.
 
         Readiness is a process/window observation, not visual gameplay acceptance.
@@ -301,6 +362,8 @@ class Android:
                     raise RuntimeError('No verified native game canvas and resumed Main activity')
                 if fatal:
                     raise RuntimeError('Fatal/ANR evidence in this startup window')
+                if expected_bounds is not None and tuple(self.viewport or ()) != tuple(expected_bounds):
+                    raise RuntimeError('Cold start did not retain the expected actual native child bounds')
                 record['status'] = 'ready-awaiting-visual-review'
             except Exception as error:
                 record['error'] = type(error).__name__ + ': ' + str(error)
@@ -318,6 +381,95 @@ class Android:
         failures = sum(record['status'] == 'failed' for record in self.cold_starts)
         if failures:
             raise RuntimeError(f'{failures} of {attempts} process-cold startup observations failed; all retained')
+
+    def verify_letterbox_margins(self, expected_bounds):
+        """Tap actual black margins before the first native touch of the plan."""
+        from PIL import Image
+        self.snapshot('letterbox-before')
+        if tuple(self.viewport or ()) != tuple(expected_bounds):
+            raise RuntimeError('Measured native child differs from the requested Flip3 viewport')
+        points = letterbox_probe_points(self.screen_size, self.viewport)
+        before_pid = self.events[-1]['game_pid']
+        before_callbacks = re.findall(r'Pointer callback ENTER #\d+[^\n]*', self.latest_native)
+        if before_callbacks:
+            raise RuntimeError('Black-margin check must precede the first native callback so bounded tracing cannot hide input')
+        observations = []
+        self.letterbox_observation = {'status': 'pending', 'viewport': self.viewport,
+            'screen_size': self.screen_size, 'game_pid': before_pid, 'points': points,
+            'scope': 'Physical black-margin taps; callback witness and screenshots only',
+            'observations': observations}
+        for index, point in enumerate(points):
+            color = Image.open(self.output / 'letterbox-before/screen.png').convert('RGB').getpixel(point)
+            if max(color) > 8:
+                raise RuntimeError('Requested letterbox tap point is not visibly black')
+            self.shell('input', 'tap', *point)
+            time.sleep(.5)
+            label = f'letterbox-margin-{index + 1}'
+            self.snapshot(label)
+            callbacks = re.findall(r'Pointer callback ENTER #\d+[^\n]*', self.latest_native)
+            row = {'capture': label, 'point': point, 'before_color': color,
+                   'game_pid': self.events[-1]['game_pid'],
+                   'callback_witness_unchanged': callbacks == before_callbacks,
+                   'viewport_unchanged': tuple(self.viewport or ()) == tuple(expected_bounds)}
+            observations.append(row)
+            if not row['callback_witness_unchanged'] or not row['viewport_unchanged'] or row['game_pid'] != before_pid:
+                raise RuntimeError('Black-margin tap reached native input or changed the active game viewport/process')
+        self.letterbox_observation['status'] = 'callback-inert-awaiting-visual-review'
+        (self.output / 'letterbox-observation.json').write_text(json.dumps(self.letterbox_observation, indent=2) + '\n')
+
+    def verify_home_return(self, expected_bounds):
+        """Exercise ordinary Home and launcher return without force-stop/data edits."""
+        self.snapshot('home-return-before')
+        before_pid = self.events[-1]['game_pid']
+        self.home_return_observation = {'status': 'pending', 'before_pid': before_pid,
+                                       'expected_game_bounds': expected_bounds}
+        self.shell('input', 'keyevent', 3)
+        time.sleep(2)
+        self.snapshot('home-return-home')
+        self.launch()
+        self.viewport = self.viewport_source = None
+        self.wait_for('Main activity resumed after Home', lambda: 'com.ideaworks3d.thesims3.Main' in '\n'.join(
+            line for line in self.shell('dumpsys', 'activity', 'activities', check=False).splitlines()
+            if 'mResumedActivity' in line or 'topResumedActivity' in line), 45)
+        time.sleep(2)
+        self.snapshot('home-return-resumed')
+        after_pid = self.events[-1]['game_pid']
+        self.home_return_observation.update(after_pid=after_pid, native_viewport=self.viewport,
+            status='same-process-return-awaiting-visual-review')
+        if not before_pid or after_pid != before_pid or tuple(self.viewport or ()) != tuple(expected_bounds):
+            self.home_return_observation['status'] = 'failed'
+            raise RuntimeError('Home/return changed the game process or lost its measured native viewport')
+        (self.output / 'home-return-observation.json').write_text(json.dumps(self.home_return_observation, indent=2) + '\n')
+
+    def verify_landscape_rotations(self, expected_bounds):
+        """Observe both real landscape rotations in the same loaded game."""
+        before_pid = self.events[-1]['game_pid']
+        try:
+            for rotation in (3, 1):
+                self.shell('settings', 'put', 'system', 'user_rotation', rotation)
+                # SENSOR_LANDSCAPE may ignore the user's rotation lock. Supply
+                # an ordinary emulated gravity reading and still verify the
+                # actual app-window rotation rather than accepting the request.
+                self.adb('emu', 'sensor', 'set', 'acceleration',
+                         '9.8:0:0' if rotation == 3 else '-9.8:0:0')
+                self.wait_for('actual Main window landscape rotation ' + str(rotation),
+                    lambda: main_window_rotation(self.shell('dumpsys', 'window', 'windows')) == rotation, 30)
+                self.viewport = self.viewport_source = None
+                time.sleep(2)
+                label = 'landscape-rotation-' + str(rotation)
+                self.snapshot(label)
+                actual = main_window_rotation((self.output / label / 'windows.txt').read_text())
+                record = {'requested_rotation': rotation, 'actual_main_window_rotation': actual,
+                          'game_pid': self.events[-1]['game_pid'], 'native_viewport': self.viewport,
+                          'capture': label, 'visual_review': 'required'}
+                self.rotation_observations.append(record)
+                if (actual != rotation or record['game_pid'] != before_pid
+                        or tuple(self.viewport or ()) != tuple(expected_bounds)):
+                    raise RuntimeError('Landscape rotation lost the same game process or actual native viewport')
+        finally:
+            self.adb('emu', 'sensor', 'set', 'acceleration', '-9.8:0:0', check=False)
+            self.shell('settings', 'put', 'system', 'user_rotation', 1)
+            (self.output / 'landscape-rotations.json').write_text(json.dumps(self.rotation_observations, indent=2) + '\n')
 
     def tap(self, position, coordinate_size):
         self.assert_native_canvas()
@@ -798,12 +950,13 @@ def main():
     image = sdk / 'system-images/android-30/google_apis/x86'
     original_size = (image / 'system.img').stat().st_size
     plan = json.loads(args.plan.read_text())
+    profile = runtime_profile(os.environ.get('GITHUB_REF_NAME', 'main'))
     execution_scope = plan_execution_scope(plan, args.interactive, args.interactive_after)
     result = {'status': 'pending', 'candidate_sha256': sha(args.candidate),
               'baseline_sha256': sha(args.baseline), 'git_sha': os.environ.get('GITHUB_SHA'),
               'environment': {}, 'checkpoints': {}, 'visual_review': 'required',
               'gate_passed': False, 'actions': 'Android UI input only; no game-state writes',
-              'execution_scope': execution_scope}
+              'execution_scope': execution_scope, 'runtime_profile': profile}
     android = Android(sdk, output)
     emulator = logcat = None
     emulator_log = (output / 'emulator.txt').open('wb')
@@ -868,7 +1021,8 @@ def main():
             android.adb('logcat', '-c', check=False)
             android.adb('install', '-r', '-d', apk.resolve(), timeout=120)
             if label == 'candidate' and args.cold_start_attempts:
-                android.observe_cold_starts(args.cold_start_attempts, plan.get('launch_wait', 20))
+                android.observe_cold_starts(args.cold_start_attempts, plan.get('launch_wait', 20),
+                                           profile['expected_game_bounds'])
             else:
                 android.launch()
                 time.sleep(plan.get('launch_wait', 20))
@@ -888,12 +1042,18 @@ def main():
                     android.snapshot('baseline-final')
                 android.shell('am', 'force-stop', PACKAGE)
             else:
+                if profile['verify_letterbox']:
+                    android.verify_letterbox_margins(profile['expected_game_bounds'])
                 result['checkpoints'] = android.run_plan(plan, label, limit=execution_scope['limit'])
                 result['events'] = android.events
                 for checkpoint in ['gameplay', 'resume']:
                     observation = result['checkpoints'].get(checkpoint, {})
                     if observation.get('scene') != 'SceneGame' or not observation.get('game_pid'):
                         raise RuntimeError('No observed real SceneGame at ' + checkpoint)
+                if profile['verify_home_return']:
+                    android.verify_home_return(profile['expected_game_bounds'])
+                if profile['verify_rotations']:
+                    android.verify_landscape_rotations(profile['expected_game_bounds'])
                 if args.interactive:
                     android.interactive_loop(os.environ.get('GITHUB_RUN_ID', ''))
                 result['status'] = 'runtime-progression-observed-awaiting-visual-review'
@@ -913,6 +1073,9 @@ def main():
         result['native_quit'] = android.quit_observation
         result['interactive'] = android.interactive_observation
         result['cold_starts'] = android.cold_starts
+        result['letterbox'] = android.letterbox_observation
+        result['home_return'] = android.home_return_observation
+        result['landscape_rotations'] = android.rotation_observations
         result['environment']['emulator_exit_before_cleanup'] = emulator.poll() if emulator else None
         result['environment']['live_logcat_exit_before_cleanup'] = logcat.poll() if logcat else None
         for name, command in [('host-kernel.txt', ['dmesg', '-T']),

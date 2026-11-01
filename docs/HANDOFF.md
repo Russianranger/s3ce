@@ -1,4 +1,23 @@
-# Current continuation — 0.1.13 camera-input release
+# Current continuation — Flip3 landscape / Android15
+
+Recovered main at1561a3bac5f85974a2f41c4959f77093038018ad and created `flip3`
+from that exact source. The user confirms the0.1.13 camera/jewel repair and that
+the game is running. This is new physical acceptance of the touch fix; it is not
+a measured startup-reliability claim.
+
+Next candidate:0.1.14-flip3/code114, same signing identity/appID/private saves,
+ARM32/4KiB/target28. Default centered16:9 game surface preserves the accepted
+Thor proportions on the Flip3's2640×1080 landscape display; safe content bounds
+and local touch events are the shared coordinate authority. Main is unchanged.
+
+Implementation and evidence are in progress: viewport/inset/gesture checks,
+full gameplay on an ARM32-capable wide emulator, and Android15 platform checks
+with actual ABI/page/install observations. See FLIP3_ANDROID15.md. Keep Android15
+platform probe evidence separate from original-engine gameplay. Complete the
+available checks, publish the exact tested signed bytes, and deliver APK/testing
+links. Physical Flip3 confirmation remains required.
+
+# Historical continuation — 0.1.13 camera-input release
 
 Recovered live main at `4ea1ecd6b93c65b84078a1c0e653b5e25da37cb0` before editing.
 Following 0.1.12, the user reports everything seems to work except the bottom-right

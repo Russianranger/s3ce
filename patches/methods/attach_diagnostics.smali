@@ -58,7 +58,7 @@
     .line 67
     iget-object v0, p0, Lcom/ideaworks3d/airplay/AirplayActivity;->m_View:Lcom/ideaworks3d/airplay/AirplayView;
 
-    invoke-virtual {p0, v0}, Lcom/ideaworks3d/airplay/AirplayActivity;->setContentView(Landroid/view/View;)V
+    invoke-static {p0, v0}, Lcom/ideaworks3d/thesims3/GameViewport;->install(Landroid/app/Activity;Landroid/view/View;)V
 
     invoke-static {p0}, Lcom/ideaworks3d/thesims3/GameDiagnostics;->attach(Landroid/app/Activity;)V
 

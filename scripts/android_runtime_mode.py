@@ -7,6 +7,7 @@ import re
 import time
 
 from android_runtime_control import parse_control
+from android_runtime_profile import runtime_profile
 
 
 def runtime_mode(event, dispatch_interactive, raw, candidate_sha256):
@@ -37,15 +38,18 @@ def runtime_mode(event, dispatch_interactive, raw, candidate_sha256):
 
 def main():
     root = Path(__file__).resolve().parents[1]
+    profile = runtime_profile(os.environ.get('GITHUB_REF_NAME', 'main'))
     path = root / '.validation/runtime-mode.json'
-    candidate = json.loads((root / '.validation/camera-input/manifest.json').read_text())
+    candidate = json.loads((root / profile['candidate_staging'] / 'manifest.json').read_text())
     mode = runtime_mode(os.environ['WORKFLOW_EVENT'], os.environ.get('DISPATCH_INTERACTIVE', ''),
                         path.read_bytes() if path.exists() else None, candidate['sha256'])
     with open(os.environ['GITHUB_ENV'], 'a') as stream:
         stream.write('S3CE_RUNTIME_INTERACTIVE=' + str(mode['interactive']).lower() + '\n')
         stream.write('S3CE_RUNTIME_COLD_START_ATTEMPTS=' + str(mode['cold_start_attempts']) + '\n')
+        stream.write('S3CE_RUNTIME_SCREEN_WIDTH=' + str(profile['screen_width']) + '\n')
+        stream.write('S3CE_RUNTIME_SCREEN_HEIGHT=' + str(profile['screen_height']) + '\n')
         stream.write('S3CE_RUNTIME_DEADLINE_EPOCH=' + str(int(time.time()) + 4800) + '\n')
-    print('Resolved runtime mode:', json.dumps(mode, sort_keys=True), flush=True)
+    print('Resolved runtime mode:', json.dumps({**mode, 'profile': profile}, sort_keys=True), flush=True)
 
 
 if __name__ == '__main__':

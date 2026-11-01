@@ -49,6 +49,7 @@ public final class CompatActivity extends Activity {
         status.setTextSize(18);
         status.setText("The Sims 3 CE\n" + GameSession.versionLabel(this) + "\n\n"
                 + "Touch controls. Saves stay on this device.\n"
+                + "Landscape gameplay keeps its proportions; side margins are intentional.\n"
                 + "For reports during play, press Home and reopen this app icon.\n"
                 + "Reports retain the previous four game processes after a retry.\n");
         layout.addView(status);

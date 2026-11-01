@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 
 from assemble_release import assemble
+from android_runtime_profile import runtime_profile
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -15,8 +16,9 @@ def main():
     cache = ROOT / 'build/runtime-internal/base'
     cache.mkdir(parents=True, exist_ok=True)
     outputs = {}
-    for label, staging in [('candidate', ROOT / '.validation/camera-input'),
-                           ('baseline', ROOT / '.publish/v0.1.12-hud-startup')]:
+    profile = runtime_profile(os.environ.get('GITHUB_REF_NAME', 'main'))
+    for label, staging in [('candidate', ROOT / profile['candidate_staging']),
+                           ('baseline', ROOT / profile['baseline_staging'])]:
         manifest = json.loads((staging / 'manifest.json').read_text())
         base = cache / manifest['base_filename']
         if not base.exists() or hashlib.file_digest(base.open('rb'), 'sha256').hexdigest() != manifest['base_sha256']:

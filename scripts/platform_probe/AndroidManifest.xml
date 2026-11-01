@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.github.russianranger.s3ce.viewportprobe"
+    android:versionCode="1" android:versionName="platform-probe-1">
+    <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="28" />
+    <application android:label="S3CE viewport platform probe" android:debuggable="true"
+        android:testOnly="true" android:allowBackup="false" android:hardwareAccelerated="false"
+        android:theme="@android:style/Theme.Material.NoActionBar">
+        <activity android:name=".ViewportProbe" android:exported="true"
+            android:screenOrientation="sensorLandscape" android:resizeableActivity="false"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden"
+            android:maxAspectRatio="3.0" />
+    </application>
+</manifest>

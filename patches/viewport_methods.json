@@ -1,0 +1,8 @@
+[
+  [
+    "smali/com/ideaworks3d/airplay/AirplayThread.smali",
+    "fixOrientation(I)V",
+    "87a0435b9968ab2aedad22f5008f8a4842c552d525930de8f93548f27e74b9ac",
+    "sensor_landscape.smali"
+  ]
+]
