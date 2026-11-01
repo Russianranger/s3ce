@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 16,
-  "frame_sha256": "cbce74f9cca2b647aa3597542544a84fed29b3cf482c51c0d8d4a81180842b8e",
+  "seq": 17,
+  "frame_sha256": "34b16bb2e5dac1eb375c921ac4d0f878a03c7353438395cf91508306f53f408c",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 2045,
-    "y": 793
+    "x": 455,
+    "y": 330
   },
-  "note": "Turn camera mode off at the visible button before neighboring HUD and walking checks."
+  "note": "Select the upper-left status tab at its visible center, preserving neighboring world input."
 }
