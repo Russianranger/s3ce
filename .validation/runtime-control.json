@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 27,
-  "frame_sha256": "11732a51ec2960d6dbaad21576445011d1f0473a07a565d09870e2fdc26a84e5",
+  "seq": 28,
+  "frame_sha256": "15822bc367f386f5f12faa226bc958c7d2f1124aca56be9c4ba810e5d1cef987",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 860,
-    "y": 245
+    "x": 473,
+    "y": 965
   },
-  "note": "Dismiss the ordinary Lonely gameplay hint before reopening Pause; no save is claimed yet."
+  "note": "Open Pause after the hint has closed to save the completed gameplay session."
 }
