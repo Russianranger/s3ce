@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 4,
-  "frame_sha256": "1f9fd79aef2ec3350e6ab1e4ad3d68f4ba38761f5c4e6f5f7c8a9986298ee241",
+  "seq": 5,
+  "frame_sha256": "dafdfc01cdf22023d1b066818997474d0337c0965911dcf5cfa24ed39f43c4b0",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1740,
-    "y": 340
+    "x": 1410,
+    "y": 770
   },
-  "note": "Select the visible bed mattress in the zoomed-out house for a normal object action."
+  "note": "Select the clearly visible dining chair seat next to the Sim; inspect the resulting object menu."
 }
