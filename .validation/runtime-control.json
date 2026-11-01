@@ -1,14 +1,16 @@
 {
   "schema": 1,
-  "run_id": "41240915455",
-  "seq": 14,
-  "frame_sha256": "43fb1a2ecf08bd1fbd0e7e45be90d18f1bbec1190b57482ca49b6b2e9879abe6",
+  "run_id": "41263509428",
+  "seq": 1,
+  "frame_sha256": "24feb1d46e7272640e82ef338660a533cbc467eb63b8faa1347457b4432f3833",
   "coordinate_size": [
-    1920,
+    2640,
     1080
   ],
   "command": {
-    "type": "finish"
+    "type": "tap",
+    "x": 703,
+    "y": 235
   },
-  "note": "Finish only after visible Compat version113, native Main return, Activity finish and zero fatal/ANR."
+  "note": "Close the rendered Pause menu at its visible back arrow after lifecycle checks."
 }
