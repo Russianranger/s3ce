@@ -1,19 +1,15 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 12,
-  "frame_sha256": "47fef627ce044f06cb3c752f0ab09b7004b59ba97aa1388c6fa3bfa70dc2d2d0",
+  "seq": 13,
+  "frame_sha256": "a4fd8a20621c1ffbb395fafa1a9221d79a6fe8061fe7a010459dfa1ab5ae8405",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "swipe",
-    "x1": 1100,
-    "y1": 600,
-    "x2": 1300,
-    "y2": 680,
-    "duration_ms": 900
+    "type": "wait",
+    "seconds": 3
   },
-  "note": "Retry normal world pan after the hint is closed, with camera mode visibly enabled."
+  "note": "Observe released camera stability without sending further touch input."
 }
