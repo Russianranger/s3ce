@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 19,
-  "frame_sha256": "30ae22b93a4465b2249eb60d47e9e23f6399f857e52a236db2c967ce1dd6f947",
+  "seq": 20,
+  "frame_sha256": "b91be20052794d314c99b13fbca58cc95fde65162e954e16ccc7a636040fc290",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 455,
-    "y": 330
+    "x": 470,
+    "y": 783
   },
-  "note": "Retry the visible upper-left status tab after dismissing the timed popup."
+  "note": "Select the visible lower-left Buy chair icon; status-label expansion is not claimed while its effect list is empty."
 }
