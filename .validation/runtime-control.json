@@ -1,19 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 2,
-  "frame_sha256": "5fd0a2cc411f11d846028e9f12e6b5243fab60942b4a0bc5a07c96dd200ed8ec",
+  "seq": 3,
+  "frame_sha256": "0e51d6dea8bd41a503f8a1b75d8f2807069e439b84c09901bfd12af110e68f2f",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "swipe",
-    "x1": 2190,
-    "y1": 273,
-    "x2": 2190,
-    "y2": 600,
-    "duration_ms": 900
+    "type": "tap",
+    "x": 1157,
+    "y": 854
   },
-  "note": "Use the visible zoom slider to zoom out proportionally before the object-action check."
+  "note": "Dismiss the timed New Wish popup with its visible red X, preserving normal gameplay."
 }
