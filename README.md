@@ -1,4 +1,26 @@
-# S3CE — The Sims 3 Android compatibility project
+# S3CE — Galaxy Z Flip3 landscape branch
+
+`flip3` adapts the working 0.1.13 game to the unfolded Galaxy Z Flip3 5G.
+The user confirms that the previous camera/jewel fix works and gameplay runs.
+This branch keeps a centered 16:9 game area inside the available landscape
+content, with intentional black side margins on a wide display. The actual game
+surface and view-local touches share their dimensions; individual controls are
+not stretched or moved with separate offsets.
+
+The candidate is **0.1.14-flip3 / code 114**, retaining the same application ID,
+signing identity, private saves, offline assets and ARM32 runtime. Android 15 is
+the new phone target; target SDK 28 remains required by the original runtime.
+Firmware must still support 32-bit ARM apps and 4 KiB pages. Actual Android 15
+framework/probe results are distinct from ARM32 game execution and physical
+Samsung acceptance.
+
+See [viewport implementation](docs/FLIP3_VIEWPORT.md),
+[Android 15 assessment](docs/FLIP3_ANDROID15.md), and
+[current handoff](docs/HANDOFF.md). Runtime review and publication are in progress.
+Keep **Original rendering (diagnostic mode) unchecked**. Install updates over
+the existing S3CE app without uninstalling or clearing data.
+
+# Historical Thor base — 0.1.13
 
 Experimental preservation build of the supplied Android game, using
 [Russianranger/rea](https://github.com/Russianranger/rea) and existing original
