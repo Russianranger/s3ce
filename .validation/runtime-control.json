@@ -1,16 +1,14 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 33,
-  "frame_sha256": "a83e2269a18fe4a5eef9a2773ebd8290414f30f0c94dfdfd3707af5e830b5223",
+  "seq": 34,
+  "frame_sha256": "c1b83ef40f605811a25111937981c44536d3adb133cddf13bbf16ecedb23f0a3",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1484,
-    "y": 730
+    "type": "finish"
   },
-  "note": "Confirm the actual main-menu Quit dialog and verify native Main returns without a crash."
+  "note": "Finish review only after native Main returned, Activity finish was requested, and Compat114 is rendered with Original rendering unchecked."
 }
