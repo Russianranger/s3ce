@@ -303,6 +303,77 @@ def capture_visible_fixture(device, identity, expected_display, label, expected_
         (device.output / f'{label}-visibility.json').write_text(json.dumps(evidence, indent=2) + '\n')
 
 
+def capture_initial_geometry(device, identity, expected_display, result):
+    """Retain one rejected size-compat initialization, then test a fresh fixture.
+
+    First-boot display transitions can leave an unresizable fixture with a
+    latched compatibility frame. Android offers to restart that app. This one
+    preparation-only restart never admits its invalid coordinates and never
+    changes the exact helper or the geometry checks used by the actual test.
+    """
+    preparation = result['initial_preparation'] = {'status': 'not-needed',
+        'scope': 'Probe initialization only; no game process or gameplay; rejected state is never accepted'}
+    try:
+        return capture_settled_geometry(device, identity, expected_display, 'initial')
+    except TimeoutError as initial_error:
+        preparation.update(status='rejected', initial_error=str(initial_error))
+        try:
+            rejected = device.capture('initial-rejected-size-compat')
+            preparation.update(rejected_capture='initial-rejected-size-compat',
+                rejected_pid=rejected.get('process_id'), rejected_parent_bounds=rejected.get('parent_bounds'),
+                rejected_initialization_count=1)
+            try:
+                validate_geometry(rejected, identity, expected_display)
+            except ValueError as error:
+                preparation['rejected_geometry_error'] = str(error)
+                if str(error) != 'Activity content is outside its reported app-compatible display':
+                    raise RuntimeError('Initial fixture failure is outside the bounded size-compat preparation case') from error
+            else:
+                raise RuntimeError('Initial fixture timeout has no observed invalid size-compat geometry')
+            pid = rejected.get('process_id')
+            if type(pid) is not int or pid <= 0:
+                raise RuntimeError('Rejected initial fixture has no actual process identity')
+            if rejected.get('touch_events') != [] or rejected.get('fixture_sequences') != []:
+                raise RuntimeError('Initial compatibility reset must precede every fixture input test')
+            windows = (device.output / 'initial-rejected-size-compat/windows.txt').read_text(errors='replace')
+            component = re.escape(PACKAGE + '/' + PACKAGE + '.ViewportProbe')
+            blocks = re.findall(r'^  Window #\d+ Window\{[^\n]*' + component
+                + r'\}:\n(.*?)(?=^  Window #|\Z)', windows, re.M | re.S)
+            if len(blocks) != 1:
+                raise RuntimeError('Rejected fixture lacks one matching actual WindowManager window')
+            block = blocks[0]
+            scale = re.findall(r'\bmGlobalScale=([0-9.]+)', block)
+            parent = rejected['parent_bounds']
+            compat_frame = f'[{parent[0]},{parent[1]}][{parent[2]},{parent[3]}]'
+            if (len(scale) != 1 or not 0 < float(scale[0]) < 1
+                    or 'mCompatFrame=' + compat_frame not in block
+                    or not re.search(r'\bmSession=Session\{[^}\n]*\b' + str(pid) + ':', block)):
+                raise RuntimeError('Rejected fixture is not the observed scaled compatibility window for its PID')
+            preparation.update(status='fresh-fixture-required', rejected_window_scale=float(scale[0]),
+                reason='Bounded initial timeout plus matching scaled WindowManager compatibility frame outside app display')
+            device.shell('am', 'force-stop', PACKAGE)
+            device.wait('rejected initialization fixture stopped',
+                lambda: not device.shell('pidof', PACKAGE, check=False).strip(), 15)
+            launch = device.shell('am', 'start', '-W', '-n', ACTIVITY, '-f', '0x10008000')
+            preparation['fresh_am_start_output'] = launch
+            if not re.search(r'^Status:\s*ok\s*$', launch, re.M):
+                raise RuntimeError('Fresh initialization fixture did not report successful Activity start')
+            fresh, capture = capture_settled_geometry(device, identity, expected_display, 'initial-fresh-fixture')
+            if type(fresh.get('process_id')) is not int or fresh['process_id'] <= 0 or fresh['process_id'] == pid:
+                raise RuntimeError('Initial size-compat reset did not create a distinct fixture process')
+            # A second translated/scaled initialization stays blocked, with no
+            # further restart and no relaxation of the coordinate contract.
+            validate_geometry(fresh, identity, expected_display)
+            preparation.update(status='fresh-strict-fixture-ready', fresh_pid=fresh['process_id'],
+                accepted_capture=capture)
+            return fresh, capture
+        except Exception as error:
+            preparation.update(status='blocked', error=type(error).__name__ + ': ' + str(error))
+            raise
+        finally:
+            (device.output / 'initial-compat-preparation.json').write_text(json.dumps(preparation, indent=2) + '\n')
+
+
 def build_probe(candidate, sdk, directory):
     identity, dex = candidate_identity(candidate)
     directory.mkdir(parents=True, exist_ok=True)
@@ -465,7 +536,7 @@ def main():
             report = device.report()
             validate_geometry(report, identity, size)
             return report if report.get('window_focused') and report.get('resumed') else None
-        initial, initial_capture = capture_settled_geometry(device, identity, (2640, 1080), 'initial')
+        initial, initial_capture = capture_initial_geometry(device, identity, (2640, 1080), result)
         result['initial_geometry_capture'] = initial_capture
         child = validate_geometry(initial, identity, (2640, 1080))
         parent = initial['parent_bounds']
