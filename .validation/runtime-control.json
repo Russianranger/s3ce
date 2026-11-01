@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 16,
-  "frame_sha256": "984abafb1388693e7cede9317cbd97f18f72b7ca758021c51e11db0308b9b267",
+  "seq": 17,
+  "frame_sha256": "5f4a76adfd2e50f3067c5e603d66e4466e71920c7a15ff37cc8bda00a6047ef5",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 2047,
-    "y": 795
+    "x": 960,
+    "y": 740
   },
-  "note": "Turn camera mode off before a normal walking tap."
+  "note": "Walk from the dining chair to the visible kitchen floor using normal gameplay input."
 }
