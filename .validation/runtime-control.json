@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 20,
-  "frame_sha256": "b91be20052794d314c99b13fbca58cc95fde65162e954e16ccc7a636040fc290",
+  "seq": 21,
+  "frame_sha256": "2fcdd9ab897573a1acd60595c04368d7e0586ba7af54b9117842bf3ad7d08ffa",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 470,
-    "y": 783
+    "x": 860,
+    "y": 270
   },
-  "note": "Select the visible lower-left Buy chair icon; status-label expansion is not claimed while its effect list is empty."
+  "note": "Close the visible Build Mode introduction and inspect the actual chooser."
 }
