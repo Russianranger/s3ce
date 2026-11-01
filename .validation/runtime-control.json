@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 1,
-  "frame_sha256": "6b630b465d68a899e6e984881a1c844739d6d226eeba16c09436ea22a0e36fb6",
+  "seq": 2,
+  "frame_sha256": "88058c80a65378d7fabff7c23ebd6ddb553f4357602e1e12729db5f780166685",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 704,
-    "y": 244
+    "x": 1400,
+    "y": 876
   },
-  "note": "Close the visible Pause panel using its back arrow before object-action regression."
+  "note": "Select the visible dining-chair back at its rendered location for an object action."
 }
