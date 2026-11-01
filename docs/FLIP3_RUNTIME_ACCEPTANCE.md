@@ -224,3 +224,18 @@ those two attempts. The corrected harness can qualify only this exact SaveQuit
 boundary with two actual stable main-menu OCR captures, same live process/canvas
 and a strictly newer normal progress save. Raw observer fields remain preserved
 beside the separately labeled visual conclusion. It does not alter game state.
+
+## Publication receipt
+
+[v0.1.14-flip3](https://github.com/Russianranger/s3ce/releases/tag/v0.1.14-flip3)
+is published from 5ffdfdce085edb8c5f5a43a4ec2b9b51bb569a88 by successful
+[run 41266934248](https://github.com/Russianranger/s3ce/actions/runs/41266934248).
+Root independently downloads the public APK and verifies 76,770,649 bytes/exact
+SHA256 ea112…d19b, original certificate 3c3d5fdf…02a0c4, v2/v3, package/code 114/name,
+min26/target28 and ARMv7. No rebuild/resign occurred between acceptance and release.
+[Direct APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.14-flip3/S3CE-0.1.14-flip3-arm32.apk).
+The JSON index records the complete checksum/certificate and immutable release
+source. Delivery is complete through verification; next is the short physical
+Flip3 test and exported report described above.
+
+The release-stage update also triggered green [platform run 41266934203](https://github.com/Russianranger/s3ce/actions/runs/41266934203) for the unchanged APK/helper/driver. Artifact13067507389 is1,605,018 bytes, SHA256`88c142466ee312f2286d8780d5ba9a9e76215572b004d379ec1047b546075b52`. All112 members/16 reports were verified; samePID4426 actual rotation3/center input/visible rotation1 pass. The repeat has0fatal/ANR lines. Earlier environmental ANR and all resize/overlay-removal limits remain. Detailed primary acceptance stays bound to41263509512.

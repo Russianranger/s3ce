@@ -1,4 +1,4 @@
-# Current handoff — Flip3 test candidate ready
+# Current handoff — Flip3 release published, awaiting phone test
 
 Created `flip3` from current main 1561a3bac5f85974a2f41c4959f77093038018ad.
 The user physically confirms0.1.13 fixed camera/jewel interception and gameplay
@@ -21,14 +21,22 @@ normal creation/save/restart/load, Chair Sit, Wishes both camera states, zoom/pa
 release, Buy/status, walking, visible Home return, advancing final save and clean
 native Quit. Four cold menus across both final-APK sessions pass,0 failures. Raw
 manual-review gate=false, prior failures and initial Home black captures remain.
-GameAPI 30 reverse is unavailable (zero filtered sensor data); exact helper on
-API 35 run 41263509512 proves actual3/input/visible1. Original ARM32 engine does not
-run on that64-bit-only API 35 image. Samsung acceptance remains unverified.
+Game API 30 reverse is unavailable (zero filtered sensor data); exact helper on
+API 35 run 41263509512 proves actual rotation3/input/visible rotation1. Original ARM32 engine does not
+run on that 64-bit-only API 35 image. Samsung acceptance remains unverified.
 
 See [runtime receipt](FLIP3_RUNTIME_ACCEPTANCE.md), [evidence index](flip3-runtime-evidence.json),
 [viewport analysis](FLIP3_VIEWPORT.md) and [Android 15 assessment](FLIP3_ANDROID15.md).
-Final payload reconstructs byte-identically from .publish/v0.1.14-flip3; publication
-and independent public-download verification are the remaining delivery step.
+Published [v0.1.14-flip3](https://github.com/Russianranger/s3ce/releases/tag/v0.1.14-flip3)
+from 5ffdfdce085edb8c5f5a43a4ec2b9b51bb569a88 by green
+[run 41266934248](https://github.com/Russianranger/s3ce/actions/runs/41266934248).
+The payload reconstructs byte-identically from .publish/v0.1.14-flip3. Root then
+independently downloaded the public 76,770,649-byte APK and verified exact ea112…d19b,
+original certificate 3c3d5fdf…02a0c4/v2/v3, package/name/code 114, min26/target28/ARMv7.
+
+[Direct installable APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.14-flip3/S3CE-0.1.14-flip3-arm32.apk).
+Release and public verification are complete; user-facing handoff supplies this
+link, alternate release page, build identity, checksum and focused phone test.
 Do not rebuild/resign these accepted bytes. Next phone action after delivery:
 fully unfold, check both landscape directions and visible controls/actions,
 save/reload/Home, three cold starts, then export Home→icon→Save/Share report.

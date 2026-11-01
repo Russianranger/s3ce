@@ -1119,5 +1119,56 @@
       41263509428
     ],
     "scope": "API30 emulator only; no physical startup reliability claim."
+  },
+  "publication": {
+    "tag": "v0.1.14-flip3",
+    "release_id": 430326338,
+    "release_url": "https://github.com/Russianranger/s3ce/releases/tag/v0.1.14-flip3",
+    "source_commit": "5ffdfdce085edb8c5f5a43a4ec2b9b51bb569a88",
+    "workflow_run": 41266934248,
+    "workflow_conclusion": "success",
+    "asset_id": 697146512,
+    "apk_url": "https://github.com/Russianranger/s3ce/releases/download/v0.1.14-flip3/S3CE-0.1.14-flip3-arm32.apk",
+    "sha256": "ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b",
+    "bytes": 76770649,
+    "independent_public_download_verified": true,
+    "original_certificate_sha256": "3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4",
+    "signature_schemes": [
+      "v2",
+      "v3"
+    ],
+    "identity_verified": {
+      "application_id": "io.github.russianranger.s3ce",
+      "version_name": "0.1.14-flip3",
+      "version_code": 114,
+      "min_sdk": 26,
+      "target_sdk": 28,
+      "abi": "armeabi-v7a"
+    }
+  },
+  "publication_platform_repeat": {
+    "run_id": 41266934203,
+    "attempt": 1,
+    "source": "5ffdfdce085edb8c5f5a43a4ec2b9b51bb569a88",
+    "workflow_conclusion": "success",
+    "trigger": "Release assembler default stage changed; candidate/helper/driver unchanged.",
+    "artifact": {
+      "id": 13067507389,
+      "bytes": 1605018,
+      "sha256": "88c142466ee312f2286d8780d5ba9a9e76215572b004d379ec1047b546075b52",
+      "verified_members": 112
+    },
+    "review": {
+      "exact_reports": 16,
+      "process_id": 4426,
+      "actual_rotation_sequence": [
+        3,
+        1
+      ],
+      "reverse_center_input": true,
+      "visible_return": true,
+      "fatal_anr_matches": 0,
+      "scope_limit": "Existing live-resize and optional cutout-removal limitations unchanged."
+    }
   }
 }

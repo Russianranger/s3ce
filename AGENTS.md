@@ -1,20 +1,24 @@
-# Flip3 delivery gate — exact candidate accepted
+# Flip3 release published — next action is the physical phone test
 
-User-authorized branch `flip3` preserves confirmed 0.1.13 Thor behavior. Exact signed
-0.1.14-flip3/code 114 SHA256ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b
-is accepted by root and independent visual/system reviewers. Production source 2f3aba9f;
-harness 3d486a6. Green game 41263509428: actual Chair Sit, HUD/Wishes both camera states,
-zoom/pan/release, walk, SaveQuit/normalQuit, visible Home recovery. Four cold menus,
-0 failures across both exact-APK runs. Full logs0 fatal/ANR/audioexceptions. Rawgate=false
-retained separately from manual acceptance. API 30reverse remains unavailable with
-zero filtered sensor; API 35exacthelper 41263509512 proves actual3/input/visible1,
-not ARM32 gameplay/Samsung certification. Keep all failures/limits inruntime receipt.
+Published v0.1.14-flip3/code 114 from 5ffdfdce085edb8c5f5a43a4ec2b9b51bb569a88,
+green publication run 41266934248. Exact APK SHA256
+`ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b`.
+Independent public download/certificate/package/version/ARMv7/target28 verification
+passes. See docs/HANDOFF.md and FLIP3_RUNTIME_ACCEPTANCE.md for direct APK/release
+links, complete run identities, earlier failures and separate manual acceptance.
 
-Publish only these frozen tested bytes through established workflow; no rebuild/
-resign. Payload copy/reconstruction matches ea112…d19b. Complete publicdownload,
-checksum/cert/package verification and explicit APK/install/test/report handoff.
-Physical Flip3 nativeABI/page/driver and existing physical save tests remain next.
-Preserve main/appID/key/private saves/ARM32/4KiB/target 28/all prior native fixes.
+Game run 41263509428 passes actual Chair Sit, Wishes both camera states, zoom/
+pan/release, status/Build/walk, visible Home recovery, save and normal Quit.
+Four final-APK cold menus show 0failures; full logs 0fatal/ANR/audio exceptions.
+Raw gate=false remains unchanged. Full-game API30 reverse is unavailable with
+zero filtered sensor values; API35 exact helper 41263509512 proves actual3/input/
+visible1, not original-engine/Samsung acceptance. Preserve all retained limits.
+
+Next: user fully unfolds Flip3, tests both landscape directions, existing local
+save or normal creation, HUD/actions, Home/save/reload and three cold starts;
+exports Save/Share report. Original rendering unchecked; install over without
+uninstall/data clear. Main, appID/key/private saves/ARM32/4KiB/target28/all native
+fixes are preserved. Continue targeted refinement from actual phone feedback.
 
 # Current assignment — Flip3 landscape adaptation
 
