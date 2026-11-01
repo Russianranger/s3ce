@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 30,
-  "frame_sha256": "d67aa38925f77b6638dac16f001e140f36eccb02a3a33ac69105dccae6ae3076",
+  "seq": 31,
+  "frame_sha256": "94913fd28b73ab494b5a40a64dcc6b6ab09ebdfc9778f80c0a752c9ce2074a04",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1484,
-    "y": 730
+    "type": "wait",
+    "seconds": 5
   },
-  "note": "Confirm the visible Save Game dialog; verify main-menu return and advancing normal save metadata."
+  "note": "Wait for the ordinary post-save main menu to finish loading; retain the loading capture."
 }
