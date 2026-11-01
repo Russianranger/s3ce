@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 25,
-  "frame_sha256": "96a5717268a46cb26ce7d8aa01ac726bc4e6e0df6408213d94423f31b874a12f",
+  "seq": 26,
+  "frame_sha256": "ae24b9abae63fa1cd146e8da2e977188094e85e99aebb4e2eb38a7a321e8b0fc",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 720,
-    "y": 330
+    "x": 473,
+    "y": 965
   },
-  "note": "Collapse the rendered Well rested status panel using its visible right-edge arrow."
+  "note": "Open Pause from the lower-left ellipsis for an ordinary post-test save and exit."
 }
