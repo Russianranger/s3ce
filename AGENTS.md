@@ -24,11 +24,20 @@ image, Hot Smooch completion, prior114-save migration, final post-action save
 reload, full-game reverse rotation or universal startup reliability is claimed.
 Keep every failed/interrupted attempt. No game state/save edits to force socials.
 
-Publication and public-download verification are in progress. Reconstruct only
-these accepted signed bytes; no rebuild/resign. Complete direct APK/release/link/
-checksum/testing handoff. Next phone test: install over, Original rendering
+Published v0.1.15-flip3-socials from4f591682e28d35a081281a5dd0b574c4c59641b5,
+green publication run41342413602. Independent public download verifies exact
+accepted APK bytes/checksum, original certificate/v2/v3, package115, min26,
+target28 and ARMv7. No rebuild/resign. Private complete QA archive retained as
+S3CE-0.1.15-private-QA-evidence.zip, SHA256
+cbd1e87dd53b595b89b1a1cfa9ef697b20aa2952bf35e6d26d597b2b80d11895.
+
+[Direct APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.15-flip3-socials/S3CE-0.1.15-flip3-socials-arm32.apk).
+[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.15-flip3-socials).
+Delivery is complete through publication/public verification. Next is the user's
+physical test: install over without uninstall/data clear, Original rendering
 unchecked, load existing save/complete Hot Smooch and available socials, save/load/
-Home/three force-stop starts, export Save report + Share report file.
+Home/three force-stop starts, export Save report then Share report file. Candidate
+physical social completion remains open; continue from actual feedback.
 
 # Historical Flip3 release — phone feedback now received
 

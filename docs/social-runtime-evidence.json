@@ -67,5 +67,28 @@
       "Save created115, not114 migration"
     ]
   },
-  "physical_evidence": "0.1.14/code114 SM-F711U1 Android15/API35 ARM32/4096/normal rendering; good UI and reported Hot Smooch crash. Complete report private;115 physical test pending."
+  "physical_evidence": "0.1.14/code114 SM-F711U1 Android15/API35 ARM32/4096/normal rendering; good UI and reported Hot Smooch crash. Complete report private;115 physical test pending.",
+  "publication": {
+    "tag": "v0.1.15-flip3-socials",
+    "release_commit": "4f591682e28d35a081281a5dd0b574c4c59641b5",
+    "publication_run": 41342413602,
+    "publication_conclusion": "success",
+    "public_bytes": 76774745,
+    "public_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+    "byte_identical_to_tested": true,
+    "signature": "v2/v3 verified",
+    "certificate_sha256": "3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4",
+    "package": "io.github.russianranger.s3ce",
+    "version_name": "0.1.15-flip3-socials",
+    "version_code": 115,
+    "min_sdk": 26,
+    "target_sdk": 28,
+    "abi": "armeabi-v7a"
+  },
+  "private_QA_archive": {
+    "filename": "S3CE-0.1.15-private-QA-evidence.zip",
+    "bytes": 196101490,
+    "sha256": "cbd1e87dd53b595b89b1a1cfa9ef697b20aa2952bf35e6d26d597b2b80d11895",
+    "scope": "complete game and both pre-publication platform archives, retained privately without keys/APKs/assets/save contents"
+  }
 }

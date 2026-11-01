@@ -96,3 +96,17 @@ post-overlay restoration acceptance is claimed, and no validator is weakened.
 This does not establish a product helper regression; physical114 UI is good and
 the115 viewport code is unchanged. Future optional overlay testing should retain
 initial reports and wait boundedly for strict same-PID state/layout visibility.
+
+## Publication verified
+
+[v0.1.15-flip3-socials](https://github.com/Russianranger/s3ce/releases/tag/v0.1.15-flip3-socials)
+published from4f591682e28d35a081281a5dd0b574c4c59641b5 by green
+[run41342413602](https://github.com/Russianranger/s3ce/actions/runs/41342413602).
+Root independently downloaded the public APK/SHA256SUMS. Exact76,774,745bytes and
+accepted a759fb…f5eb checksum, v2/v3 signature/original certificate, package/code115,
+min26/target28/ARMv7 all pass; public bytes equal the frozen local tested APK.
+[Direct APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.15-flip3-socials/S3CE-0.1.15-flip3-socials-arm32.apk).
+Complete QA archives/receipts are retained privately as S3CE-0.1.15-private-QA-evidence.zip
+(SHA256cbd1e87dd53b595b89b1a1cfa9ef697b20aa2952bf35e6d26d597b2b80d11895),
+without APKs, assets, keys or save contents. Evidence index contains public receipt.
+Next is the focused phone test above; release completion does not prove Hot Smooch.

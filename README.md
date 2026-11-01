@@ -19,7 +19,7 @@ See [crash evidence and correction](docs/SOCIAL_IMAGES.md),
 
 [Download the Flip3 test APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.15-flip3-socials/S3CE-0.1.15-flip3-socials-arm32.apk).
 [Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.15-flip3-socials).
-Publication remains pending until candidate Android validation is reviewed.
+Published signed test release; public checksum/certificate and exact tested bytes verified.
 Keep **Original rendering (diagnostic mode) unchecked**. Install over the existing
 S3CE app without uninstalling or clearing data. Same application ID, signing key
 and private save location; fully local ARM32 runtime, 4 KiB pages, min SDK 26 and
