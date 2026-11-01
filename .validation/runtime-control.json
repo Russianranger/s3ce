@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 5,
-  "frame_sha256": "dafdfc01cdf22023d1b066818997474d0337c0965911dcf5cfa24ed39f43c4b0",
+  "seq": 6,
+  "frame_sha256": "a7688fc3d2690ce0713f71b34b7da36523e01fd112bcd1bf523c8817c44018a6",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1410,
-    "y": 770
+    "x": 1593,
+    "y": 356
   },
-  "note": "Select the clearly visible dining chair seat next to the Sim; inspect the resulting object menu."
+  "note": "Select the visible Cheap Dining Chair / Sit row; require a resulting seated pose."
 }
