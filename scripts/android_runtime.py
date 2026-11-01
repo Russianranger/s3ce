@@ -89,6 +89,24 @@ def saved_main_menu_visual_allowed(step):
             and step.get('checkpoint') == 'saved-to-menu')
 
 
+def native_frame_visibility(path, bounds):
+    """Pixel readiness only; resulting gameplay actions still need visual review."""
+    from PIL import Image
+    with Image.open(path) as image:
+        if not bounds or not within_screen(bounds, image.size):
+            raise RuntimeError('Visible native frame requires an actual in-screen canvas')
+        crop = image.convert('RGB').crop(tuple(bounds))
+    area = crop.width * crop.height
+    colors = crop.getcolors(64)
+    distinct = len(colors) if colors is not None else 65
+    histogram = crop.convert('L').histogram()
+    nonblack = area - sum(histogram[:4])
+    return {'rendered_pixels': nonblack >= area // 10 and distinct >= 32,
+            'nonblack_pixels': nonblack, 'canvas_pixels': area,
+            'distinct_colors_capped_at_65': distinct,
+            'rgb_extrema': crop.getextrema(), 'readiness_only': True}
+
+
 def game_viewport(hierarchy, windows, viewport_events='', screen_size=None):
     """Prefer actual child bounds; a wide Activity frame is never a game canvas."""
     candidates = []
@@ -450,37 +468,100 @@ class Android:
         if not before_pid or after_pid != before_pid or tuple(self.viewport or ()) != tuple(expected_bounds):
             self.home_return_observation['status'] = 'failed'
             raise RuntimeError('Home/return changed the game process or lost its measured native viewport')
-        (self.output / 'home-return-observation.json').write_text(json.dumps(self.home_return_observation, indent=2) + '\n')
+        # A recreated translated EGL surface can be black well after onResume.
+        # Retain that first capture and wait on actual pixels, not frame counters.
+        try:
+            visible = self.wait_for_visible_native_frame('home-return-visible', before_pid, expected_bounds)
+            self.home_return_observation.update(status='same-process-visible-return-awaiting-action-review',
+                visible_capture=visible['capture'], visibility=visible,
+                subsequent_action='Requires ordinary UI action and resulting visible frame review')
+        except Exception:
+            self.home_return_observation['status'] = 'visible-readiness-failed'
+            raise
+        finally:
+            (self.output / 'home-return-observation.json').write_text(json.dumps(self.home_return_observation, indent=2) + '\n')
+
+    def wait_for_visible_native_frame(self, prefix, expected_pid, expected_bounds, timeout=90):
+        """Retain each real frame; never retry past changed process/canvas."""
+        deadline = time.monotonic() + timeout
+        evidence = {'timeout_seconds': timeout, 'accepted': False, 'captures': []}
+        try:
+            for attempt in range(12):
+                if time.monotonic() >= deadline:
+                    break
+                label = f'{prefix}-{attempt:02d}'
+                self.snapshot(label)
+                event = self.events[-1]
+                if (not expected_pid or event.get('game_pid') != expected_pid
+                        or tuple(self.viewport or ()) != tuple(expected_bounds)):
+                    raise RuntimeError('Visible frame lost the same game process or measured canvas')
+                facts = {'capture': label, 'game_pid': event['game_pid'],
+                         'native_viewport': self.viewport,
+                         **native_frame_visibility(self.output / label / 'screen.png', self.viewport)}
+                evidence['captures'].append(facts)
+                if facts['rendered_pixels']:
+                    evidence['accepted'] = True
+                    return facts
+                time.sleep(2)
+            raise RuntimeError('Actual native canvas stayed blank within bounded visible-readiness observation')
+        finally:
+            (self.output / f'{prefix}-readiness.json').write_text(json.dumps(evidence, indent=2) + '\n')
 
     def verify_landscape_rotations(self, expected_bounds):
-        """Observe both real landscape rotations in the same loaded game."""
+        """Retain unavailable reverse rotation; require measured landscape return."""
         before_pid = self.events[-1]['game_pid']
+        def capture(rotation, status, limitation=None):
+            self.viewport = self.viewport_source = None
+            time.sleep(2)
+            label = 'landscape-rotation-' + str(rotation) + ('-unavailable' if status == 'unavailable' else '')
+            self.snapshot(label)
+            actual = main_window_rotation((self.output / label / 'windows.txt').read_text())
+            record = {'requested_rotation': rotation, 'actual_main_window_rotation': actual,
+                      'status': status, 'game_pid': self.events[-1]['game_pid'],
+                      'native_viewport': self.viewport, 'capture': label, 'visual_review': 'required'}
+            if limitation:
+                record['limitation'] = limitation
+            self.rotation_observations.append(record)
+            if (record['game_pid'] != before_pid or not before_pid
+                    or tuple(self.viewport or ()) != tuple(expected_bounds)):
+                raise RuntimeError('Landscape attempt lost the same game process or actual native viewport')
+            return record
         try:
-            for rotation in (3, 1):
-                self.shell('settings', 'put', 'system', 'user_rotation', rotation)
-                # SENSOR_LANDSCAPE may ignore the user's rotation lock. Supply
-                # an ordinary emulated gravity reading and still verify the
-                # actual app-window rotation rather than accepting the request.
-                self.adb('emu', 'sensor', 'set', 'acceleration',
-                         '9.8:0:0' if rotation == 3 else '-9.8:0:0')
-                self.wait_for('actual Main window landscape rotation ' + str(rotation),
-                    lambda: main_window_rotation(self.shell('dumpsys', 'window', 'windows')) == rotation, 30)
-                self.viewport = self.viewport_source = None
-                time.sleep(2)
-                label = 'landscape-rotation-' + str(rotation)
-                self.snapshot(label)
-                actual = main_window_rotation((self.output / label / 'windows.txt').read_text())
-                record = {'requested_rotation': rotation, 'actual_main_window_rotation': actual,
-                          'game_pid': self.events[-1]['game_pid'], 'native_viewport': self.viewport,
-                          'capture': label, 'visual_review': 'required'}
-                self.rotation_observations.append(record)
-                if (actual != rotation or record['game_pid'] != before_pid
-                        or tuple(self.viewport or ()) != tuple(expected_bounds)):
-                    raise RuntimeError('Landscape rotation lost the same game process or actual native viewport')
+            self.shell('settings', 'put', 'system', 'user_rotation', 3)
+            # AOSP uses -atan2(-x,y): negativeX→270deg, positiveX→90deg.
+            stimulus = self.adb('emu', 'sensor', 'set', 'acceleration', '-9.8:0:0', check=False)
+            unavailable = None
+            try:
+                self.wait_for('actual Main window landscape rotation3',
+                    lambda: main_window_rotation(self.shell('dumpsys', 'window', 'windows')) == 3, 30)
+            except TimeoutError as error:
+                unavailable = str(error)
+            record = capture(3, 'unavailable' if unavailable else 'actual-rotation-observed', unavailable)
+            record['sensor_acceleration'] = '-9.8:0:0'
+            record['sensor_stimulus_output'] = stimulus.decode(errors='replace')
+            if record['actual_main_window_rotation'] not in ((1, 3) if unavailable else (3,)):
+                raise RuntimeError('Reverse-landscape attempt ended in an unverified Main orientation')
+            record['visible_readiness'] = self.wait_for_visible_native_frame(
+                'landscape-reverse-visible', before_pid, expected_bounds)
         finally:
-            self.adb('emu', 'sensor', 'set', 'acceleration', '-9.8:0:0', check=False)
-            self.shell('settings', 'put', 'system', 'user_rotation', 1)
-            (self.output / 'landscape-rotations.json').write_text(json.dumps(self.rotation_observations, indent=2) + '\n')
+            try:
+                stimulus = self.adb('emu', 'sensor', 'set', 'acceleration', '9.8:0:0', check=False)
+                self.shell('settings', 'put', 'system', 'user_rotation', 1)
+                unavailable = None
+                try:
+                    self.wait_for('restore actual Main window landscape rotation1',
+                        lambda: main_window_rotation(self.shell('dumpsys', 'window', 'windows')) == 1, 30)
+                except TimeoutError as error:
+                    unavailable = str(error)
+                record = capture(1, 'restoration-failed' if unavailable else 'restored-actual-rotation1', unavailable)
+                record['sensor_acceleration'] = '9.8:0:0'
+                record['sensor_stimulus_output'] = stimulus.decode(errors='replace')
+                if unavailable or record['actual_main_window_rotation'] != 1:
+                    raise RuntimeError('Ordinary UI requires restored measured Main landscape rotation1')
+                record['visible_readiness'] = self.wait_for_visible_native_frame(
+                    'landscape-restored-visible', before_pid, expected_bounds)
+            finally:
+                (self.output / 'landscape-rotations.json').write_text(json.dumps(self.rotation_observations, indent=2) + '\n')
 
     def save_fingerprints(self):
         """Read only size/mtime facts; never read or modify save contents."""

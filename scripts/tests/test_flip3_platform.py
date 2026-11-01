@@ -1,6 +1,8 @@
 """Host validation boundaries only; actual API35 framework execution is separate."""
 import copy
+import ast
 import json
+import math
 from pathlib import Path
 import sys
 import tempfile
@@ -12,7 +14,8 @@ from PIL import Image, ImageDraw
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from flip3_platform import (HELPER, candidate_identity, validate_black_margins, validate_cancel,
                            validate_center_tap, validate_geometry, physical_size_from_wm,
-                           projected_bounds, validate_visible_restoration, capture_settled_geometry)
+                           projected_bounds, validate_visible_restoration, capture_settled_geometry,
+                           capture_visible_fixture)
 
 
 class PlatformProbeTests(unittest.TestCase):
@@ -156,6 +159,42 @@ class PlatformProbeTests(unittest.TestCase):
 
 class GeometrySettlingTests(unittest.TestCase):
     report = PlatformProbeTests.report
+
+    def test_platform_sensor_vectors_match_aosp_rotation_math(self):
+        tree = ast.parse((Path(__file__).resolve().parents[1] / 'flip3_platform.py').read_text())
+        vectors = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == 'adb':
+                args = node.args
+                if len(args) >= 5 and all(isinstance(v, ast.Constant) for v in args[:5]):
+                    if [v.value for v in args[:4]] == ['emu', 'sensor', 'set', 'acceleration']:
+                        vectors.append(args[4].value)
+        def aosp(vector):
+            x, y, z = map(float, vector.split(':'))
+            angle = round(-math.atan2(-x, y) * 180 / math.pi) % 360
+            return ((angle + 45) // 90) % 4
+        self.assertEqual([aosp(v) for v in vectors], [3, 1])
+
+    def test_rotated_fixture_retains_black_then_requires_pixels_pid_and_rotation(self):
+        report, identity = self.report()
+        report.update(process_id=123, display_rotation=3, physical_display_size=[2640, 1080])
+        with tempfile.TemporaryDirectory() as temporary:
+            class Device:
+                output = Path(temporary)
+            for name, visible in [('black', False), ('visible', True)]:
+                directory = Path(temporary) / name; directory.mkdir()
+                image = Image.new('RGB', (2640, 1080))
+                if visible: image.paste((30, 110, 140), (360, 0, 2280, 1080))
+                image.save(directory / 'screen.png')
+            with patch('flip3_platform.capture_settled_geometry', side_effect=[(report, 'black'), (report, 'visible')]), \
+                    patch('flip3_platform.time.sleep'):
+                observed, label = capture_visible_fixture(Device(), identity, (2640, 1080), 'reverse', 3, 123)
+            self.assertEqual(label, 'visible')
+            proof = json.loads((Path(temporary) / 'reverse-visibility.json').read_text())
+            self.assertEqual([c['fixture_visible'] for c in proof['captures']], [False, True])
+            with patch('flip3_platform.capture_settled_geometry', return_value=({**report, 'process_id': 456}, 'visible')):
+                with self.assertRaisesRegex(ValueError, 'changed process'):
+                    capture_visible_fixture(Device(), identity, (2640, 1080), 'wrong', 3, 123)
     def test_initial_capture_replaces_ephemeral_fullscreen_geometry(self):
         settled, identity = self.report()
         settled.update(window_focused=True, resumed=True, display_rotation=1,

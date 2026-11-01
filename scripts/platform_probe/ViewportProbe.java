@@ -163,6 +163,7 @@ public final class ViewportProbe extends Activity {
             report.put("schema", 1);
             report.put("scope", "Actual Android framework + exact candidate viewport helper; SurfaceView input fixture; no game engine or gameplay");
             report.put("api", Build.VERSION.SDK_INT); report.put("identity", identity);
+            report.put("process_id", android.os.Process.myPid());
             report.put("target_sdk", getApplicationInfo().targetSdkVersion);
             report.put("requested_orientation", getRequestedOrientation());
             report.put("window_cutout_mode", getWindow().getAttributes().layoutInDisplayCutoutMode);

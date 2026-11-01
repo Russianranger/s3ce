@@ -272,6 +272,37 @@ def capture_settled_geometry(device, identity, expected_display, label, timeout=
         (device.output / f'{label}-geometry-settling.json').write_text(json.dumps(evidence, indent=2) + '\n')
 
 
+def capture_visible_fixture(device, identity, expected_display, label, expected_rotation, expected_pid):
+    """Bounded real-pixel fixture readiness after actual rotation/surface changes."""
+    if type(expected_pid) is not int or expected_pid <= 0:
+        raise ValueError('Actual fixture process identity is unavailable')
+    deadline = time.monotonic() + 45
+    evidence = {'accepted': False, 'timeout_seconds': 45, 'captures': []}
+    try:
+        for attempt in range(6):
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            report, capture = capture_settled_geometry(device, identity, expected_display,
+                label if attempt == 0 else f'{label}-visible-{attempt:02d}', min(30, remaining))
+            if report.get('display_rotation') != expected_rotation or report.get('process_id') != expected_pid:
+                raise ValueError('Actual rotated fixture changed process or did not reach the measured target rotation')
+            with Image.open(device.output / capture / 'screen.png') as image:
+                if list(image.size) != report['physical_display_size']:
+                    raise ValueError('Actual rotated screenshot differs from measured physical dimensions')
+                child = image.convert('RGB').crop(tuple(round(v) for v in projected_bounds(report, 'child_bounds')))
+                extrema = child.getextrema()
+            visible = extrema == ((30, 30), (110, 110), (140, 140))
+            evidence['captures'].append({'capture': capture, 'rgb_extrema': extrema, 'fixture_visible': visible})
+            if visible:
+                evidence.update(accepted=True, accepted_capture=capture)
+                return report, capture
+            time.sleep(2)
+        raise ValueError('Actual rotated fixture stayed blank or incomplete within its bounded pixel observation')
+    finally:
+        (device.output / f'{label}-visibility.json').write_text(json.dumps(evidence, indent=2) + '\n')
+
+
 def build_probe(candidate, sdk, directory):
     identity, dex = candidate_identity(candidate)
     directory.mkdir(parents=True, exist_ok=True)
@@ -494,6 +525,8 @@ def main():
             raise ValueError('Home return created a new fixture instead of resuming the same input owner')
         returned = device.capture('home-return')
         validate_geometry(returned, identity, (2640, 1080))
+        if returned.get('process_id') != initial.get('process_id'):
+            raise ValueError('Home return changed the actual fixture process')
         result['home_visible_restoration'] = validate_visible_restoration(
             output / initial_capture / 'screen.png', initial, output / 'home-return/screen.png', returned)
         result['checks'].append('home-focus-loss-cancel-and-same-fixture-return')
@@ -542,11 +575,13 @@ def main():
             report = device.report()
             return report if report.get('display_rotation') == rotation else None
         reverse = result['reverse_landscape'] = {'status': 'unavailable', 'requested_rotation': 3}
+        rotation_pid = restored.get('process_id')
         try:
             device.shell('settings', 'put', 'system', 'accelerometer_rotation', '1')
             device.shell('wm', 'user-rotation', 'lock', '3')
-            sensor = device.adb('emu', 'sensor', 'set', 'acceleration', '9.8:0:0', check=False)
-            reverse['sensor_stimulus'] = {'acceleration': '9.8:0:0', 'returncode': sensor.returncode,
+            # AOSP WindowOrientationListener: -atan2(-x,y), so -X→270deg.
+            sensor = device.adb('emu', 'sensor', 'set', 'acceleration', '-9.8:0:0', check=False)
+            reverse['sensor_stimulus'] = {'acceleration': '-9.8:0:0', 'returncode': sensor.returncode,
                 'output': (sensor.stdout + sensor.stderr).decode(errors='replace')}
             try:
                 rotated = device.wait('actual reverse-landscape rotation3', lambda: rotation_ready(3), 15)
@@ -554,20 +589,34 @@ def main():
                 reverse['limitation'] = str(error)
                 device.capture('reverse-landscape-unavailable')
             else:
-                validate_geometry(rotated, identity, (2640, 1080))
-                rotated = device.capture('reverse-landscape')
-                result['physical_black_margins']['reverse-landscape'] = validate_black_margins(output / 'reverse-landscape/screen.png', rotated)
+                rotated, rotation_capture = capture_visible_fixture(device, identity, (2640, 1080),
+                    'reverse-landscape', 3, rotation_pid)
+                rotated_child = validate_geometry(rotated, identity, (2640, 1080))
+                result['physical_black_margins']['reverse-landscape'] = validate_black_margins(output / rotation_capture / 'screen.png', rotated)
                 reverse.update(status='actual-rotation3-observed', observed_rotation=rotated['display_rotation'])
                 result['checks'].append('actual-reverse-landscape-rotation3-fitted-surface')
+                before = len(rotated['touch_events'])
+                physical_child = projected_bounds(rotated, 'child_bounds')
+                device.shell('input', 'tap', round((physical_child[0] + physical_child[2]) / 2),
+                             round((physical_child[1] + physical_child[3]) / 2))
+                tapped = device.capture('reverse-landscape-center-tap')
+                validate_geometry(tapped, identity, (2640, 1080))
+                if (tapped.get('display_rotation') != 3 or tapped.get('process_id') != rotation_pid
+                        or tapped['child_bounds'] != rotated_child):
+                    raise ValueError('Actual reverse input changed the fixture process, rotation or measured child')
+                validate_center_tap(tapped['touch_events'][before:], rotated_child)
+                result['checks'].append('actual-reverse-landscape-center-input-child-local-down-up')
         finally:
-            sensor = device.adb('emu', 'sensor', 'set', 'acceleration', '-9.8:0:0', check=False)
-            reverse['restore_sensor_stimulus'] = {'acceleration': '-9.8:0:0', 'returncode': sensor.returncode,
+            sensor = device.adb('emu', 'sensor', 'set', 'acceleration', '9.8:0:0', check=False)
+            reverse['restore_sensor_stimulus'] = {'acceleration': '9.8:0:0', 'returncode': sensor.returncode,
                 'output': (sensor.stdout + sensor.stderr).decode(errors='replace')}
             device.shell('settings', 'put', 'system', 'accelerometer_rotation', '0')
             device.shell('wm', 'user-rotation', 'lock', '1')
             device.wait('restore actual landscape rotation1', lambda: rotation_ready(1), 15)
-            device.wait('restore rotation1 viewport', ready)
-            device.capture('rotation-restored')
+            returned, return_capture = capture_visible_fixture(device, identity, (2640, 1080),
+                'rotation-restored', 1, rotation_pid)
+            reverse['restored_measured_rotation'] = returned['display_rotation']
+            reverse['restored_visible_capture'] = return_capture
         overlay_package = 'com.android.internal.display.cutout.emulation.tall'
         overlays = device.shell('cmd', 'overlay', 'list', '--user', '0')
         (output / 'cutout-overlays-before.txt').write_text(overlays)
