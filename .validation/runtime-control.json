@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 21,
-  "frame_sha256": "2fcdd9ab897573a1acd60595c04368d7e0586ba7af54b9117842bf3ad7d08ffa",
+  "seq": 22,
+  "frame_sha256": "db5c94abeef3363e0988fc7a40a52bc68ea888335cd0c93ac0f6afd7fa3cc534",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 860,
-    "y": 270
+    "x": 810,
+    "y": 215
   },
-  "note": "Close the visible Build Mode introduction and inspect the actual chooser."
+  "note": "Close the actual Build chooser using its visible X, preserving furniture and save progression."
 }
