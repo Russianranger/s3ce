@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 29,
-  "frame_sha256": "742dbfc8244c57dbd1b38c8f4eff0f83baeacc0ff69754bcc24e2069ca1e7c28",
+  "seq": 30,
+  "frame_sha256": "d67aa38925f77b6638dac16f001e140f36eccb02a3a33ac69105dccae6ae3076",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1320,
-    "y": 797
+    "x": 1484,
+    "y": 730
   },
-  "note": "Choose the rendered Save and Quit to menu option after gameplay checks."
+  "note": "Confirm the visible Save Game dialog; verify main-menu return and advancing normal save metadata."
 }
