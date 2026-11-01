@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 24,
-  "frame_sha256": "705908a2a18fcee608117873e79b6e66b1d431a3a855953ba4067bb634b4905a",
+  "seq": 25,
+  "frame_sha256": "96a5717268a46cb26ce7d8aa01ac726bc4e6e0df6408213d94423f31b874a12f",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 440,
-    "y": 300
+    "x": 720,
+    "y": 330
   },
-  "note": "Select the visible upper-left status panel now that a green status effect is present."
+  "note": "Collapse the rendered Well rested status panel using its visible right-edge arrow."
 }
