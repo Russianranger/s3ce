@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 22,
-  "frame_sha256": "db5c94abeef3363e0988fc7a40a52bc68ea888335cd0c93ac0f6afd7fa3cc534",
+  "seq": 23,
+  "frame_sha256": "109118efcb16fa4c4a537f3f854a1eacb82cb8553ec1d88a2e92137dbfafa56d",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 810,
-    "y": 215
+    "x": 1300,
+    "y": 700
   },
-  "note": "Close the actual Build chooser using its visible X, preserving furniture and save progression."
+  "note": "Walk to the clearly visible open front-room floor with camera mode off."
 }
