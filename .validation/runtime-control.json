@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 4,
-  "frame_sha256": "e589624f7e7314753f626211f93db362b9355838d1b515b030bb0955307f4106",
+  "seq": 5,
+  "frame_sha256": "de2fca78f7d9399987859112d17a8db2dc856b28a2f24cddd4d1ef68f79d90b6",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1375,
-    "y": 722
+    "x": 1594,
+    "y": 354
   },
-  "note": "Select the fully visible dining-chair seat after zooming out."
+  "note": "Select the visible Cheap Dining Chair / Sit row; require an actual seated pose."
 }
