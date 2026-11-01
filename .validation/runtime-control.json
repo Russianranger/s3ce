@@ -1,14 +1,16 @@
 {
   "schema": 1,
-  "run_id": "41263509428",
-  "seq": 34,
-  "frame_sha256": "c1b83ef40f605811a25111937981c44536d3adb133cddf13bbf16ecedb23f0a3",
+  "run_id": "41338479517",
+  "seq": 1,
+  "frame_sha256": "6b630b465d68a899e6e984881a1c844739d6d226eeba16c09436ea22a0e36fb6",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "finish"
+    "type": "tap",
+    "x": 704,
+    "y": 244
   },
-  "note": "Finish review only after native Main returned, Activity finish was requested, and Compat114 is rendered with Original rendering unchecked."
+  "note": "Close the visible Pause panel using its back arrow before object-action regression."
 }
