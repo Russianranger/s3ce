@@ -1,19 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 11,
-  "frame_sha256": "e27105adb11581dedcf1058888f232d19d18639a4239ee17cb5ba05a5e81aeb8",
+  "seq": 12,
+  "frame_sha256": "64991ed7b282096935cf462c7658636d12b558e19d69ef4005a2c5d6c7b62dfb",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "swipe",
-    "x1": 1250,
-    "y1": 650,
-    "x2": 1490,
-    "y2": 650,
-    "duration_ms": 1000
+    "type": "tap",
+    "x": 860,
+    "y": 300
   },
-  "note": "Pan the actual world with camera mode visibly enabled, then release."
+  "note": "Close the timed Go to Town hint at its rendered X; pan attempt was interrupted."
 }
