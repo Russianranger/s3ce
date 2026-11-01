@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 7,
-  "frame_sha256": "4bf5f86f86f9bb413738e491897292bf02e2974e0f641752960f2327b115ccc8",
+  "seq": 8,
+  "frame_sha256": "4d1a64b8315bab04172e7de9d682bc287766157f228a783f514049cc8f0b2535",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 2164,
-    "y": 965
+    "x": 639,
+    "y": 220
   },
-  "note": "Open the bottom-right Wishes jewel with camera mode off after visible Chair Sit completion."
+  "note": "Close the visible Wishes panel and verify the completed chair action remains rendered."
 }
