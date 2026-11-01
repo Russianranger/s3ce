@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 21,
-  "frame_sha256": "0c1937735248e3fd6ad56a901bf93ba7b9ab22ca104214dad69025a49069f91a",
+  "seq": 22,
+  "frame_sha256": "a27b01e5d043abae802b870ba59069622383a1c6dfab85cbb6a705b190e55d89",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 15
+    "type": "tap",
+    "x": 1070,
+    "y": 797
   },
-  "note": "Allow the observed post-save black/loading transition to reach a visible main menu; do not infer save completion yet."
+  "note": "Select the visible main-menu Quit row after Save and Quit has reached the complete menu."
 }
