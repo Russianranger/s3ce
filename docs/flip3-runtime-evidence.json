@@ -1,0 +1,1123 @@
+{
+  "candidate": {
+    "branch": "flip3",
+    "version_name": "0.1.14-flip3",
+    "version_code": 114,
+    "source": "2f3aba9f15313deb61f4f1769565da9d77f0f46c",
+    "filename": "S3CE-0.1.14-flip3-arm32.apk",
+    "bytes": 76770649,
+    "sha256": "ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b",
+    "classes2_dex_sha256": "61daef3156c105392db9046f9564c460379a374c20a3235d5f1391a35d272f30",
+    "application_id": "io.github.russianranger.s3ce",
+    "certificate_sha256": "3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4",
+    "min_sdk": 26,
+    "target_sdk": 28,
+    "native_abi": "armeabi-v7a",
+    "required_page_size": 4096
+  },
+  "host_checks": {
+    "viewport_assertions": 689,
+    "orientation_dex_paths": 24,
+    "static_dex_methods": 366,
+    "static_dex_failures": 0,
+    "runtime_harness_tests": 58,
+    "original_arm_display_input_cases": 10,
+    "native_source_changed": false
+  },
+  "final_runs_pending": [],
+  "superseded_runs": [
+    {
+      "run_id": 41259011700,
+      "attempt": 1,
+      "candidate_sha256": "f5a85314647cd3699800dff54a3f9f7c0c67fcffb4eeee5a7d4cea522679bd3c",
+      "workflow_conclusion": "failure",
+      "game_artifact": {
+        "id": 13065425362,
+        "bytes": 64211893,
+        "sha256": "237c83d8bf4c31624a160d422961d940b8c1103e5144d0039c663c6282bb1bb8"
+      },
+      "cold_menus": {
+        "attempts": 2,
+        "failures": 0,
+        "pids": [
+          3806,
+          6059
+        ]
+      },
+      "game_failure": "stale sampled scene observer at completed normal SaveQuit; no final reload/action/Quit accepted",
+      "platform_artifact": {
+        "id": 13064695298,
+        "bytes": 2540,
+        "sha256": "b30fe192cb8eadc96fc3ad82bed746441dc0b7637a02369c59540a4dfea3a021"
+      },
+      "platform_failure": "emulator host libpulse.so.0 unavailable before Android boot"
+    },
+    {
+      "run_id": 41259363699,
+      "attempt": 1,
+      "candidate_sha256": "f5a85314647cd3699800dff54a3f9f7c0c67fcffb4eeee5a7d4cea522679bd3c",
+      "workflow_conclusion": "failure",
+      "artifact": {
+        "id": 13064362924,
+        "bytes": 1335918,
+        "sha256": "79d26b6be1f2c67f6d9f47a4e9d613737fa57123d61ea976d1c59e332329ae98"
+      },
+      "failure": "size-compat resize validator mismatch; independent review also found actual parent-coordinate CANCEL delivery, so candidate rejected"
+    }
+  ],
+  "physical_evidence": {
+    "thor": "User confirms prior0.1.13 camera/jewel fix and game running. No new repeated-start count supplied.",
+    "flip3": null
+  },
+  "manual_acceptance": {
+    "status": "accepted-focused-flip3-test-candidate",
+    "publish": true,
+    "signed_apk_sha256": "ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b",
+    "reviewers": [
+      "root: actual frame-guided UI and archive facts",
+      "independent_review: hashes, actual poses/panels/save/Quit",
+      "runtime_recovery and independent child: full archive, startup/lifecycle/logs"
+    ],
+    "preserved_raw_gate_false": true,
+    "physical_flip3_acceptance": false,
+    "scope": "Wide-screen ARM32 game onAPI30 and exact-helper platform/input onAPI35; actual Samsung native gameplay remains next phone test."
+  },
+  "limitations": [
+    "No physical Galaxy Z Flip3 or Android15 original ARM32 gameplay execution locally.",
+    "Samsung firmware must expose armeabi-v7a and4096-byte pages.",
+    "No user Thor save available locally; no cross-device save transfer is implied.",
+    "Folded cover-screen and flex-mode gameplay outside candidate acceptance."
+  ],
+  "retained_final_candidate_failures": [
+    {
+      "run_id": 41261735346,
+      "source": "2f3aba9f15313deb61f4f1769565da9d77f0f46c",
+      "candidate_sha256": "ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b",
+      "workflow_conclusion": "failure",
+      "artifact": {
+        "id": 13065955313,
+        "bytes": 779619,
+        "sha256": "da9747a203ad24ddfed99393551b6f1ebfcbdb2aed27a2f6b0bb3d7c402141da"
+      },
+      "failure": "Harness used ephemeral984-high parent coordinates after actual fullscreen layout settled to1032; raw touch correctly equals child local plus actual origin. Only margin taps accepted; later checks unexecuted."
+    },
+    {
+      "run_id": 41261735431,
+      "source": "2f3aba9f15313deb61f4f1769565da9d77f0f46c",
+      "candidate_sha256": "ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b",
+      "workflow_conclusion": "failure",
+      "artifact": {
+        "id": 13066150246,
+        "bytes": 87035779,
+        "sha256": "db39606869d00baf86a7790b1183a2bd92464623e606c9ce68b4e30eeb3d44cb",
+        "verified_members": 1255
+      },
+      "original_status": "blocked",
+      "original_gate_passed": false,
+      "error": "TimeoutError: Timed out waiting for actual Main window landscape rotation 3",
+      "cold_starts": [
+        {
+          "attempt": 1,
+          "marker": "S3CE-cold-start-1-1793497085238139972",
+          "start_epoch": 1793497085.2381423,
+          "status": "ready-awaiting-visual-review",
+          "visual_review": "required",
+          "scope": "normal launcher/Start; process-cold; app data retained",
+          "game_pid": "4175",
+          "native_viewport": [
+            360,
+            0,
+            2280,
+            1080
+          ],
+          "viewport_source": "GameViewport actual child layout witness",
+          "screenshot_sha256": "e1e29b64e727e83ca6208a64b9df0b8bc39952413bef737b6049e49e573ea979",
+          "fatal_or_anr_lines": [],
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{c3d174f u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t10}"
+          ],
+          "end_epoch": 1793497126.9181678
+        },
+        {
+          "attempt": 2,
+          "marker": "S3CE-cold-start-2-1793497126918396356",
+          "start_epoch": 1793497126.9183977,
+          "status": "ready-awaiting-visual-review",
+          "visual_review": "required",
+          "scope": "normal launcher/Start; process-cold; app data retained",
+          "game_pid": "6219",
+          "native_viewport": [
+            360,
+            0,
+            2280,
+            1080
+          ],
+          "viewport_source": "GameViewport actual child layout witness",
+          "screenshot_sha256": "975c0ed52b0b7e7d2e9bd236dafdebf58759b6562b009e115f6d77c13111bada",
+          "fatal_or_anr_lines": [],
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{e680a86 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+          ],
+          "end_epoch": 1793497166.2996688
+        }
+      ],
+      "home_return": {
+        "status": "same-process-return-awaiting-visual-review",
+        "before_pid": "11637",
+        "expected_game_bounds": [
+          360,
+          0,
+          2280,
+          1080
+        ],
+        "after_pid": "11637",
+        "native_viewport": [
+          360,
+          0,
+          2280,
+          1080
+        ]
+      },
+      "visual_limit": "Early Home-resumed capture allblack; later failure screenshot renders house+Pausemenu. Do not equate samePID with immediate visible restore. No livecontrols/action/nativeQuit stage reached.",
+      "subsequent_attribution": "Harness acceleration signs reversed: AOSP maps positiveX to90/rotation1, negativeX to270/rotation3. Subsequent harness corrects vectors; no candidate change."
+    }
+  ],
+  "android15_platform": {
+    "run_id": 41263509512,
+    "attempt": 1,
+    "source": "3d486a62bf9023be12e584a84d1d66aa68b8146c",
+    "workflow_conclusion": "success",
+    "artifact": {
+      "id": 13066385908,
+      "bytes": 1548498,
+      "sha256": "2c09f96cb75a19763d6751c141d605a5f85119630f6e83c8211ed42768743d37",
+      "verified_members": 112
+    },
+    "raw_acceptance": {
+      "status": "platform-probe-passed-game-ABI-limit-recorded",
+      "gameplay_tested": false,
+      "scope": "API35 ABI/install observation and exact-candidate-helper platform fixture only",
+      "git_sha": "3d486a62bf9023be12e584a84d1d66aa68b8146c",
+      "checks": [
+        "both-black-margin-taps-inert",
+        "center-tap-real-child-local-coordinates",
+        "drag-leaves-child-cancels-without-outside-move-or-up",
+        "real-framework-lifted-pointer-retired-and-child-local-cancel-preserved",
+        "home-focus-loss-cancel-and-same-fixture-return",
+        "real-framework-resize-cancel-and-observed-resized-restored-fitted-surfaces",
+        "actual-reverse-landscape-rotation3-fitted-surface",
+        "actual-reverse-landscape-center-input-child-local-down-up",
+        "one-stock-cutout-nonzero-insets-fitted-once"
+      ],
+      "candidate": {
+        "apk_sha256": "ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b",
+        "apk_bytes": 76770649,
+        "classes2_sha256": "61daef3156c105392db9046f9564c460379a374c20a3235d5f1391a35d272f30",
+        "helper": "com.ideaworks3d.thesims3.GameViewport"
+      },
+      "probe_apk_sha256": "73d4923643a9f60e3af26b76342a1cc89d53e53b094e93df0cf44fbff89c88b8",
+      "emulator_command": [
+        "/usr/local/lib/android/sdk/emulator/emulator",
+        "-avd",
+        "S3CE_PLATFORM35",
+        "-port",
+        "5556",
+        "-accel",
+        "on",
+        "-gpu",
+        "swiftshader_indirect",
+        "-no-window",
+        "-no-audio",
+        "-no-boot-anim",
+        "-no-snapshot",
+        "-memory",
+        "3072",
+        "-cores",
+        "4",
+        "-prop",
+        "qemu.hw.mainkeys=1"
+      ],
+      "emulator_version": "Android emulator version 37.2.13.0 (build_id 16740729) (CL:N/A)\nCopyright (C) 2006-2024 The Android Open Source Project and many others.\nThis program is a derivative of the QEMU CPU emulator (www.qemu.org).\n\n  This software is licensed under the terms of the GNU General Public\n  License version 2, as published by the Free Software Foundation, and\n  may be copied, distributed, and modified under those terms.\n\n  This program is distributed in the hope that it will be useful,\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n  GNU General Public License for more details.\n\n",
+      "system_image": {
+        "properties": "Pkg.Desc=System Image x86_64 with Google APIs.\nPkg.Revision=9\nPkg.Dependencies=emulator#33.1.24\nAndroidVersion.ApiLevel=35\nAndroidVersion.ExtensionLevel=13\nAndroidVersion.IsBaseSdk=true\nSystemImage.Abi=x86_64\nSystemImage.TagId=google_apis\nSystemImage.TagDisplay=Google APIs\nSystemImage.GpuSupport=true\nAddon.VendorId=google\nAddon.VendorDisplay=Google Inc.\n\n",
+        "bytes": 3576692736,
+        "sha256": "c06a5966e70bb34645e68e7fe0038ed4396bad30e7a378dbdbb1c26d6a351171"
+      },
+      "platform": {
+        "ro.build.version.sdk": "35",
+        "ro.product.cpu.abilist": "x86_64,arm64-v8a",
+        "ro.product.cpu.abilist32": "",
+        "ro.product.cpu.abilist64": "x86_64,arm64-v8a",
+        "ro.dalvik.vm.native.bridge": "libndk_translation.so",
+        "ro.zygote": "zygote64",
+        "page_size": "4096"
+      },
+      "actual_candidate_install": {
+        "returncode": 1,
+        "stdout": "Performing Streamed Install\n",
+        "stderr": "adb: failed to install /home/runner/work/s3ce/s3ce/build/runtime-internal/candidate/S3CE-0.1.14-flip3-arm32.apk: Failure [INSTALL_FAILED_NO_MATCHING_ABIS: INSTALL_FAILED_NO_MATCHING_ABIS: Failed to extract native libraries, res=-113]\n\n"
+      },
+      "candidate_install_limit": "Exact ARM32 game APK cannot install on this measured API35 emulator ABI set",
+      "initial_geometry_capture": "initial",
+      "physical_black_margins": {
+        "black-margins": [
+          {
+            "rectangle": [
+              0,
+              0,
+              408,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 421056,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "rectangle": [
+              2232,
+              0,
+              2640,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 421056,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          }
+        ],
+        "resized": [
+          {
+            "rectangle": [
+              0,
+              0,
+              168,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 173376,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "rectangle": [
+              1992,
+              0,
+              2160,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 173376,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          }
+        ],
+        "restored": [
+          {
+            "rectangle": [
+              0,
+              0,
+              408,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 421056,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "rectangle": [
+              2232,
+              0,
+              2640,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 421056,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          }
+        ],
+        "reverse-landscape": [
+          {
+            "rectangle": [
+              0,
+              0,
+              408,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 421056,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "rectangle": [
+              2232,
+              0,
+              2640,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 421056,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          }
+        ],
+        "cutout-enabled": [
+          {
+            "rectangle": [
+              96,
+              0,
+              456,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 371520,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "rectangle": [
+              2280,
+              0,
+              2640,
+              1032
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "pixels": 371520,
+            "app_to_physical_scale": [
+              1.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      "home_visible_restoration": {
+        "child_pixels_sha256": "0b23f405376b03e884f0f57688ebeb8bfad9ecbf20dfbb37e5c3a1dacd43f2b1",
+        "child_pixels_size": [
+          1824,
+          1026
+        ],
+        "identical_after_return": true
+      },
+      "resize_request": {
+        "natural_dimensions": [
+          1080,
+          2160
+        ],
+        "expected_physical_dimensions": [
+          2160,
+          1080
+        ],
+        "actual_rotation_before": 1,
+        "raw_live_coordinate_spaces": {
+          "view_display_and_root_insets": "app-compatible",
+          "wm_size_and_screenshot": "physical",
+          "app_display_size": [
+            2640,
+            1080
+          ],
+          "physical_display_size": [
+            2160,
+            1080
+          ],
+          "mapping_error": "App-compatible to physical display mapping is not uniform"
+        },
+        "live_geometry_limit": "App-compatible to physical display mapping is not uniform",
+        "geometry_scope": "New fixture process at resized display; live CANCEL tested separately"
+      },
+      "reverse_landscape": {
+        "status": "actual-rotation3-observed",
+        "requested_rotation": 3,
+        "sensor_stimulus": {
+          "acceleration": "-9.8:0:0",
+          "returncode": 0,
+          "output": "OK\r\n"
+        },
+        "observed_rotation": 3,
+        "restore_sensor_stimulus": {
+          "acceleration": "9.8:0:0",
+          "returncode": 0,
+          "output": "OK\r\n"
+        },
+        "restored_measured_rotation": 1,
+        "restored_visible_capture": "rotation-restored"
+      },
+      "cutout_probe": {
+        "package": "com.android.internal.display.cutout.emulation.tall",
+        "status": "stock-overlay-nonzero-insets-observed",
+        "scope": "One stock tall-cutout developer overlay; no physical Samsung cutout certification",
+        "enable_returncode": 0,
+        "enable_output": "",
+        "observed_system_insets": [
+          0,
+          0,
+          0,
+          48
+        ],
+        "observed_display_cutout_insets": [
+          96,
+          0,
+          0,
+          0
+        ],
+        "observed_window_cutout_insets": null,
+        "parent_bounds": [
+          96,
+          0,
+          2640,
+          1032
+        ],
+        "child_bounds": [
+          456,
+          3,
+          2280,
+          1029
+        ]
+      },
+      "final_coordinate_spaces": {
+        "view_display_and_root_insets": "app-compatible",
+        "wm_size_and_screenshot": "physical",
+        "app_display_size": [
+          2640,
+          1080
+        ],
+        "physical_display_size": [
+          2640,
+          1080
+        ],
+        "app_to_physical_scale": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "manual_review": {
+      "accepted_scope": "Exact candidate helper/framework. Original ARM32 engine not run onAPI35.",
+      "reports_verified": 16,
+      "actual_reverse_process_id": 4468,
+      "actual_rotation_sequence": [
+        3,
+        1
+      ],
+      "reverse_center_screen": [
+        1320,
+        516
+      ],
+      "reverse_center_child": [
+        912,
+        513
+      ],
+      "initial_home_reverse_return_child_pixel_sha256": "0b23f405376b03e884f0f57688ebeb8bfad9ecbf20dfbb37e5c3a1dacd43f2b1",
+      "drag_cancel_child": [
+        33.150390625,
+        513
+      ],
+      "sparse_pointer_retirement": "ID7 released; onlyID13 cancelled at380,230",
+      "probe_fatal_anr_exceptions": 0,
+      "environment_observation": "One NexusLauncher ANR(two log lines) before probe startup; systemDeadObjectException after deliberate fixtureforce-stop. GlobalzeroANR is not claimed.",
+      "limitations": [
+        "API35 exact ARM32 candidate installation blocked by empty supported32-bit ABI list.",
+        "Live wm-size resize mapping nonuniform; liveCANCEL checked, resizedfit uses separate fresh fixture.",
+        "Stable aligned visible restoration after disabling optional stock cutout overlay remains unproved.",
+        "Samsung native driver/ABI/page/device behavior remains untested."
+      ]
+    }
+  },
+  "rotation_stimulus_source": "https://android.googlesource.com/platform/frameworks/base/+/f4e347d6aec7f1ff09c23aea8f3378d0b390eac6/services/core/java/com/android/server/policy/WindowOrientationListener.java",
+  "earlier_platform_acceptance": {
+    "run_id": 41262144495,
+    "attempt": 1,
+    "source": "dc47ec72646e8e02a63a155f3e08f7a80213ae4a",
+    "workflow_conclusion": "success",
+    "artifact": {
+      "id": 13064894359,
+      "bytes": 1570787,
+      "sha256": "4d34910c3f1b432efea449562d0b1c0852e379dc9c0c7b669c36ba0826c6a6fc",
+      "verified_members": 102
+    },
+    "manual_review": {
+      "accepted_scope": "Exact candidate helper and platform boundary; original game not run onAPI35",
+      "center_screen": [
+        1320,
+        516
+      ],
+      "center_child": [
+        912,
+        513
+      ],
+      "sparse_pointer_retirement": "ID7 released; onlyID13 cancelled at380,230",
+      "full_log_fatal_matches": 0,
+      "full_log_anr_matches": 0,
+      "probe_exceptions": 0,
+      "limitations": [
+        "Dedicated reverse-landscape test unavailable; later enabled-cutout capture actuallyrotation3, initialrotation1.",
+        "Live wm resize has nonuniform legacy app-compatible mapping; live CANCEL checked; fitted resized geometry uses separate fresh fixture.",
+        "Visible aligned restoration after removing optional stock cutout overlay unproved; black then transient/mismatched drawing retained."
+      ]
+    },
+    "superseded_coverage": "Before corrected AOSP sensor stimulus; later run establishes continuous actual3/input/1."
+  },
+  "full_game": {
+    "run_id": 41263509428,
+    "attempt": 1,
+    "source": "3d486a62bf9023be12e584a84d1d66aa68b8146c",
+    "workflow_conclusion": "success",
+    "artifact": {
+      "id": 13068040004,
+      "bytes": 213172849,
+      "sha256": "916bcf81eb25ff2656dde8157315a85402eecaa46a9a0e2b5035c2e9603fb366",
+      "verified_members": 2393
+    },
+    "original_acceptance": {
+      "status": "runtime-progression-observed-awaiting-visual-review",
+      "gate_passed": false,
+      "sha256": "17e9bf5856438b40dada0e503e1d92b0a36ed9fa0568a1c3e59e5c031ce7cd83"
+    },
+    "environment": {
+      "emulator_command": [
+        "/home/runner/work/_temp/s3ce-emulator-31.1.4/emulator/emulator",
+        "-avd",
+        "S3CE_VALIDATION",
+        "-port",
+        "5554",
+        "-accel",
+        "on",
+        "-gpu",
+        "swiftshader_indirect",
+        "-no-window",
+        "-no-audio",
+        "-no-boot-anim",
+        "-no-snapshot",
+        "-skip-adb-auth",
+        "-verbose",
+        "-memory",
+        "3072",
+        "-cores",
+        "4",
+        "-feature",
+        "-Vulkan,DynamicPartition",
+        "-show-kernel",
+        "-prop",
+        "qemu.hw.mainkeys=1",
+        "-partition-size",
+        "3083"
+      ],
+      "emulator_version": "Android emulator version 31.1.4.0 (build_id 7920983) (CL:N/A)\nCopyright (C) 2006-2017 The Android Open Source Project and many others.\nThis program is a derivative of the QEMU CPU emulator (www.qemu.org).\n\n  This software is licensed under the terms of the GNU General Public\n  License version 2, as published by the Free Software Foundation, and\n  may be copied, distributed, and modified under those terms.\n\n  This program is distributed in the hope that it will be useful,\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n  GNU General Public License for more details.\n\n",
+      "image_properties": "Pkg.Desc=System Image x86 with Google APIs.\nPkg.Revision=16\nPkg.Dependencies=emulator#30.8.0\nAndroidVersion.ApiLevel=30\nSystemImage.Abi=x86\nSystemImage.TagId=google_apis\nSystemImage.TagDisplay=Google APIs\nSystemImage.GpuSupport=true\nAddon.VendorId=google\nAddon.VendorDisplay=Google Inc.\n\n",
+      "system_image_bytes": 3232759808,
+      "system_image_sha256": "48e9d853b2ab892222889225629ad17cd53c0239c7db32798d134d10870a78fe",
+      "abi_list": "x86,armeabi-v7a,armeabi",
+      "native_bridge": "libndk_translation.so",
+      "page_size": "4096",
+      "kernel": "Linux localhost 5.4.249-android11-2-00004-g212a7aaded26-ab10688362 #1 SMP PREEMPT Mon Aug 21 12:17:45 UTC 2023 i686",
+      "candidate_native_viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "emulator_exit_before_cleanup": null,
+      "live_logcat_exit_before_cleanup": null
+    },
+    "cold_starts": [
+      {
+        "attempt": 1,
+        "marker": "S3CE-cold-start-1-1793498671719872695",
+        "start_epoch": 1793498671.7198741,
+        "status": "ready-awaiting-visual-review",
+        "visual_review": "required",
+        "scope": "normal launcher/Start; process-cold; app data retained",
+        "game_pid": "4127",
+        "native_viewport": [
+          360,
+          0,
+          2280,
+          1080
+        ],
+        "viewport_source": "GameViewport actual child layout witness",
+        "screenshot_sha256": "5d9ed2b0e7e370d3fb4228da0d3b1a8a2a12c7d204e404b8551591b5ec725d6d",
+        "fatal_or_anr_lines": [],
+        "resumed_activity_lines": [
+          "mResumedActivity: ActivityRecord{5d4d3b8 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t10}"
+        ],
+        "end_epoch": 1793498714.9268563
+      },
+      {
+        "attempt": 2,
+        "marker": "S3CE-cold-start-2-1793498714927052409",
+        "start_epoch": 1793498714.927054,
+        "status": "ready-awaiting-visual-review",
+        "visual_review": "required",
+        "scope": "normal launcher/Start; process-cold; app data retained",
+        "game_pid": "6451",
+        "native_viewport": [
+          360,
+          0,
+          2280,
+          1080
+        ],
+        "viewport_source": "GameViewport actual child layout witness",
+        "screenshot_sha256": "dcefd40925bebdb207453b84f95bd74f7d119d367d96c2f69d633cb4ef06e35e",
+        "fatal_or_anr_lines": [],
+        "resumed_activity_lines": [
+          "mResumedActivity: ActivityRecord{c8b7690 u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.Main t12}"
+        ],
+        "end_epoch": 1793498754.9759164
+      }
+    ],
+    "letterbox": {
+      "status": "callback-inert-awaiting-visual-review",
+      "viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "screen_size": [
+        2640,
+        1080
+      ],
+      "game_pid": "6451",
+      "points": [
+        [
+          180,
+          540
+        ],
+        [
+          2460,
+          540
+        ]
+      ],
+      "scope": "Physical black-margin taps; callback witness and screenshots only",
+      "observations": [
+        {
+          "capture": "letterbox-margin-1",
+          "point": [
+            180,
+            540
+          ],
+          "before_color": [
+            0,
+            0,
+            0
+          ],
+          "game_pid": "6451",
+          "callback_witness_unchanged": true,
+          "viewport_unchanged": true
+        },
+        {
+          "capture": "letterbox-margin-2",
+          "point": [
+            2460,
+            540
+          ],
+          "before_color": [
+            0,
+            0,
+            0
+          ],
+          "game_pid": "6451",
+          "callback_witness_unchanged": true,
+          "viewport_unchanged": true
+        }
+      ]
+    },
+    "home_return": {
+      "status": "same-process-visible-return-awaiting-action-review",
+      "before_pid": "12489",
+      "expected_game_bounds": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "after_pid": "12489",
+      "native_viewport": [
+        360,
+        0,
+        2280,
+        1080
+      ],
+      "visible_capture": "home-return-visible-00",
+      "visibility": {
+        "capture": "home-return-visible-00",
+        "game_pid": "12489",
+        "native_viewport": [
+          360,
+          0,
+          2280,
+          1080
+        ],
+        "rendered_pixels": true,
+        "nonblack_pixels": 2073488,
+        "canvas_pixels": 2073600,
+        "distinct_colors_capped_at_65": 65,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            4,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "readiness_only": true
+      },
+      "subsequent_action": "Requires ordinary UI action and resulting visible frame review"
+    },
+    "landscape_rotations": [
+      {
+        "requested_rotation": 3,
+        "actual_main_window_rotation": 1,
+        "status": "unavailable",
+        "game_pid": "12489",
+        "native_viewport": [
+          360,
+          0,
+          2280,
+          1080
+        ],
+        "capture": "landscape-rotation-3-unavailable",
+        "visual_review": "required",
+        "limitation": "Timed out waiting for actual Main window landscape rotation3",
+        "sensor_acceleration": "-9.8:0:0",
+        "sensor_stimulus_output": "OK\r\n",
+        "visible_readiness": {
+          "capture": "landscape-reverse-visible-00",
+          "game_pid": "12489",
+          "native_viewport": [
+            360,
+            0,
+            2280,
+            1080
+          ],
+          "rendered_pixels": true,
+          "nonblack_pixels": 2073488,
+          "canvas_pixels": 2073600,
+          "distinct_colors_capped_at_65": 65,
+          "rgb_extrema": [
+            [
+              0,
+              255
+            ],
+            [
+              4,
+              255
+            ],
+            [
+              0,
+              255
+            ]
+          ],
+          "readiness_only": true
+        }
+      },
+      {
+        "requested_rotation": 1,
+        "actual_main_window_rotation": 1,
+        "status": "restored-actual-rotation1",
+        "game_pid": "12489",
+        "native_viewport": [
+          360,
+          0,
+          2280,
+          1080
+        ],
+        "capture": "landscape-rotation-1",
+        "visual_review": "required",
+        "sensor_acceleration": "9.8:0:0",
+        "sensor_stimulus_output": "OK\r\n",
+        "visible_readiness": {
+          "capture": "landscape-restored-visible-00",
+          "game_pid": "12489",
+          "native_viewport": [
+            360,
+            0,
+            2280,
+            1080
+          ],
+          "rendered_pixels": true,
+          "nonblack_pixels": 2073488,
+          "canvas_pixels": 2073600,
+          "distinct_colors_capped_at_65": 65,
+          "rgb_extrema": [
+            [
+              0,
+              255
+            ],
+            [
+              4,
+              255
+            ],
+            [
+              0,
+              255
+            ]
+          ],
+          "readiness_only": true
+        }
+      }
+    ],
+    "native_quit": {
+      "native_main_returned": true,
+      "activity_finish_requested": true,
+      "resumed_activity_lines": [
+        "mResumedActivity: ActivityRecord{5f0bc6e u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.CompatActivity t13}"
+      ],
+      "game_main_resumed": false,
+      "compat_launcher_resumed": true,
+      "retained_package_pid": "12489",
+      "fatal_or_anr_lines": []
+    },
+    "controller": {
+      "commands": 34,
+      "frames": 34,
+      "finish_requested": true
+    },
+    "manual_visual_evidence": {
+      "zoom": {
+        "frames": [
+          1,
+          2
+        ]
+      },
+      "chair_sit": {
+        "frames": [
+          5,
+          6,
+          8
+        ],
+        "result": "Actual Cheap Dining Chair/Sit row, then settled supported seated pose; menu closure alone not used."
+      },
+      "wishes_camera_off": [
+        7,
+        8
+      ],
+      "camera_toggle_on": 9,
+      "pan_and_release": [
+        11,
+        12,
+        13
+      ],
+      "bounded_release_seconds": 37.12336492538452,
+      "wishes_camera_on": [
+        14,
+        15
+      ],
+      "camera_toggle_off": 16,
+      "build": [
+        20,
+        21,
+        22
+      ],
+      "floor_walk": [
+        22,
+        23
+      ],
+      "status_well_rested": [
+        24,
+        25
+      ],
+      "save_quit": [
+        28,
+        29,
+        30,
+        31
+      ],
+      "normal_quit": [
+        32,
+        33
+      ],
+      "retained_nonacceptance": {
+        "4": "Bed tap did not produce menu/action; no bed action accepted.",
+        "10": "Timed Go to Town hint interrupted first pan.",
+        "17": "Timed New Wish interrupted status attempt.",
+        "19": "No expanded status-label endpoint accepted while effect list empty.",
+        "26": "Timed Lonely hint interrupted Pause; actual Pause accepted only28."
+      },
+      "observer_limit": "Native callback298/410 remains sampled/stale; actual panels, mode sequence, pose and native Quit log are separate evidence."
+    },
+    "prefix_save_mtime_seconds": [
+      1793499070,
+      1793499354
+    ],
+    "post_action_save": {
+      "before_utc_minute": "2026-11-01T02:15Z",
+      "after_utc_minute": "2026-11-01T02:41Z",
+      "sim3dat0_bytes": 2562,
+      "sim3set_bytes": 90,
+      "scope": "Normal SaveQuit confirmation; minute-precision final stat listing; no contents edited."
+    },
+    "full_log": {
+      "bytes": 47470274,
+      "sha256": "a2d2612b2a7a576f7b5757054ac4748c2343d8b41f2bf023f7b4e2d7a42a77a7",
+      "fatal_anr_late_audio_matches": 0,
+      "graphics_limit": "Known GL diagnostic query0x500 remains (23current,16/21previous); graphics-error-free is not claimed."
+    }
+  },
+  "startup_total_final_apk": {
+    "repeated_menu_attempts": 4,
+    "failures": 0,
+    "saved_game_restarts_separate": 2,
+    "run_ids": [
+      41261735431,
+      41263509428
+    ],
+    "scope": "API30 emulator only; no physical startup reliability claim."
+  }
+}

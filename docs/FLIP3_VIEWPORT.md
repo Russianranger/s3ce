@@ -139,9 +139,14 @@ its `classes2.dex` is
 `61daef3156c105392db9046f9564c460379a374c20a3235d5f1391a35d272f30`.
 The reviewed helper source SHA-256 is
 `cd4c39b560c85ca9e8d40a1dc3fd36d11cc1526b49e2864622477cce9ebd6307`.
-These identities pass independent host/assembled checks below. Fresh actual
-Android testing of these corrected bytes remains required; the superseded
-candidate's platform observations do not establish the repair on Android.
+These identities pass independent host/assembled checks below. Actual Android15
+run41263509512 now verifies corrected CANCEL coordinates, sparse-pointer ownership,
+measured rotation3/input/visible rotation1 return, margins and cutout fitting with
+these exact helper bytes. Separate ARM32 game run41263509428 verifies the normal
+landscape gameplay/UI/save/exit path. Full-game reverse rotation remains unavailable
+on the API30 emulator; its captured orientation listener retains zero filtered
+sensor values despite accepted emulator stimulus. See FLIP3_RUNTIME_ACCEPTANCE.md
+for complete current and superseded attempts and bounded evidence limits.
 
 ## Shared UI coverage and evidence limits
 

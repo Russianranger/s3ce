@@ -16,7 +16,12 @@ Samsung acceptance.
 
 See [viewport implementation](docs/FLIP3_VIEWPORT.md),
 [Android 15 assessment](docs/FLIP3_ANDROID15.md), and
-[current handoff](docs/HANDOFF.md). Runtime review and publication are in progress.
+[current handoff](docs/HANDOFF.md).
+
+[Download the Flip3 test APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.14-flip3/S3CE-0.1.14-flip3-arm32.apk).
+[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.14-flip3).
+[Runtime evidence](docs/FLIP3_RUNTIME_ACCEPTANCE.md) separates full ARM32 gameplay
+from exact-helper Android15 framework tests and physical phone limitations.
 Keep **Original rendering (diagnostic mode) unchecked**. Install updates over
 the existing S3CE app without uninstalling or clearing data.
 

@@ -1,21 +1,38 @@
-# Current continuation — Flip3 landscape / Android15
+# Current handoff — Flip3 test candidate ready
 
-Recovered main at1561a3bac5f85974a2f41c4959f77093038018ad and created `flip3`
-from that exact source. The user confirms the0.1.13 camera/jewel repair and that
-the game is running. This is new physical acceptance of the touch fix; it is not
-a measured startup-reliability claim.
+Created `flip3` from current main 1561a3bac5f85974a2f41c4959f77093038018ad.
+The user physically confirms0.1.13 fixed camera/jewel interception and gameplay
+runs. Main remains the Thor track; this branch adapts unfolded Galaxy Z Flip3
+landscape while preserving that accepted behavior.
 
-Next candidate:0.1.14-flip3/code114, same signing identity/appID/private saves,
-ARM32/4KiB/target28. Default centered16:9 game surface preserves the accepted
-Thor proportions on the Flip3's2640×1080 landscape display; safe content bounds
-and local touch events are the shared coordinate authority. Main is unchanged.
+Frozen signed 0.1.14-flip3/code 114:76,770,649 bytes, SHA256
+`ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b`.
+Production source 2f3aba9f15313deb61f4f1769565da9d77f0f46c; final harness 3d486a62bf9023be12e584a84d1d66aa68b8146c.
+Same appID/key/private data, ARM32/4KiB/target 28 and unchanged native source.
 
-Implementation and evidence are in progress: viewport/inset/gesture checks,
-full gameplay on an ARM32-capable wide emulator, and Android15 platform checks
-with actual ABI/page/install observations. See FLIP3_ANDROID15.md. Keep Android15
-platform probe evidence separate from original-engine gameplay. Complete the
-available checks, publish the exact tested signed bytes, and deliver APK/testing
-links. Physical Flip3 confirmation remains required.
+The real game surface is the largest centered exact16:9 child of safe content.
+At2640×1080 it is1920×1080 with 360px inactive margins. Rendering/native surface
+sizes and child-local touch share one coordinate authority; no global touch
+correction or per-control enlargement. Insets are consumed once. Owned CANCEL
+coordinates and lifted-pointer retirement are corrected using actualAPI 35 evidence.
+
+Root/independent reviews accept exact bytes: green game run 41263509428 validates
+normal creation/save/restart/load, Chair Sit, Wishes both camera states, zoom/pan/
+release, Buy/status, walking, visible Home return, advancing final save and clean
+native Quit. Four cold menus across both final-APK sessions pass,0 failures. Raw
+manual-review gate=false, prior failures and initial Home black captures remain.
+GameAPI 30 reverse is unavailable (zero filtered sensor data); exact helper on
+API 35 run 41263509512 proves actual3/input/visible1. Original ARM32 engine does not
+run on that64-bit-only API 35 image. Samsung acceptance remains unverified.
+
+See [runtime receipt](FLIP3_RUNTIME_ACCEPTANCE.md), [evidence index](flip3-runtime-evidence.json),
+[viewport analysis](FLIP3_VIEWPORT.md) and [Android 15 assessment](FLIP3_ANDROID15.md).
+Final payload reconstructs byte-identically from .publish/v0.1.14-flip3; publication
+and independent public-download verification are the remaining delivery step.
+Do not rebuild/resign these accepted bytes. Next phone action after delivery:
+fully unfold, check both landscape directions and visible controls/actions,
+save/reload/Home, three cold starts, then export Home→icon→Save/Share report.
+Install over without uninstall/data clear; Original rendering stays unchecked.
 
 # Historical continuation — 0.1.13 camera-input release
 
@@ -41,7 +58,7 @@ checks plus180 prior HUD comparisons),22 runtime tests, source/asset/signature
 checks and exact release reconstruction pass. Read-only observer fields now
 identify actual phase/flags/camera state; their timing is not final-action proof.
 
-Actual Android run41237818263, source
+Actual Android run 41237818263, source
 `b76f771113032361de079ee360588e0990426c08`, uses the exact candidate SHA above.
 Two cold menus and normal creation/save/reload pass. Actual Wishes opens with
 camera mode off and on; pan, bounded release and zoom are visibly confirmed.
@@ -66,13 +83,13 @@ resign. Physical memory-pressure reliability/Home-return remain open.
 
 [Release v0.1.13-camera-input](https://github.com/Russianranger/s3ce/releases/tag/v0.1.13-camera-input)
 was published from `183461cbb38e3443ee90923c62139d5c0eb5656b` by green
-[run41243515898](https://github.com/Russianranger/s3ce/actions/runs/41243515898).
+[run 41243515898](https://github.com/Russianranger/s3ce/actions/runs/41243515898).
 The workflow reconstructs the exact tested bytes, verifies signing/package113/
-target28 and downloads/checks the published APK. Root independently downloaded
+target 28 and downloads/checks the published APK. Root independently downloaded
 the public APK: 76,770,649 bytes and SHA256ce8c54bffe5deeb00e6c81b3d942bfdd5f5480b63ef281d33b053cc255eb3a5e.
 Its v2/v3 signature verifies against the existing certificate
 3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4;
-package, name/code113, target28 and ARMv7 were rechecked. No signing or game assets
+package, name/code113, target 28 and ARMv7 were rechecked. No signing or game assets
 were changed for publication. The evidence index records the public receipt.
 
 [Direct APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.13-camera-input/S3CE-0.1.13-camera-input-arm32.apk).
@@ -131,14 +148,14 @@ Town hint was observed; it did not establish phase21 or attribute every rejected
 tap to tutorial gating. The current0.1.13 investigation identifies camera
 precedence and demonstrates actual Wishes activation in both camera modes.
 New Home/return and physical memory-pressure reliability remain unconfirmed.
-This is API30 x86/ARMv7 translation, not physical ARM or Android13–16 acceptance.
+This is API 30 x86/ARMv7 translation, not physical ARM or Android13–16 acceptance.
 
 ## Publication verified — next action is the Thor test
 
 [Release v0.1.12-hud-startup](https://github.com/Russianranger/s3ce/releases/tag/v0.1.12-hud-startup)
 was published from `a448fa22123e1a0bd5cd0e46ce046a17d9696a95` by
-[run41234504645](https://github.com/Russianranger/s3ce/actions/runs/41234504645).
-Reconstruction, original certificate, package/code112/target28, publication and
+[run 41234504645](https://github.com/Russianranger/s3ce/actions/runs/41234504645).
+Reconstruction, original certificate, package/code112/target 28, publication and
 download checksum checks passed. An independent public download also matches
 76,770,649 bytes and SHA256
 `b73c15341acbb61e7fa85173eb440650c665a65df57ce1ac46caf0e2d7325b64`;
@@ -223,8 +240,8 @@ and private-data location as previous releases. Original rendering stays off.
 
 [Durable runtime evidence](RUNTIME_ACCEPTANCE.md) records screenshots/hashes,
 source revisions, process IDs4210→15467, persistent sim3dat0/settings files,
-and zero fatal/ANR log matches. Runtime: Android11/API30 Google APIs x86 with
-ARMv7 native translation, Emulator31.1.4/KVM/SwiftShader, 4KiB pages,1920×1080.
+and zero fatal/ANR log matches. Runtime: Android 11/API 30 Google APIs x86 with
+ARMv7 native translation, Emulator 31.1.4/KVM/SwiftShader, 4KiB pages,1920×1080.
 No physical Thor or new Android13–16 gameplay claim. The CI11 workflow remains
 red from a redundant final Tesseract timeout after all required save/reload/live
 interaction checkpoints; root and two independent reviewers accepted those
@@ -498,7 +515,7 @@ Next test: install over 0.1.3, leave original-renderer option UNCHECKED, Start g
 menu/backgrounds/hair/eyes, CAS swipes, then house and save/reopen. On failure,
 read the new initialization markers and EGL/JNI abort details before patching.
 
-Preserve the same app ID/key/data, original JNI classnames, ARM32/4KiB/target28
+Preserve the same app ID/key/data, original JNI classnames, ARM32/4KiB/target 28
 constraints and private signing backup. Full device logs stay private. Release
 publication uses the pinned 0.1.0 base APK and byte-exact literal reconstruction.
 
@@ -531,7 +548,7 @@ selected it), Start game; menu, backgrounds/hair/eyes, CAS room and swipe tutori
 then house/save/reopen. On failure, Save report again. Full game/runtime success
 is not yet claimed. All report export and crash-capture features remain.
 
-Keep same app ID/key/JNI classnames. ARM32,4KiB,target28 and RWX S3E code constraints
+Keep same app ID/key/JNI classnames. ARM32,4KiB,target 28 and RWX S3E code constraints
 remain. Never publish the private signing backup. Release publication uses the
 pinned 0.1.0 base APK plus byte-exact literal reconstruction.
 
@@ -567,7 +584,7 @@ path branches for the examined call sites; all 691 texture mip levels passed
 sanitizers. Do not implement speculative assembly thunks or resource aliases
 without new evidence. Next step is the actual device exit/tombstone + logs.
 
-ARM32/4 KiB/target28 remain deliberate. Dedicated S3E code is RWX. Preserve app ID,
+ARM32/4 KiB/target 28 remain deliberate. Dedicated S3E code is RWX. Preserve app ID,
 original JNI class names, and the key from private S3CE-private-signing-backup.zip
 for install-over updates. Never commit the key or its signing configuration.
 

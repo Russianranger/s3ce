@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-STAGING = ROOT / '.publish/v0.1.13-camera-input'
+STAGING = ROOT / '.publish/v0.1.14-flip3'
 
 def digest(path):
     with path.open('rb') as stream:

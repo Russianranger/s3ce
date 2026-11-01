@@ -1,22 +1,40 @@
+# Flip3 delivery gate — exact candidate accepted
+
+User-authorized branch `flip3` preserves confirmed 0.1.13 Thor behavior. Exact signed
+0.1.14-flip3/code 114 SHA256ea11252f93bdfbf2a9bb5b8a389e524d1dfb342c0eb8cc3f2e2115236634d19b
+is accepted by root and independent visual/system reviewers. Production source 2f3aba9f;
+harness 3d486a6. Green game 41263509428: actual Chair Sit, HUD/Wishes both camera states,
+zoom/pan/release, walk, SaveQuit/normalQuit, visible Home recovery. Four cold menus,
+0 failures across both exact-APK runs. Full logs0 fatal/ANR/audioexceptions. Rawgate=false
+retained separately from manual acceptance. API 30reverse remains unavailable with
+zero filtered sensor; API 35exacthelper 41263509512 proves actual3/input/visible1,
+not ARM32 gameplay/Samsung certification. Keep all failures/limits inruntime receipt.
+
+Publish only these frozen tested bytes through established workflow; no rebuild/
+resign. Payload copy/reconstruction matches ea112…d19b. Complete publicdownload,
+checksum/cert/package verification and explicit APK/install/test/report handoff.
+Physical Flip3 nativeABI/page/driver and existing physical save tests remain next.
+Preserve main/appID/key/private saves/ARM32/4KiB/target 28/all prior native fixes.
+
 # Current assignment — Flip3 landscape adaptation
 
-Branch `flip3` starts at current main1561a3bac5f85974a2f41c4959f77093038018ad.
+Branch `flip3` starts at current main 1561a3bac5f85974a2f41c4959f77093038018ad.
 The user physically confirms that0.1.13 fixed the camera/jewel issue and the
 game now runs. Preserve that result; no new diagnostic/repeated-start count was
 supplied. Main and its releases remain the accepted Thor track.
 
-Create0.1.14-flip3/code114 for Galaxy Z Flip3 5G, Android15, unfolded landscape.
+Create0.1.14-flip3/code 114 for Galaxy Z Flip3 5G, Android 15, unfolded landscape.
 Use a centered aspect-preserving16:9 actual game surface within the safe content
 area, with inert side margins on2640×1080. Keep native-reported dimensions and
 view-local touch coordinates identical; avoid per-control offsets/stretching.
 Exercise both landscape directions, safe insets, cancellation, multitouch and
-Home/return. Preserve appID/key/save location, ARM32/4KiB/target28 and every prior
+Home/return. Preserve appID/key/save location, ARM32/4KiB/target 28 and every prior
 native/render/input/action/audio/teardown fix. Original rendering stays unchecked.
 
 Autonomously implement/build/test/sign and publish a Flip3 test APK from this
 branch, then deliver its direct link, checksum and short phone test. Record full
-gameplay evidence separately from Android15 platform/probe tests. A 64-bit-only
-API35 emulator cannot establish ARM32 gameplay on the phone; retain measured
+gameplay evidence separately from Android 15 platform/probe tests. A 64-bit-only
+API 35 emulator cannot establish ARM32 gameplay on the phone; retain measured
 ABI/page-size/install results and any failures. No game-state/save edits to
 manufacture progression. Keep private reports/keys out of Git.
 
@@ -38,8 +56,8 @@ native Quit; both new cold menus pass and full logs have zero fatal/ANR/audio
 warnings. Total four cold-menu tests, zero failures, plus two save restarts.
 See docs/CAMERA_INPUT_RUNTIME_ACCEPTANCE.md. Published these frozen bytes as
 v0.1.13-camera-input from183461cbb38e3443ee90923c62139d5c0eb5656b, green
-run41243515898. Independent public download/checksum/original-cert/package113/
-ARMv7/target28 verification passes. Retain first failure and both raw gate=false
+run 41243515898. Independent public download/checksum/original-cert/package113/
+ARMv7/target 28 verification passes. Retain first failure and both raw gate=false
 files. User-facing handoff includes APK/test links; next is Thor feedback.
 
 # Current continuation — camera pan steals bottom-right taps
@@ -62,9 +80,9 @@ push/release authorization persists. Preserve ARM32/app ID/key/private data.
 
 APK SHA256 b73c15341acbb61e7fa85173eb440650c665a65df57ce1ac46caf0e2d7325b64,
 code112, existing certificate/package/data. Run41230641948 attempt1 is green;
-root and two reviewers accepted all4 menu cold starts (0failures), normal
+root and two reviewers accepted all4 menu cold starts (0 failures), normal
 creation/save/restart/load, status/Build selection, Bed Sit, post-action save
-and clean native Quit. Complete log has0fatal/ANR and0late-audio warnings.
+and clean native Quit. Complete log has0 fatal/ANR and0 late-audio warnings.
 See docs/HUD_STARTUP_RUNTIME_ACCEPTANCE.md and its JSON evidence index.
 
 Publish only these frozen signed bytes; no rebuild/resign. Automated gate=false
@@ -72,7 +90,7 @@ is retained; separate manual decision authorizes this focused Thor test release.
 Wishes-strip activation, prior0.1.11 save install-over, new Home/return and
 physical LOW_MEMORY reliability remain unconfirmed. Do not claim those passed.
 Published exact bytes as v0.1.12-hud-startup from a448fa22123e1a0bd5cd0e46ce046a17d9696a95;
-run41234504645 and independent public download/signature/checksum verification pass.
+run 41234504645 and independent public download/signature/checksum verification pass.
 Next is the user Thor test/report; see current handoff. Continue from new feedback.
 Future APK edits require fresh affected checks. Keep private reports/keys out.
 
@@ -137,7 +155,7 @@ interaction. See docs/RUNTIME_ACCEPTANCE.md and its evidence index/screenshots.
 Run 41177712451 remains red only because a redundant final OCR step timed out
 after the required checkpoints. Root and two independent reviewers accepted
 the actual screenshots/logs. Preserve that distinction; do not claim the whole
-workflow passed. The test environment was API30 x86/ARMv7 translation, not a
+workflow passed. The test environment was API 30 x86/ARMv7 translation, not a
 physical Thor or an Android13–16 gameplay certification. The old female crash
 was investigated without a generic NULL skip and did not recur in this path;
 its invalid-object origin remains unproven.
