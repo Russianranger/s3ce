@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 32,
-  "frame_sha256": "db84f94d6a77696ff74112aff632ebeb5ea41c9d1708b1ebf03cc7d4c690dda9",
+  "seq": 33,
+  "frame_sha256": "a83e2269a18fe4a5eef9a2773ebd8290414f30f0c94dfdfd3707af5e830b5223",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1070,
-    "y": 797
+    "x": 1484,
+    "y": 730
   },
-  "note": "Choose the rendered main-menu Quit option for a normal native shutdown."
+  "note": "Confirm the actual main-menu Quit dialog and verify native Main returns without a crash."
 }
