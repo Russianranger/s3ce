@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 19,
-  "frame_sha256": "502a2f95277ab92b702dfb1f8b654297ab3be8141326f926fa5c50079bbd7d8a",
+  "seq": 20,
+  "frame_sha256": "97a422ab2084227ed55c875af43fc9e2dedd4dedb9cdd8435917457d3d8ee456",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1320,
-    "y": 797
+    "x": 1482,
+    "y": 735
   },
-  "note": "Select the visible Save and Quit to menu row for the post-action save."
+  "note": "Confirm the visible Save Game / save progress and quit to main menu dialog using the green check."
 }
