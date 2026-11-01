@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "41338479517",
-  "seq": 15,
-  "frame_sha256": "e86eb2f9dab186e230b258cedba11cde4e94dc536414a1c18a9e77449fc686a9",
+  "seq": 16,
+  "frame_sha256": "984abafb1388693e7cede9317cbd97f18f72b7ca758021c51e11db0308b9b267",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 636,
-    "y": 218
+    "x": 2047,
+    "y": 795
   },
-  "note": "Close Wishes after verifying jewel selection with camera mode on."
+  "note": "Turn camera mode off before a normal walking tap."
 }
