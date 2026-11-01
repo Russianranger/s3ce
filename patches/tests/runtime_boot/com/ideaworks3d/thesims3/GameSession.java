@@ -1,0 +1,1 @@
+package com.ideaworks3d.thesims3; import android.app.*; import java.util.*; public final class GameSession { public static final List<String> phases=new ArrayList<>(); public static void phase(String value){phases.add(value);} public static void memory(android.content.Context activity,String value){phases.add("MEMORY "+value);} }

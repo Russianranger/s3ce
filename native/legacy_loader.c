@@ -28,6 +28,7 @@
 #include "ui_depth.h"
 #include "context_menu.h"
 #include "hud_input.h"
+#include "image_pixels.h"
 #include "shutdown_order.h"
 #include "memory_compat.h"
 #include "input_trace.h"
@@ -100,6 +101,7 @@ struct code_allocation {
     int ui_depth_status;
     int context_menu_status;
     int hud_input_status;
+    int image_pixels_status;
     int shutdown_order_status;
 };
 static struct code_allocation *code_allocations;
@@ -126,6 +128,7 @@ static void *allocate_game_code(uint32_t requested) {
     entry->ui_depth_status = 0;
     entry->context_menu_status = 0;
     entry->hud_input_status = 0;
+    entry->image_pixels_status = 0;
     entry->shutdown_order_status = 0;
     pthread_mutex_lock(&code_lock);
     entry->next = code_allocations;
@@ -192,6 +195,19 @@ static int flush_legacy_code(void *start, uint32_t length) {
                      entry->address, patched == 1 ? "patched" : "already patched");
             else
                 LOGE("HUD input patch refused: unexpected source fingerprint at %p", entry->address);
+        }
+    }
+    if (entry && !entry->image_pixels_status) {
+        int patched = s3ce_patch_image_pixels(entry->address, entry->length, start, length,
+            (uintptr_t)&s3ce_image_pixels_borrow_gateway,
+            (uintptr_t)&s3ce_image_pixels_release_gateway, diagnostic_log);
+        if (patched) {
+            entry->image_pixels_status = patched;
+            if (patched > 0)
+                LOGI("Image2D pixels fixed: %p borrows bounded owned body until synchronous setter returns (%s)",
+                     entry->address, patched == 1 ? "patched" : "already patched");
+            else
+                LOGE("Image2D pixel patch refused: unexpected source fingerprint at %p", entry->address);
         }
     }
     if (entry && !entry->shutdown_order_status) {

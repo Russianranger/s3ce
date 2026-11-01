@@ -28,6 +28,7 @@ from android_runtime_profile import runtime_profile
 
 PACKAGE = 'io.github.russianranger.s3ce'
 LAUNCHER = PACKAGE + '/com.ideaworks3d.thesims3.CompatActivity'
+MAIN = PACKAGE + '/com.ideaworks3d.thesims3.Main'
 SCENE = re.compile(r'Scene=(SceneMenu|SceneGame)(?:@[^\s]+)?')
 MENU = re.compile(r'menuState=(\d+)')
 BOUNDS = re.compile(r'\[(-?\d+),\s*(-?\d+)\]\[(-?\d+),\s*(-?\d+)\]')
@@ -87,6 +88,33 @@ def saved_main_menu_visual_allowed(step):
             and step.get('expect_scene') == 'SceneMenu'
             and step.get('expect_menu_state') in (None, 5)
             and step.get('checkpoint') == 'saved-to-menu')
+
+
+def cold_main_session_phases(session, pid):
+    """Require this cold process to bootstrap before entering original native Main."""
+    identities = [line for line in session.splitlines() if line.startswith('SESSION ')]
+    if (not re.fullmatch(r'[1-9]\d*', pid or '') or len(identities) != 1
+            or f'package={PACKAGE} ' not in identities[0]
+            or f'process={PACKAGE} ' not in identities[0]
+            or not re.search(r'(?:^| )pid=' + re.escape(pid) + r'(?: |$)', identities[0])):
+        raise RuntimeError('Direct Main diagnostic session does not identify the fresh game PID')
+    phases = [match.group(1) for line in session.splitlines()
+              if (match := re.fullmatch(r'wallMs=\d+ elapsedMs=\d+ (.+)', line))]
+    required = ('Main entry requires native bootstrap (process restoration)',
+                'nativeBootstrap RETURN version=', 'Native Main ENTER')
+    positions = [[index for index, phase in enumerate(phases)
+                  if phase == value or (value.endswith('=') and phase.startswith(value))]
+                 for value in required]
+    if (any(len(indices) != 1 for indices in positions)
+            or not positions[0][0] < positions[1][0] < positions[2][0]):
+        raise RuntimeError('Direct Main lacks one ordered restoration bootstrap and native Main entry')
+    if not re.fullmatch(r'nativeBootstrap RETURN version=\d+', phases[positions[1][0]]):
+        raise RuntimeError('Direct Main native bootstrap did not return a successful version')
+    if any('Activity com.ideaworks3d.thesims3.GameBootActivity ' in phase
+           or phase.startswith('Main startActivity ENTER') for phase in phases):
+        raise RuntimeError('Direct Main unexpectedly passed through the normal Boot Activity')
+    return {'session_identity': identities[0],
+            'ordered_phases': [phases[indices[0]] for indices in positions]}
 
 
 def native_frame_visibility(path, bounds):
@@ -220,6 +248,7 @@ class Android:
         self.quit_observation = {}
         self.interactive_observation = {'commands': [], 'frames': [], 'finish_requested': False}
         self.cold_starts = []
+        self.cold_main_entry_observation = {}
         self.letterbox_observation = {}
         self.home_return_observation = {}
         self.rotation_observations = []
@@ -410,6 +439,102 @@ class Android:
         failures = sum(record['status'] == 'failed' for record in self.cold_starts)
         if failures:
             raise RuntimeError(f'{failures} of {attempts} process-cold startup observations failed; all retained')
+
+    def verify_cold_main_entry(self, expected_bounds, launch_wait=30):
+        """Bypass Boot in a fresh emulator process; retain data and every frame.
+
+        This probes the missing-bootstrap boundary seen on task restoration. It
+        does not simulate Android's saved-instance-state Bundle or accept a menu
+        visually; the normal UI prefix continues from the resulting menu.
+        """
+        if (type(launch_wait) not in (int, float) or not 0 <= launch_wait <= 60
+                or expected_bounds is None):
+            raise ValueError('Direct Main requires expected child bounds and a bounded launch wait')
+        marker = 'S3CE-direct-cold-Main-' + str(time.time_ns())
+        prefix = 'candidate-direct-cold-main'
+        before_pid = self.shell('pidof', PACKAGE, check=False).strip()
+        record = self.cold_main_entry_observation = {
+            'status': 'failed', 'before_pid': before_pid, 'marker': marker,
+            'start_epoch': time.time(), 'expected_game_bounds': expected_bounds,
+            'scope': 'root emulator direct Main; process-cold; app data retained; no Boot intent',
+            'limitation': 'Cold-entry boundary only; Android saved-state Bundle restoration is not simulated',
+            'normal_launcher_cold_start_counted': False, 'visual_review': 'normal menu required',
+            'launch_wait_seconds': launch_wait, 'readiness_timeout_seconds': 90,
+            'captures': [], 'fatal_or_anr_lines': []}
+        try:
+            if not re.fullmatch(r'[1-9]\d*', before_pid):
+                raise RuntimeError('Direct Main needs the preceding live normal-menu process')
+            self.shell('log', '-t', 'S3CEDirectMain', marker)
+            self.shell('am', 'force-stop', PACKAGE)
+            self.wait_for('previous normal-menu process stopped',
+                          lambda: not self.shell('pidof', PACKAGE, check=False).strip(), 15)
+            self.viewport = self.viewport_source = None
+            launch = self.shell('am', 'start', '-W', '-n', MAIN)
+            (self.output / 'direct-main-am-start.txt').write_text(launch)
+            record['am_start_output'] = launch
+            if not re.search(r'^Status:\s*ok\s*$', launch, re.MULTILINE):
+                raise RuntimeError('Direct Main am start did not report Status: ok')
+            time.sleep(launch_wait)
+            deadline = time.monotonic() + 90
+            expected_pid = None
+            for attempt in range(12):
+                if time.monotonic() >= deadline:
+                    break
+                label = f'{prefix}-{attempt:02d}'
+                self.snapshot(label)
+                directory = self.output / label
+                event = self.events[-1]
+                pid = event.get('game_pid')
+                capture = {'capture': label, 'game_pid': pid, 'native_viewport': self.viewport,
+                           'viewport_source': self.viewport_source,
+                           'screenshot_sha256': sha(directory / 'screen.png')}
+                record['captures'].append(capture)
+                log = (directory / 'logcat.txt').read_text(errors='replace')
+                if marker not in log:
+                    raise RuntimeError('Direct Main log marker is missing; log window is unknown')
+                attempt_log = log.partition(marker)[2]
+                (directory / 'attempt-logcat.txt').write_text(attempt_log)
+                fatal = [line for line in attempt_log.splitlines()
+                         if re.search(r'Fatal signal|FATAL EXCEPTION|SIGSEGV|SIGABRT|ANR in|am_crash|am_anr', line)]
+                record['fatal_or_anr_lines'] = fatal
+                if fatal:
+                    raise RuntimeError('Fatal/ANR evidence in direct Main startup window')
+                previous_pids = {before_pid, *(row.get('game_pid') for row in self.cold_starts)}
+                if (not re.fullmatch(r'[1-9]\d*', pid or '') or pid in previous_pids
+                        or (expected_pid is not None and pid != expected_pid)):
+                    raise RuntimeError('Direct Main did not retain one distinct fresh game process')
+                expected_pid = record['game_pid'] = pid
+                if (tuple(self.viewport or ()) != tuple(expected_bounds)
+                        or self.viewport_source not in ('SurfaceView hierarchy',
+                                                       'GameViewport actual child layout witness')):
+                    raise RuntimeError('Direct Main lost the expected actual native child bounds')
+                activity = (directory / 'activity.txt').read_text(errors='replace')
+                resumed = [line.strip() for line in activity.splitlines()
+                           if 'mResumedActivity' in line or 'topResumedActivity' in line]
+                capture['resumed_activity_lines'] = resumed
+                if not any(MAIN in line for line in resumed):
+                    raise RuntimeError('Direct Main is not the resumed game Activity')
+                session = (directory / 'compat-session.log').read_text(errors='replace')
+                record.update(cold_main_session_phases(session, pid))
+                capture.update(native_frame_visibility(directory / 'screen.png', self.viewport))
+                if capture['rendered_pixels']:
+                    record['status'] = 'cold-Main-bootstrap-visible-awaiting-menu-review'
+                    record['visible_capture'] = label
+                    return record
+                time.sleep(2)
+            raise RuntimeError('Direct Main native canvas stayed blank within bounded readiness observation')
+        except Exception as error:
+            record['error'] = type(error).__name__ + ': ' + str(error)
+            if not record['captures']:
+                try:
+                    self.snapshot(prefix + '-failure')
+                    record['failure_capture'] = prefix + '-failure'
+                except Exception as capture_error:
+                    record['capture_error'] = str(capture_error)
+            raise
+        finally:
+            record['end_epoch'] = time.time()
+            (self.output / 'cold-main-entry-observation.json').write_text(json.dumps(record, indent=2) + '\n')
 
     def verify_letterbox_margins(self, expected_bounds):
         """Tap actual black margins before the first native touch of the plan."""
@@ -1216,6 +1341,8 @@ def main():
             else:
                 android.launch()
                 time.sleep(plan.get('launch_wait', 20))
+            if label == 'candidate' and profile.get('verify_cold_main_entry', False):
+                android.verify_cold_main_entry(profile['expected_game_bounds'], plan.get('launch_wait', 20))
             android.snapshot(label + '-00-launched')
             result['environment'][label + '_native_viewport'] = android.viewport
             if android.viewport is None:
@@ -1263,6 +1390,7 @@ def main():
         result['native_quit'] = android.quit_observation
         result['interactive'] = android.interactive_observation
         result['cold_starts'] = android.cold_starts
+        result['cold_main_entry'] = android.cold_main_entry_observation
         result['letterbox'] = android.letterbox_observation
         result['home_return'] = android.home_return_observation
         result['landscape_rotations'] = android.rotation_observations

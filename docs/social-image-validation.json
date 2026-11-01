@@ -1,0 +1,1089 @@
+{
+  "image_count": 107,
+  "all_mip_bytes_identical": true,
+  "source_unchanged": true,
+  "source_not_retained_in_object": true,
+  "original_failure": {
+    "pc": "game+0xd40",
+    "lr": "game+0xb3144",
+    "all_report_registers_match": true,
+    "failed_staging_bytes": 1048576
+  },
+  "compiled_cases": [
+    {
+      "high_game_and_split_data": false,
+      "malformed": false,
+      "palette_detached": false,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 0,
+      "borrowed_body_preserved": true,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": false,
+      "malformed": true,
+      "palette_detached": false,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 5,
+      "borrowed_body_preserved": false,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": false,
+      "malformed": true,
+      "palette_detached": true,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 6,
+      "borrowed_body_preserved": false,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": true,
+      "malformed": false,
+      "palette_detached": false,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 0,
+      "borrowed_body_preserved": true,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": true,
+      "malformed": true,
+      "palette_detached": false,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 5,
+      "borrowed_body_preserved": false,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": true,
+      "malformed": true,
+      "palette_detached": true,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 6,
+      "borrowed_body_preserved": false,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": false,
+      "malformed": false,
+      "palette_detached": false,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 0,
+      "borrowed_body_preserved": true,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": false,
+      "malformed": true,
+      "palette_detached": false,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 5,
+      "borrowed_body_preserved": false,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": false,
+      "malformed": true,
+      "palette_detached": true,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 6,
+      "borrowed_body_preserved": false,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": true,
+      "malformed": false,
+      "palette_detached": false,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 0,
+      "borrowed_body_preserved": true,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": true,
+      "malformed": true,
+      "palette_detached": false,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 5,
+      "borrowed_body_preserved": false,
+      "stack_and_saved_registers_checked": true
+    },
+    {
+      "high_game_and_split_data": true,
+      "malformed": true,
+      "palette_detached": true,
+      "production_patch_and_gateways": true,
+      "error_cleanup_endpoints": 6,
+      "borrowed_body_preserved": false,
+      "stack_and_saved_registers_checked": true
+    }
+  ],
+  "elapsed_seconds": 20.27,
+  "images": [
+    {
+      "entry": 566,
+      "name": "texture_alpha_sf_hair_dreds_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "37ea3fefb570a629d8522b1dc0f81c2e270cded901a8aee4ddcf0de09b812d58"
+    },
+    {
+      "entry": 567,
+      "name": "texture_alpha_sf_hair_dreds_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "d6aec69e63ef69b5495ee914625e97466f4fe62344aa4bbbdd23bff8a6b31f01"
+    },
+    {
+      "entry": 568,
+      "name": "texture_alpha_sf_hair_dreds_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "434768eff3af16c2ef1586cb666e4bbc8b2467795a9839db21ae2448943c0cf8"
+    },
+    {
+      "entry": 569,
+      "name": "texture_alpha_sf_hair_dreds_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "39f94f5dd8e27dac5a7b64b541d427e3453c1540d3dc693a468545ade5ac8c0e"
+    },
+    {
+      "entry": 570,
+      "name": "texture_alpha_sf_hair_dreds_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "77ec07ab4fc16300e3683511b6c6ca05672f0b2f2b27a061df8d92dc75070ac6"
+    },
+    {
+      "entry": 571,
+      "name": "texture_alpha_sf_hair_long_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "6c206fa2133fc4009c590513924114e8100e6ef8182f393d942dd3f755e18bb5"
+    },
+    {
+      "entry": 572,
+      "name": "texture_alpha_sf_hair_long_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "c2a173c22aeeafaa1fc41e83135e89a39dab7f175d49cf4484266a46d51b8041"
+    },
+    {
+      "entry": 573,
+      "name": "texture_alpha_sf_hair_long_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "0e65f1e8b86eb80df32632f5462fced19229fa509b5b620fd1b3d34c4c061a22"
+    },
+    {
+      "entry": 574,
+      "name": "texture_alpha_sf_hair_long_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "fa682785b75ba72bb244ffdd80c32dfc27fca6f7574ac0241307b8130b3fd86c"
+    },
+    {
+      "entry": 575,
+      "name": "texture_alpha_sf_hair_long_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "6deaae3afe83acc17eab8f958da5ca23f8b9dfb8346b6eb8368bdde3ad3e15a8"
+    },
+    {
+      "entry": 576,
+      "name": "texture_alpha_sf_hair_long_strawberryblack.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "f7d6e84c32209051e7b31a9a043ef65237369e54213696395f0b720a91099cf1"
+    },
+    {
+      "entry": 577,
+      "name": "texture_alpha_sf_hair_piggytails_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "490af3873e64db4bfb7116fba00c118fbe09ec439f40e39565825dbd830d4e8d"
+    },
+    {
+      "entry": 578,
+      "name": "texture_alpha_sf_hair_piggytails_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "2511f3e843165c48fd4c5c64638846accc0dd465d9b3e8ab2f449dd8e0438729"
+    },
+    {
+      "entry": 579,
+      "name": "texture_alpha_sf_hair_piggytails_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "ec4ee5b528dbd80bb97a6a787c8fabbb772609759cbb58444419ee5d84cfa752"
+    },
+    {
+      "entry": 580,
+      "name": "texture_alpha_sf_hair_piggytails_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "61da494f4a298cb70bcdd49b0ee93f27e0c868592807bb839fa7247367600caf"
+    },
+    {
+      "entry": 581,
+      "name": "texture_alpha_sf_hair_piggytails_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "103648231cf9fb380eb91fa8e0b83b7d54b46dc9e6f727b84e53a83c52d47b94"
+    },
+    {
+      "entry": 582,
+      "name": "texture_alpha_sf_hair_ponytail_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "27141f217a48f3831edae336a5f83ff96070f76c290ab1cb5db8297020881e84"
+    },
+    {
+      "entry": 583,
+      "name": "texture_alpha_sf_hair_ponytail_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "5ef2b5bd1bde28dc228639fd32486092f28b11856cbabcd61039ca65d6e6896c"
+    },
+    {
+      "entry": 584,
+      "name": "texture_alpha_sf_hair_ponytail_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "a74dd8cb7ff481f41a29569bba48135fb50b828ddbc11d2423d8a3ff66e46dc3"
+    },
+    {
+      "entry": 585,
+      "name": "texture_alpha_sf_hair_ponytail_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "c0a418769c6111e8d010d347b42401537a5af005adcd4372ff6a7c4ab2de6bc8"
+    },
+    {
+      "entry": 586,
+      "name": "texture_alpha_sf_hair_ponytail_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "4e0cf9ee6b80c62a5b636da7f1ec213bac11a7796525e0e4ce5594d3ef9b903c"
+    },
+    {
+      "entry": 587,
+      "name": "texture_alpha_sf_hair_short_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "4d47beaa2a0a5e9b5ddb580cac943980b574b524da02066c435b39cb6d755847"
+    },
+    {
+      "entry": 588,
+      "name": "texture_alpha_sf_hair_short_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "40158dd828fa37aa321ad20cb048c732d85e8f41bc5e50a4c8940431c8e607bb"
+    },
+    {
+      "entry": 589,
+      "name": "texture_alpha_sf_hair_short_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "2964817d31cc8fe1aafb146cca3325ac8c7fb4ac96c70ba324741e5e11823348"
+    },
+    {
+      "entry": 590,
+      "name": "texture_alpha_sf_hair_short_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "3d1dae1959cb2136ea6648da20855f3c0a1cf8ec5948583dbcd8e3c44a194bf6"
+    },
+    {
+      "entry": 591,
+      "name": "texture_alpha_sf_hair_short_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "b997accc1a8d98fabfdc12774a0820f7d42ec2a8ff254aef5cfdf69091623d5e"
+    },
+    {
+      "entry": 592,
+      "name": "texture_alpha_sm_hair_eraserfro_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "60c061daebbbda7892bafc7207f22ce219539b4596e47b90a00c1d16954cbdd0"
+    },
+    {
+      "entry": 593,
+      "name": "texture_alpha_sm_hair_eraserfro_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "b57140c97861758f81ee56268f4f619ee43df23627e8e601e2d1e9a459856fc4"
+    },
+    {
+      "entry": 594,
+      "name": "texture_alpha_sm_hair_eraserfro_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "598764fd46269c44d1786b700ce247cc3678b67386832bb070c129097d4e6657"
+    },
+    {
+      "entry": 595,
+      "name": "texture_alpha_sm_hair_eraserfro_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "ac86228cb674e8f20ad43d0ea7bad8fd63414cf983e3d7a04d647c862efd98b0"
+    },
+    {
+      "entry": 596,
+      "name": "texture_alpha_sm_hair_eraserfro_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "ac35fa3d5a00fad4835ad1d733fdcf0eea99087a21e8047dc1f452003b261191"
+    },
+    {
+      "entry": 597,
+      "name": "texture_alpha_sm_hair_long_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "c157bf901167bcf5948dbcb421f3d0dcca6485fcbf9c26873bdab03bcb05418e"
+    },
+    {
+      "entry": 598,
+      "name": "texture_alpha_sm_hair_long_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "b61f1fe0a98697fdf3721ca1e76157968fbf842200936b177808b3c861a3e6f7"
+    },
+    {
+      "entry": 599,
+      "name": "texture_alpha_sm_hair_long_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "836f3f6084b3e2f4122f5eaf627a1b13ed25b8c6df31b27ef00c778216af69ff"
+    },
+    {
+      "entry": 600,
+      "name": "texture_alpha_sm_hair_long_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "fbde16642bebe7d21a556104c5ff4473ab2fbf4b14e7b8d32222768e82269fc4"
+    },
+    {
+      "entry": 601,
+      "name": "texture_alpha_sm_hair_long_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "4b43c3a492be213d8e0a78516aac39969957b117085c54e05a29a274b855816b"
+    },
+    {
+      "entry": 602,
+      "name": "texture_alpha_sm_hair_punkneedles_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "9c531c3daa9eeaecc3130b8b59bd4bf47fd753ffdb1aa798d59732ef4fb96819"
+    },
+    {
+      "entry": 603,
+      "name": "texture_alpha_sm_hair_punkneedles_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "5d03d81e4911bc15a0081bf64c43b3b030ed022b81a9100c59ce91eefbc80221"
+    },
+    {
+      "entry": 604,
+      "name": "texture_alpha_sm_hair_punkneedles_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "661bad54c54bfe3eb3bb557d81138e36e27f3d6a10ccb10b554c5202a988d537"
+    },
+    {
+      "entry": 605,
+      "name": "texture_alpha_sm_hair_punkneedles_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "68cbcf3be00582f2aed5355cde0205ff53c7c2443de7304ce359d15f60cfa7df"
+    },
+    {
+      "entry": 606,
+      "name": "texture_alpha_sm_hair_punkneedles_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "ec67569be7491ef30fedddf6cba9672a3d321a1b6d74394bf3b7db8952081431"
+    },
+    {
+      "entry": 607,
+      "name": "texture_alpha_sm_hair_rockabilly_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "91cc67c992a06ca67bea5e6658ea2933af67d020f2e9c9675939405106376cb1"
+    },
+    {
+      "entry": 608,
+      "name": "texture_alpha_sm_hair_rockabilly_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "f9c1a3fbf1f5e080f13e51a48e50368219d4cccfa55d3a174c73059385b553fc"
+    },
+    {
+      "entry": 609,
+      "name": "texture_alpha_sm_hair_rockabilly_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "7a7a4700f3bc86ad6f653eb517fa486f940d5628885b5d7a50b690d2936caa36"
+    },
+    {
+      "entry": 610,
+      "name": "texture_alpha_sm_hair_rockabilly_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "5f08747192c3cdff2318129edea7f906e34d1954b3c01214a5caf5ee0bda2881"
+    },
+    {
+      "entry": 611,
+      "name": "texture_alpha_sm_hair_rockabilly_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "f31065373dfc827f584c26e8c667442f490959a0e1aadf3feca82fbdce22fafb"
+    },
+    {
+      "entry": 612,
+      "name": "texture_alpha_sm_hair_rough_modern_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "2d54bd8dc8d0fda37c4f5575eff5aba177abf2cd46d85fee5f79780d3e95c76b"
+    },
+    {
+      "entry": 613,
+      "name": "texture_alpha_sm_hair_rough_modern_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "8345b7ab200ee1bb235a69e0e35709cb8adc37256d73ab1899c26ff6241fd80e"
+    },
+    {
+      "entry": 614,
+      "name": "texture_alpha_sm_hair_rough_modern_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "e91acb897be35686a861364588133ece50e67578420b6c889c3e7905a4adc9d7"
+    },
+    {
+      "entry": 615,
+      "name": "texture_alpha_sm_hair_rough_modern_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "20b9698e5677df3a38658b54cfea7f6572d26f75e8c76ea0eb6d9f55a917cbea"
+    },
+    {
+      "entry": 616,
+      "name": "texture_alpha_sm_hair_rough_modern_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "dc045aaa4bd92990a2877d0b08b45b11419ea06fcc3be10ba71db71c8fb80e86"
+    },
+    {
+      "entry": 617,
+      "name": "texture_alpha_sm_hair_shortparted_black.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "4d2cef41ae7016d24923e17c0d26845bdfc6bd8f12aac772eafa0a2be0ca9459"
+    },
+    {
+      "entry": 618,
+      "name": "texture_alpha_sm_hair_shortparted_blonde.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "cf877e4583788e0e79fd20caf02fb0474726c08465704c3244cf6825d8b7df92"
+    },
+    {
+      "entry": 619,
+      "name": "texture_alpha_sm_hair_shortparted_brown.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "599a6fda375333659326ac1a8e7f417cf4b862e1a37337ce475635bac93d95b6"
+    },
+    {
+      "entry": 620,
+      "name": "texture_alpha_sm_hair_shortparted_grey.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "b1b3cd8467e0b17af892e0113a5b067c639ca10b7a4c561070df20401d656f3e"
+    },
+    {
+      "entry": 621,
+      "name": "texture_alpha_sm_hair_shortparted_red.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "801231bdd4f60d76ba2b618e5810d9ee60c2dcd7883258738dd09e2627cad0fb"
+    },
+    {
+      "entry": 622,
+      "name": "texture_centralpark.m3g",
+      "object": 2,
+      "mip_count": 11,
+      "pixel_bytes": 699040,
+      "alloc_bytes": 699180,
+      "mip_digest": "1392d308afb61321d7a8b7203b75d3a0591f5553cfc1cf85c36777a028d2d56b"
+    },
+    {
+      "entry": 623,
+      "name": "texture_centralpark_water_layer2.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "dd42cd1297ca2dd2ed499be2fd6b3f8b6390639f524bc280c92e98a8f1268adb"
+    },
+    {
+      "entry": 624,
+      "name": "texture_centralpark_water_layer3.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 43680,
+      "alloc_bytes": 43812,
+      "mip_digest": "b575dac61f07a5935deab0a303c7a2918f60d7f488888f0387edc9afdcceef95"
+    },
+    {
+      "entry": 625,
+      "name": "texture_centralpark_water_layer4.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 32768,
+      "alloc_bytes": 43724,
+      "mip_digest": "1e2f3a83a38101ba39e2406f9e93c3b7e8dd0a286ec4ae689c6ba17028aa0b6c"
+    },
+    {
+      "entry": 626,
+      "name": "texture_env_cas_room.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 174752,
+      "alloc_bytes": 174888,
+      "mip_digest": "2893c58bbce0e509275a12a08e80d8e273eecad48972e0824676234c3da134d6"
+    },
+    {
+      "entry": 627,
+      "name": "texture_envmap_garage_day.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 49152,
+      "alloc_bytes": 65567,
+      "mip_digest": "6d1a79d7ddbdc9ce7731882422254bcd5525a1ad7df8ff9cf82aa8fe57ff8936"
+    },
+    {
+      "entry": 628,
+      "name": "texture_envmap_garage_night.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 49152,
+      "alloc_bytes": 65567,
+      "mip_digest": "ff2e6a1be1985f11f07760d1c828b4898bf0c1a1256f62d896624bf15306e7cd"
+    },
+    {
+      "entry": 629,
+      "name": "texture_fx_tv_screen.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 43680,
+      "alloc_bytes": 43812,
+      "mip_digest": "36768e0686beb9a128440acd22e74f963a2397858fe0b8ab30fd1ec8e674a048"
+    },
+    {
+      "entry": 630,
+      "name": "texture_markers.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "110dbd5c9335d1fac575feb28e3294b654f9358158976700323ec45e48b84340"
+    },
+    {
+      "entry": 631,
+      "name": "texture_minigames.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 174752,
+      "alloc_bytes": 174888,
+      "mip_digest": "ac05d9bdddc180d80903ecc09ca0054137b8dd563d5aa87bfd0f98098873ded1"
+    },
+    {
+      "entry": 632,
+      "name": "texture_object_car_blue.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 43680,
+      "alloc_bytes": 43812,
+      "mip_digest": "128fe13a4d5044a3634a8a47b6803ce6284317ee279e707c22391cccb6d919f6"
+    },
+    {
+      "entry": 633,
+      "name": "texture_object_car_gold.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 43680,
+      "alloc_bytes": 43812,
+      "mip_digest": "7c0b985fecfaa7ef24c5b0866b61841334360468ce83f5c60810c6360fa62b64"
+    },
+    {
+      "entry": 634,
+      "name": "texture_object_car_green.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 43680,
+      "alloc_bytes": 43812,
+      "mip_digest": "e45980e794731dbd25a82bf24ebec09f86dd81f033f9fc415b7a14a4f209f2e4"
+    },
+    {
+      "entry": 635,
+      "name": "texture_object_car_red.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 43680,
+      "alloc_bytes": 43812,
+      "mip_digest": "6c33a78d22c16f9406fe4cd295e083873714163370956397eb4e530ff461e42e"
+    },
+    {
+      "entry": 636,
+      "name": "texture_objects.m3g",
+      "object": 2,
+      "mip_count": 11,
+      "pixel_bytes": 699040,
+      "alloc_bytes": 699180,
+      "mip_digest": "af8ace23a066518616165e257ffb2d7e15f6fe9f9f512930cb6c7538092aeea2"
+    },
+    {
+      "entry": 637,
+      "name": "texture_plumb_bob_green.m3g",
+      "object": 2,
+      "mip_count": 7,
+      "pixel_bytes": 2720,
+      "alloc_bytes": 2844,
+      "mip_digest": "c1b732c3ae8eca39501ba217ec3b98330c25a8b44edf27b512703372b02daaf0"
+    },
+    {
+      "entry": 638,
+      "name": "texture_quad_event_death.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 786432,
+      "alloc_bytes": 1048615,
+      "mip_digest": "fb544bd448110e4dae9c9ba388f06289b1fcdc70c51e44df528e1065e20fa119"
+    },
+    {
+      "entry": 639,
+      "name": "texture_quad_event_hired.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 786432,
+      "alloc_bytes": 1048615,
+      "mip_digest": "089d9954c908230c5b1bafc892b76b5d62452e7f41e431aa1ee36f6f43bc0011"
+    },
+    {
+      "entry": 640,
+      "name": "texture_quad_event_houseupgrade.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 786432,
+      "alloc_bytes": 1048615,
+      "mip_digest": "6bff56e2ee83c3f7fe77781724a6f05768e3867db9706afefa31845b414c130b"
+    },
+    {
+      "entry": 641,
+      "name": "texture_quad_event_kiss.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 1048576,
+      "alloc_bytes": 1398140,
+      "mip_digest": "01730228ba9ff3827e9d6c0bf6ffd3fc3c4d38256caf93d2c9e0f42dc2843161"
+    },
+    {
+      "entry": 642,
+      "name": "texture_quad_event_marriage.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 786432,
+      "alloc_bytes": 1048615,
+      "mip_digest": "ffb2bdfb5edcb4720b75f94c728245d0a5c08cb77b09058127fb734320a09732"
+    },
+    {
+      "entry": 643,
+      "name": "texture_quad_event_persona.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 786432,
+      "alloc_bytes": 1048615,
+      "mip_digest": "2e51e0d09399b51d8fc649ce25e7ae4c7ce0ce9150ee68265197fb57dc3156bb"
+    },
+    {
+      "entry": 644,
+      "name": "texture_quad_event_promotion.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 786432,
+      "alloc_bytes": 1048615,
+      "mip_digest": "a8852f6ba33608b3775b9f6670f8d2cd89836d547f712e0a670053a84bb8c2dd"
+    },
+    {
+      "entry": 645,
+      "name": "texture_quad_event_skillmax.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 786432,
+      "alloc_bytes": 1048615,
+      "mip_digest": "11413faaae4d0dd798468532e9f42feb7d30d9d9efc613aed72da84d1ce7ecee"
+    },
+    {
+      "entry": 646,
+      "name": "texture_quad_event_woohoo.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 786432,
+      "alloc_bytes": 1048615,
+      "mip_digest": "2ea05d0a9d70f70d54c78215caa0a1c695b7f258100281452bc37e771e003c41"
+    },
+    {
+      "entry": 647,
+      "name": "texture_quad_hud_censor_pixellation.m3g",
+      "object": 2,
+      "mip_count": 7,
+      "pixel_bytes": 12288,
+      "alloc_bytes": 16411,
+      "mip_digest": "f06f25dd085f94b6668625a62866aaebbb68bf5b0f5900606a4d1d5b22e50853"
+    },
+    {
+      "entry": 648,
+      "name": "texture_quad_hud_fishing.m3g",
+      "object": 2,
+      "mip_count": 7,
+      "pixel_bytes": 16384,
+      "alloc_bytes": 21872,
+      "mip_digest": "80e4f8ab2c6cd56f2b66624ec2575a07d997674f5844071db6e78df6af639c58"
+    },
+    {
+      "entry": 649,
+      "name": "texture_quad_hud_group01.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 1048576,
+      "alloc_bytes": 1398140,
+      "mip_digest": "e4512503b367f2d46474b0fdf467012769ff604b9b23cfac8434256bc0c2420a"
+    },
+    {
+      "entry": 650,
+      "name": "texture_quad_hud_group02_cas_and_fe.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 262144,
+      "alloc_bytes": 349560,
+      "mip_digest": "b187c59d5c7d0f1ee9655c1d9261a5748a39cbd03e4888ac52dcfa70eed482fd"
+    },
+    {
+      "entry": 651,
+      "name": "texture_quad_hud_group03_sims_info.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 1048576,
+      "alloc_bytes": 1398140,
+      "mip_digest": "23dd562e4630f1c90a16872f5606b2d412713c3a95b73e2d043d03ac6746e367"
+    },
+    {
+      "entry": 652,
+      "name": "texture_quad_hud_group04_cas.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 262144,
+      "alloc_bytes": 349560,
+      "mip_digest": "41506439a343557b9bb01c134afd15889b7a70f8951076f5d124d6b3ce378e90"
+    },
+    {
+      "entry": 653,
+      "name": "texture_quad_hud_group05.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 1048576,
+      "alloc_bytes": 1398140,
+      "mip_digest": "c96775e7631a5499d681c5bdd40eb4e7302f05c07042f4591e931edfedd8a5ab"
+    },
+    {
+      "entry": 654,
+      "name": "texture_quad_hud_group06.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 262144,
+      "alloc_bytes": 349560,
+      "mip_digest": "cd2949bf471f49f38d3282749582ec257f3ce9660fe02af6ddac7baf4e39a8f3"
+    },
+    {
+      "entry": 655,
+      "name": "texture_quad_hud_group07_cas_and_fe.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 262144,
+      "alloc_bytes": 349560,
+      "mip_digest": "4869a8c14a18576a2d1c60b4f153644ce45e3a45a63a6c9bddaa9dc73fd94e6a"
+    },
+    {
+      "entry": 656,
+      "name": "texture_quad_hud_group08_loadscreen.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 262144,
+      "alloc_bytes": 349560,
+      "mip_digest": "b3c973a408c1d965b05b777d8366d092f1e365a7e4bcd389929d0d512d6d7e3f"
+    },
+    {
+      "entry": 657,
+      "name": "texture_quad_hud_group09_build.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 65536,
+      "alloc_bytes": 87412,
+      "mip_digest": "46538ac2c9f421626f933ff1ffadf58cfa1b4b7bcf637609a6df6a9e7ca0035a"
+    },
+    {
+      "entry": 658,
+      "name": "texture_quad_hud_npc_portraits.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 262144,
+      "alloc_bytes": 349560,
+      "mip_digest": "9589d9e8829dbf45cbe3eecf80119b172493082eeba691ee7da1f6ae6074de40"
+    },
+    {
+      "entry": 659,
+      "name": "texture_quad_icons_inventory.m3g",
+      "object": 2,
+      "mip_count": 9,
+      "pixel_bytes": 262144,
+      "alloc_bytes": 349560,
+      "mip_digest": "88f1d546c11ce539897b3044eb242a7fa860e080ead6dc430cae918930b7ac9b"
+    },
+    {
+      "entry": 660,
+      "name": "texture_quad_logo_local_les_los.m3g",
+      "object": 2,
+      "mip_count": 7,
+      "pixel_bytes": 16384,
+      "alloc_bytes": 21872,
+      "mip_digest": "ddbfb9704523c52c266f0209ddc5ffcee9081f9cee57a1655ec1128bde1af913"
+    },
+    {
+      "entry": 661,
+      "name": "texture_quad_logo_local_the_die.m3g",
+      "object": 2,
+      "mip_count": 7,
+      "pixel_bytes": 16384,
+      "alloc_bytes": 21872,
+      "mip_digest": "21519a1274426f97e71a39a8e8b4cbda06984673b980ebff3d049830bb72ec13"
+    },
+    {
+      "entry": 662,
+      "name": "texture_quad_ui_sims_logo_small.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 65536,
+      "alloc_bytes": 87412,
+      "mip_digest": "acfaa8262d4750a149ade49da42415f708547e396ee572ef8b91fdd63cc8cc01"
+    },
+    {
+      "entry": 663,
+      "name": "texture_shadows_01.m3g",
+      "object": 2,
+      "mip_count": 8,
+      "pixel_bytes": 10912,
+      "alloc_bytes": 11040,
+      "mip_digest": "d3ebb80bac3ac5d50971b7b7b56aa0337e797002874b212befa6b9f3b0104b77"
+    },
+    {
+      "entry": 664,
+      "name": "texture_sim_eye_01.m3g",
+      "object": 2,
+      "mip_count": 6,
+      "pixel_bytes": 672,
+      "alloc_bytes": 792,
+      "mip_digest": "b8ec1c38a59e460c58f19246a0cc4810edda3588e44b21ee06ebf840986f40cd"
+    },
+    {
+      "entry": 665,
+      "name": "texture_sim_eye_02.m3g",
+      "object": 2,
+      "mip_count": 6,
+      "pixel_bytes": 672,
+      "alloc_bytes": 792,
+      "mip_digest": "3ec30a990a9d090061fae9f5eea54dede27cf8cc84c5ff5ada10d7da79b358be"
+    },
+    {
+      "entry": 666,
+      "name": "texture_sim_eye_03.m3g",
+      "object": 2,
+      "mip_count": 6,
+      "pixel_bytes": 672,
+      "alloc_bytes": 792,
+      "mip_digest": "dc127c57d1849774379b49fb3acbf701cecac01504448ce92668c136b87845c2"
+    },
+    {
+      "entry": 667,
+      "name": "texture_sim_eye_04.m3g",
+      "object": 2,
+      "mip_count": 6,
+      "pixel_bytes": 672,
+      "alloc_bytes": 792,
+      "mip_digest": "ae665597ea688616bd025a6b3f7f1ed27d0f1d5548985d2af7d6d62dddcac86a"
+    },
+    {
+      "entry": 668,
+      "name": "texture_sim_eye_05.m3g",
+      "object": 2,
+      "mip_count": 6,
+      "pixel_bytes": 672,
+      "alloc_bytes": 792,
+      "mip_digest": "6ee85186f75847409bf4fa40a0fa26a2970395205c607d439e5d8202671d448d"
+    },
+    {
+      "entry": 669,
+      "name": "texture_tiles_house.m3g",
+      "object": 2,
+      "mip_count": 11,
+      "pixel_bytes": 699040,
+      "alloc_bytes": 699180,
+      "mip_digest": "74aa81f321bfed43b9f9d4129726b24a8465afc834421b741f3488e4e767fe25"
+    },
+    {
+      "entry": 670,
+      "name": "texture_title_screen_backdrop.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 174752,
+      "alloc_bytes": 174888,
+      "mip_digest": "5bfca7bf18a84549a7679d7cdbfdb773692a961b040a700f46a9f188bfd1eed3"
+    },
+    {
+      "entry": 671,
+      "name": "texture_townmap.m3g",
+      "object": 2,
+      "mip_count": 11,
+      "pixel_bytes": 699136,
+      "alloc_bytes": 699180,
+      "mip_digest": "d8a617a486ecd13b6161bbf5e3514b528540d73b8837dc6552b50e0e5b261849"
+    },
+    {
+      "entry": 672,
+      "name": "texture_townmap_windows_daylight.m3g",
+      "object": 2,
+      "mip_count": 10,
+      "pixel_bytes": 174752,
+      "alloc_bytes": 174888,
+      "mip_digest": "e3f068cf57553e682451c2e7c52473d8e51c4439707088639f1d3038601696d3"
+    }
+  ],
+  "boundary": "Original allocator results and malformed cleanup endpoints are modeled; no Android gameplay is emulated."
+}

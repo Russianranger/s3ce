@@ -1,4 +1,24 @@
-# Current handoff — Flip3 release published, awaiting phone test
+# Current continuation — Flip3 social crash candidate
+
+The user physically confirms good Flip3 UI on0.1.14 and reports a Hot Smooch
+crash. Private diagnostics verify SM-F711U1/Android15/API35/ARM32/4096pages and
+normal rendering. Preserve the accepted viewport, controls, appID, key, saves
+and prior native fixes. Main remains the Thor track.
+
+Recovered live flip3 at ec4ee9fc1e8e5044824ce7903852157380347f98.
+Candidate0.1.15-flip3-socials/code115 removes the duplicate immutable Image2D
+pixel staging allocation implicated in the crash, and gates restored Main
+through shared native bootstrap. See SOCIAL_IMAGES.md for evidence/limits.
+Full reports/signing files remain private. Do not edit progression/saves to force
+Hot Smooch; exact social completion remains a phone regression test.
+
+Build/host/ARM checks pass; actual candidate Android validation/publication are
+pending. Freeze tested bytes, retain all attempts, and finish signed publication
+plus direct APK/testing handoff. Original rendering stays unchecked. Install over
+without uninstall/data clear. New physical feedback confirms Samsung execution
+and good UI; do not describe all Samsung compatibility as unobserved.
+
+# Historical handoff — 0.1.14 Flip3 release
 
 Created `flip3` from current main 1561a3bac5f85974a2f41c4959f77093038018ad.
 The user physically confirms0.1.13 fixed camera/jewel interception and gameplay

@@ -32,6 +32,12 @@ public final class CompatActivity extends Activity {
     private Button[] reportButtons;
     private String pendingReport;
 
+    /** Existing Activity.getPreferences file, also read by a restored game process. */
+    public static boolean graphicsCompatibilitySelected(android.content.Context context) {
+        return !context.getSharedPreferences(CompatActivity.class.getName(), MODE_PRIVATE)
+                .getBoolean("original_rendering", false);
+    }
+
     public static void keepScreenOn(final Activity activity) {
         activity.runOnUiThread(() -> activity.getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
@@ -56,7 +62,7 @@ public final class CompatActivity extends Activity {
         originalRendering = new CheckBox(this);
         originalRendering.setText("Original rendering (diagnostic mode)");
         originalRendering.setTextColor(0xffeeeeee);
-        originalRendering.setChecked(getPreferences(MODE_PRIVATE).getBoolean("original_rendering", false));
+        originalRendering.setChecked(!graphicsCompatibilitySelected(this));
         originalRendering.setOnCheckedChangeListener((button, checked) ->
                 getPreferences(MODE_PRIVATE).edit().putBoolean("original_rendering", checked).apply());
         layout.addView(originalRendering);
@@ -85,7 +91,7 @@ public final class CompatActivity extends Activity {
     private void startGame() {
         Intent game = new Intent(this, GameBootActivity.class);
         game.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        game.putExtra("graphics_compatibility", !originalRendering.isChecked());
+        game.putExtra(GameBootActivity.EXTRA_GRAPHICS_COMPATIBILITY, !originalRendering.isChecked());
         startActivity(game);
     }
 
@@ -199,7 +205,7 @@ public final class CompatActivity extends Activity {
                 .append("\nABIs: ").append(Arrays.toString(Build.SUPPORTED_ABIS))
                 .append("\nProcess64: ").append(Process.is64Bit()).append('\n');
         text.append("Launcher selected original rendering: ")
-                .append(getPreferences(MODE_PRIVATE).getBoolean("original_rendering", false)).append('\n');
+                .append(!graphicsCompatibilitySelected(this)).append('\n');
         GameSession.appendReport(this, text);
         ExitReport.append(this, text);
         for (String name : new String[]{"compat-java-gl.log", "compat-java-crash.log", "compat-boot.log", "compat-native.log", "compat-events.log", "compat-java-launcher.log"}) {

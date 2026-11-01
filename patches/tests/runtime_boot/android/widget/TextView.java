@@ -1,0 +1,1 @@
+package android.widget; import android.app.*; import android.view.*; public class TextView extends View { public CharSequence text; public TextView(Activity activity){} public void setText(CharSequence value){text=value;} }

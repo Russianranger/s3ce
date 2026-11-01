@@ -1,0 +1,1 @@
+package android.view; public class View { public interface OnClickListener{void onClick(View view);} public OnClickListener listener; public void setOnClickListener(OnClickListener value){listener=value;} }

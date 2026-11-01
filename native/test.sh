@@ -26,6 +26,8 @@ cc -std=gnu11 "${flags[@]}" "$native_dir/tests/context_menu_test.c" -o "$test_di
 cc -std=gnu11 "${flags[@]}" "$native_dir/tests/hud_input_test.c" -o "$test_dir/hud_test"
 "$test_dir/hud_test"
 "$test_dir/context_test"
+cc -std=gnu11 "${flags[@]}" "$native_dir/tests/image_pixels_test.c" -o "$test_dir/image_pixels_test"
+"$test_dir/image_pixels_test"
 cc -std=gnu11 "${flags[@]}" "$native_dir/tests/shutdown_order_test.c" -o "$test_dir/shutdown_test"
 "$test_dir/shutdown_test"
 cc -std=gnu11 "${flags[@]}" -I "$native_dir/tests/include" \

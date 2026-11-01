@@ -1,0 +1,1 @@
+package com.ideaworks3d.thesims3; import android.app.*; public final class CompatActivity { public static boolean fallback=true; public static boolean graphicsCompatibilitySelected(android.content.Context activity){return fallback;} }

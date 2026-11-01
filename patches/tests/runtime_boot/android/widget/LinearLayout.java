@@ -1,0 +1,1 @@
+package android.widget; import android.app.*; import android.view.*; import java.util.*; public class LinearLayout extends View { public static final int VERTICAL=1; public final List<View> children=new ArrayList<>(); public LinearLayout(Activity activity){} public void setOrientation(int value){} public void addView(View child){children.add(child);} }
