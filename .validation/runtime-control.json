@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "41263509428",
-  "seq": 11,
-  "frame_sha256": "6cf5c34f11f5c669068e3dd39fe77766d3d44f191b0665302ae0dae48a70d75a",
+  "seq": 12,
+  "frame_sha256": "47fef627ce044f06cb3c752f0ab09b7004b59ba97aa1388c6fa3bfa70dc2d2d0",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 860,
-    "y": 300
+    "type": "swipe",
+    "x1": 1100,
+    "y1": 600,
+    "x2": 1300,
+    "y2": 680,
+    "duration_ms": 900
   },
-  "note": "Dismiss the timed Go to Town hint before retrying camera motion; the interrupted swipe is not counted as a pan."
+  "note": "Retry normal world pan after the hint is closed, with camera mode visibly enabled."
 }
