@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 32,
-  "frame_sha256": "4303a94f22fc7126aae4838eed743ada62e975866df6cf0ced0581eef20623bc",
+  "seq": 33,
+  "frame_sha256": "635ebfe35019d43c55c22e1ca9a9fb10af77946d71e12d923f9b7bd4438743eb",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1480,
-    "y": 733
+    "type": "wait",
+    "seconds": 10
   },
-  "note": "Confirm the second ordinary SaveQuit after the successful reload."
+  "note": "Wait for the final normal SaveQuit transition to complete."
 }
