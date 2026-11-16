@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 12,
-  "frame_sha256": "495efc76cb268a25dd40d1ddbe82f3ffaaad6ce08fbb73246ff815349ca60e6b",
+  "seq": 13,
+  "frame_sha256": "0d45a39d68c8e3ad35061770f04dd216462dd922e74ace84ad5e7140ab42ce3d",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 2150,
-    "y": 967
+    "x": 635,
+    "y": 215
   },
-  "note": "Select the bottom-right jewel with camera mode enabled."
+  "note": "Close Wishes and observe that the camera stays at its released position."
 }
