@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 18,
-  "frame_sha256": "de32a52c816c0ff444be25ad987f07b9f029039477eaf4f41b5239d3688b5f60",
+  "seq": 19,
+  "frame_sha256": "e5b0ff2c44addcf1c71fc5eb29cad55021d293b66296398053a61d2914946422",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1780,
-    "y": 735
+    "x": 473,
+    "y": 965
   },
-  "note": "Walk from the bed to the visible bedroom floor through normal touch input."
+  "note": "Open Pause to save the normal post-action gameplay state."
 }
