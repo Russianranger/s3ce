@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 4,
-  "frame_sha256": "eabba4165da10b6fb23ee43362d2625c1da6042a5285e9df00b6ff025cbf37aa",
+  "seq": 5,
+  "frame_sha256": "c65eb25e3b7fb70dd18f078f3e06f6119b36f2851a79b31e635dc0b008a185b0",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1390,
-    "y": 715
+    "x": 1830,
+    "y": 325
   },
-  "note": "Tap the visible chair back; the previous seat tap produced no accepted action."
+  "note": "Select the visible bed to inspect its ordinary action menu."
 }
