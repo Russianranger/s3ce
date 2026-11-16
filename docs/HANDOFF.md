@@ -1,4 +1,40 @@
-# Current implementation — close-friend romance
+# Current release — close-friend romance test candidate
+
+User-authorized0.1.16-flip3-romance/code116 adds only Good Friend6 and Best
+Friend7 → Budding Romance8, romance channel1/threshold10 after existing rules.
+Successful romantic interactions remain necessary; no automatic acceptance,
+pair/jealousy change, new state or save migration. The user accepted0.1.15 Hot
+Smooch fix with no further crashes; both DEX/native ELF remain byte-identical.
+All677 other resource payloads, appID/key/private saves/ARM32/4KiB/target28 and
+centered16:9 touch viewport are preserved. Original rendering stays unchecked.
+
+Frozen APK76,774,745 bytes, SHA256
+`f0258cf188b12208cbadaa97e0414feeab5b4fb1a2779bfc6a61452b22eaa6e2`,
+production source `024355d3a6af9e6f45c2c0c663db284470444a32` on flip3.
+Six integrity tests,764 actual original ARM loader/resolver/setter executions,
+16 native sanitizer suites and76 harness tests pass. Exact candidate game run
+43803018055 is green: two normal cold-menu checks0failures, separate cold Main,
+normal creation/save/new-process load, Home, visibly completed Bed Sit, camera
+zoom/pan/release, jewel both modes, post-action save/reload, walking, final save
+and clean native Quit. Full44,619,915B log has0fatal/ANR/game-Java/audio errors.
+Rawgate=false is retained; root/independent visual acceptance is separate.
+API35 helper run43803017954 accepts nine scoped checks; no ARM32 game runs there.
+Cutout-removal geometry remains invalid and is not accepted. Keep all evidence.
+
+Actual Good/Best Friend→Budding Romance and changed-romance save persistence
+remain the focused physical test: no close-friend save was supplied here. No
+phone116, user115 migration, full-game reverse3 or universal startup claim.
+The earlier04:46 post-action save was reloaded; the final04:51 save was not.
+See docs/RELATIONSHIP_RUNTIME_ACCEPTANCE.md and relationship-runtime-evidence.json
+for complete scope, original hashes, interrupted attempts and test boundaries.
+
+Publication of these exact signed bytes as v0.1.16-flip3-romance is in progress.
+Do not rebuild/resign. Next: verify public APK/hash/key, deliver direct download
+and install-over instructions, then user's existing-save Good/Best Friend test,
+SaveQuit/reload, available Hot Smooch and three cold starts. Export Home→app icon
+→Save report→Share report file, including NPC/status before/after and screenshots.
+
+# Implementation record — close-friend romance
 
 The user now authorizes implementing Good Friend6 and Best Friend7 → Budding
 Romance8 on flip3. Add only channel1/threshold10 transitions after existing

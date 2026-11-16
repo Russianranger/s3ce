@@ -1,0 +1,246 @@
+{
+  "schema": 1,
+  "status": "accepted-focused-physical-test-candidate",
+  "source_commit": "024355d3a6af9e6f45c2c0c663db284470444a32",
+  "harness_commit": "4e87e69d22fd48d5f60a8015be976ff85f894fba",
+  "candidate": {
+    "version": "0.1.16-flip3-romance",
+    "code": 116,
+    "filename": "S3CE-0.1.16-flip3-romance-arm32.apk",
+    "bytes": 76774745,
+    "sha256": "f0258cf188b12208cbadaa97e0414feeab5b4fb1a2779bfc6a61452b22eaa6e2",
+    "certificate_sha256": "3c3d5fdfb1db4082e7e488773c2d59cd56ad77c4bfc0aa2e66076e988f02a0c4",
+    "package": "io.github.russianranger.s3ce",
+    "min_sdk": 26,
+    "target_sdk": 28,
+    "abi": "armeabi-v7a",
+    "page_size_requirement": 4096
+  },
+  "scope": {
+    "added_edges": [
+      {
+        "from": 6,
+        "to": 8,
+        "channel": 1,
+        "threshold": 10
+      },
+      {
+        "from": 7,
+        "to": 8,
+        "channel": 1,
+        "threshold": 10
+      }
+    ],
+    "original_edge_priority_preserved": true,
+    "other_677_resource_payloads_identical": true,
+    "both_dex_and_native_elf_byte_identical_to_115": true,
+    "save_format_unchanged": true,
+    "automatic_acceptance": false
+  },
+  "host": {
+    "asset_integrity_tests": 6,
+    "runtime_harness_regression_tests": 76,
+    "native_sanitizer_programs": 16,
+    "arm_summary": {
+      "paired_cases": 382,
+      "resolver_setter_runs": 764,
+      "changed_cases": 108,
+      "failures": 0,
+      "all_other_results_unchanged": true,
+      "all_13_npcs_checked": true,
+      "both_relocations": true
+    },
+    "arm_receipt_sha256": "93f5018949e793a5ea49dfd15e273d3d46e8a25526a899dcadf71263f594915d",
+    "asset_review": {
+      "scope": "Independent static/raw resource audit, not Android gameplay",
+      "original_apk_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+      "original_archive_sha256": "3bbb04b058f245b1784370270f26a547ac36d124ef26d09fbadac05ee2dfcf82",
+      "patched_archive_sha256": "82357d3082b520ebcc583ff2526fc6066c51d39922b3a53453501fd963ec7211",
+      "archive_bytes": 26426904,
+      "changed_table_records": [
+        6
+      ],
+      "changed_compressed_resources": [
+        6
+      ],
+      "other_677_compressed_resources_byte_identical": true,
+      "raw_size_before": 22030,
+      "raw_size_after": 22038,
+      "LZMA_properties_preserved": true,
+      "added_rules": {
+        "6": [
+          8,
+          1,
+          10
+        ],
+        "7": [
+          8,
+          1,
+          10
+        ]
+      },
+      "all_original_edges_priorities_headers_and_non_graph_bytes_preserved": true,
+      "idempotence": true,
+      "tamper_rejections": 10,
+      "failures": 0
+    },
+    "modeled_boundaries": "Execute the original ARM loader/resolver/setter on a candidate APK's tuning.\n\nUses the supplied SHA-pinned original S3E and exact signed 0.1.15 baseline APK.\nThe candidate resource is extracted independently of the production patcher.\nActual scalar readers, vector constructors/copies/destructors, ordered threshold\ncomparisons, state writes and score clearing execute. Resource acquisition,\nallocation/memcpy, unrelated delegated SimWorld consumers, logging, goal awards,\nscene lookup and notification/art endpoints are modeled explicitly. Synthetic\nrelationship inputs are isolated in Unicorn; no Android process or save is edited.\nThis is instruction evidence, not completed Android conversation/animation proof.\n",
+    "release_reconstruction_byte_exact": true
+  },
+  "android": {
+    "game_run": 43803018055,
+    "platform_run": 43803017954,
+    "status": "both-runs-completed-success-with-scoped-manual-review",
+    "platform": {
+      "run_id": 43803017954,
+      "artifact_id": 14197631334,
+      "archive_bytes": 1666986,
+      "archive_sha256": "cd80599c20a28b780a4c85ab6735da89550f399b20bb7c1871a27305e9e3ec0c",
+      "crc_verified_members": 112,
+      "checks": [
+        "both-black-margin-taps-inert",
+        "center-tap-real-child-local-coordinates",
+        "drag-leaves-child-cancels-without-outside-move-or-up",
+        "real-framework-lifted-pointer-retired-and-child-local-cancel-preserved",
+        "home-focus-loss-cancel-and-same-fixture-return",
+        "real-framework-resize-cancel-and-observed-resized-restored-fitted-surfaces",
+        "actual-reverse-landscape-rotation3-fitted-surface",
+        "actual-reverse-landscape-center-input-child-local-down-up",
+        "one-stock-cutout-nonzero-insets-fitted-once"
+      ],
+      "accepted_scoped_checks": 9,
+      "original_game_execution": false,
+      "limitations": [
+        "64-bit-only image rejects ARM32 APK; exact GameViewport DEX runs in native-free fixture.",
+        "Resize cancellation verified, fresh fixture establishes resized geometry.",
+        "Removing simulated cutout overlay leaves visible but invalid bounds; restoration not accepted."
+      ]
+    },
+    "game": {
+      "decision": "accept exact signed candidate for focused physical close-friend romance test",
+      "candidate_sha256": "f0258cf188b12208cbadaa97e0414feeab5b4fb1a2779bfc6a61452b22eaa6e2",
+      "production_source": "024355d3a6af9e6f45c2c0c663db284470444a32",
+      "run_id": 43803018055,
+      "artifact_id": 14198872372,
+      "archive_sha256": "03ec9401ce3f804b49d0a49a4e0b57afa5a697da5a7bb2e06044c7380c9e3347",
+      "archive_bytes": 215554839,
+      "crc_verified_members": 2993,
+      "raw_gate_passed": false,
+      "raw_receipt_unchanged": true,
+      "all_36_frame_hashes_verified": true,
+      "normal_cold_starts": {
+        "attempts": 2,
+        "failures": 0,
+        "pids": [
+          "3953",
+          "6168"
+        ],
+        "both_menus_visually_accepted": true
+      },
+      "direct_main": {
+        "pid": "6758",
+        "ordered_bootstrap": true,
+        "menu_visually_accepted": true,
+        "saved_state_bundle_not_simulated": true
+      },
+      "gameplay": {
+        "normal_creation_save_new_process_reload": true,
+        "prefix_pid": "6758",
+        "resume_pid": "12750",
+        "home_same_process_visible": true,
+        "bed_sit": {
+          "selected_action_frame": 5,
+          "queue_frame": 6,
+          "settled_seated_frames": [
+            7,
+            10,
+            11,
+            13,
+            14
+          ],
+          "normal_approach_and_bent_knees_observed": true
+        },
+        "camera_release": {
+          "frames": [
+            11,
+            13
+          ],
+          "crop": [
+            700,
+            100,
+            1400,
+            600
+          ],
+          "elapsed_seconds": 59.304718017578125,
+          "static_room_pixels_identical": true,
+          "crop_sha256": "8fd35bd6a28619bfd54e9fe19a7301e9bc8f594083f1f65be8f2e670f18e2d33"
+        },
+        "jewel_wishes_camera_on_frame": 12,
+        "jewel_wishes_camera_off_frame": 15,
+        "post_action_save_and_new_process_reload": {
+          "new_pid": "18185",
+          "slot_frame": 26,
+          "loaded_house_frame": 28,
+          "game_time": "Mon 14:56",
+          "four_wishes_retained": true
+        },
+        "normal_floor_walk_frames": [
+          28,
+          29,
+          30
+        ],
+        "final_save_completed_frame": 33,
+        "normal_quit": {
+          "native_main_returned": true,
+          "activity_finish_requested": true,
+          "resumed_activity_lines": [
+            "mResumedActivity: ActivityRecord{492929b u0 io.github.russianranger.s3ce/com.ideaworks3d.thesims3.CompatActivity t16}"
+          ],
+          "game_main_resumed": false,
+          "compat_launcher_resumed": true,
+          "retained_package_pid": "18185",
+          "fatal_or_anr_lines": []
+        },
+        "ui_commands": 36
+      },
+      "full_log": {
+        "bytes": 44619915,
+        "sha256": "ed8ad77dec041f8107bcd4569f3e897eace314a255f03fad215d748dd8013567",
+        "fatal_anr_or_late_audio_matches": []
+      },
+      "interrupted_or_unaccepted_attempts": [
+        "Chair taps3/4 did not establish a chair action; frame4shows movement only. Bed Sit was then selected and visibly completed.",
+        "Pan8 was interrupted by New Wish;9Recipes/10close precede successful pan11.",
+        "Go to Town hint16/17dismissed normally.",
+        "Floor tap18 produced no observed movement from the seated pose; actual floor walking occurs after reload28\u219229.",
+        "Pause19 was interrupted by New Wish;20acknowledged then21Pause.",
+        "Save23 faded and32showedLoading; complete menus24/33 establish completion.",
+        "Slot27 faded; loaded house28 establishes the post-action reload."
+      ],
+      "limits": [
+        "No Good/Best Friend save exists in this environment: no Android romantic conversation or changed-romance persistence claim.",
+        "Candidate-created save only; user115 save install-over remains phone test.",
+        "API30 x86/ARMv7 translation, not physical phone gameplay.",
+        "Full-game reverse landscape3 unavailable; exact API35 helper is separate.",
+        "Final15:38 save was not reloaded; preceding14:43 post-action save was reloaded normally."
+      ]
+    },
+    "independent_game_review": {
+      "filename": "independent-romance116-runtime-review.json",
+      "sha256": "c4808cd7f78fa6e46cb0023b4c3a02409755068980b8f3a7d0944048f9d2776f",
+      "decision": "accept exact candidate as focused physical test release; scoped limitations retained"
+    }
+  },
+  "unresolved": [
+    "Actual Android Good/Best Friend to Budding Romance progression and relationship save/reload require normal gameplay; no supplied close-friend save exists in this environment.",
+    "No new physical-device test yet."
+  ],
+  "local_build_history": [
+    "First build stopped because recovered Java runtime lacked javac; fullJDK17 recovered and verified.",
+    "First signed internal rebuild used a different embedded source path; superseded before Android testing. Final build in original native path reproduces accepted0.1.15 native ELF exactly."
+  ],
+  "publication": {
+    "status": "pending",
+    "tag": "v0.1.16-flip3-romance"
+  }
+}

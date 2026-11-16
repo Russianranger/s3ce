@@ -1,37 +1,38 @@
 # S3CE — Galaxy Z Flip3 branch
 
-The user confirms that the centered 16:9 landscape UI works well on the physical
-Galaxy Z Flip3 / Android 15. The published build is **0.1.15-flip3-socials /
-code 115**, addressing the reported Hot Smooch crash and separate activity
-restoration failures. The user subsequently confirms that the fix worked and
-reports no further crashes since the update. Existing proportional touch
-controls, object actions, saves and rendering compatibility are preserved.
+**0.1.16-flip3-romance / code 116** allows Good Friend and Best Friend to progress
+to Budding Romance through normal successful romantic interactions. The two new
+rules use the existing10-point romance threshold. They apply to all NPCs,
+including Luke, Jake, Jack, Walter and Ruth; acceptance, traits, partners,
+jealousy and later progression remain the original game rules.
 
-The image loader now uses the pixels it already owns, avoiding an extra buffer
-whose failed allocation matches the native crash. All nine event images share
-that loader, so other event artwork receives the same correction. Only the
-reported Hot Smooch failure is observed; exact action-to-artwork mapping and
-other possible engine faults remain qualified in the analysis.
+[Download the signed Flip3 test APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.16-flip3-romance/S3CE-0.1.16-flip3-romance-arm32.apk).
+[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.16-flip3-romance).
+Source `024355d3a6af9e6f45c2c0c663db284470444a32`; APK76,774,745 bytes, SHA256
+`f0258cf188b12208cbadaa97e0414feeab5b4fb1a2779bfc6a61452b22eaa6e2`.
+Publication is being verified; see the current handoff for its final status.
 
-The user-authorized [relationship mechanic](docs/RELATIONSHIP_MECHANICS.md)
-adds the missing Good/Best Friend → Budding Romance transitions to the next
-0.1.16-flip3-romance/code116 candidate. Successful romantic actions still need
-the normal10-point threshold. All other relationship rules and save formats
-remain unchanged. Candidate validation/publication is in progress; the public
-download below remains the accepted0.1.15 until the new delivery is verified.
+The user confirms0.1.15 fixed Hot Smooch and reports no subsequent crashes.
+This update retains that fix: both DEX files and the native compatibility ELF
+are byte-identical. All677 other resource payloads and the working centered16:9
+viewport/touch targets, object actions, camera, audio and cleanup are preserved.
 
-See [crash evidence and correction](docs/SOCIAL_IMAGES.md),
-[validation and limits](docs/SOCIAL_RUNTIME_ACCEPTANCE.md),
-[viewport implementation](docs/FLIP3_VIEWPORT.md), and
-[current handoff](docs/HANDOFF.md).
+Six integrity tests and764 original ARM loader/resolver/setter checks pass.
+Actual Android11/API30 ARMv7-translated gameplay validates two normal cold starts
+with zero failures, creation/save/load, Home, completed Bed Sit, camera/jewel,
+walking, post-action save/new-process reload and clean Quit. Nine scoped Android15
+viewport-helper checks pass; that64-bit-only image cannot run the ARM32 game.
+Actual Good/Best Friend romance progression/persistence remains the short phone
+test with your existing save. These are separate validation scopes.
 
-[Download the Flip3 test APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.15-flip3-socials/S3CE-0.1.15-flip3-socials-arm32.apk).
-[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.15-flip3-socials).
-Published signed test release; public checksum/certificate and exact tested bytes verified.
-Keep **Original rendering (diagnostic mode) unchecked**. Install over the existing
-S3CE app without uninstalling or clearing data. Same application ID, signing key
-and private save location; fully local ARM32 runtime, 4 KiB pages, min SDK 26 and
-target SDK 28. Cover-screen/flex-mode gameplay is not validated.
+See [mechanic](docs/RELATIONSHIP_MECHANICS.md),
+[validation/limits](docs/RELATIONSHIP_RUNTIME_ACCEPTANCE.md),
+[phone test](docs/RELEASE_NOTES.md), and [handoff](docs/HANDOFF.md).
+Install over the existing S3CE app without uninstalling or clearing data. Keep
+**Original rendering (diagnostic mode) unchecked**. Same application ID, key and
+private save location; fully local ARM32 runtime,4KiB pages,minSDK26,targetSDK28.
+Reports: Home → S3CE app icon → Save report → Share report file.
+Cover-screen/flex-mode gameplay is not validated.
 
 # Historical Thor base — 0.1.13
 
