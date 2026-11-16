@@ -1,19 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 11,
-  "frame_sha256": "b57f9f7040f5fe967b3c5fbce8c0448c443e92dd3a5c29589dbcff3a15b329d1",
+  "seq": 12,
+  "frame_sha256": "495efc76cb268a25dd40d1ddbe82f3ffaaad6ce08fbb73246ff815349ca60e6b",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "swipe",
-    "x1": 1500,
-    "y1": 550,
-    "x2": 1250,
-    "y2": 650,
-    "duration_ms": 900
+    "type": "tap",
+    "x": 2150,
+    "y": 967
   },
-  "note": "Retry the camera pan after dismissing the ordinary wish and recipe overlays."
+  "note": "Select the bottom-right jewel with camera mode enabled."
 }
