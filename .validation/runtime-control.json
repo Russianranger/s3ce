@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 31,
-  "frame_sha256": "277ab4c3ed404d37920977e63f3003f14f464362ac20af7a8b1751d8aa3656d8",
+  "seq": 32,
+  "frame_sha256": "4303a94f22fc7126aae4838eed743ada62e975866df6cf0ced0581eef20623bc",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1320,
-    "y": 797
+    "x": 1480,
+    "y": 733
   },
-  "note": "Save and Quit once more after the reload and visible floor walking."
+  "note": "Confirm the second ordinary SaveQuit after the successful reload."
 }
