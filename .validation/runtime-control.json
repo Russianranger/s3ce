@@ -1,19 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 8,
-  "frame_sha256": "2388a540cb7e90babd299aa20862375eeb5ba7e8eba730139434ffabbc854948",
+  "seq": 9,
+  "frame_sha256": "67026dc777531909b0475dffb1ced4dc795b5636dee48e68ba8832d2a3fccc7f",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "swipe",
-    "x1": 1500,
-    "y1": 550,
-    "x2": 1250,
-    "y2": 650,
-    "duration_ms": 900
+    "type": "tap",
+    "x": 1480,
+    "y": 850
   },
-  "note": "Pan the camera with its enabled mode while preserving the seated action."
+  "note": "Accept the visible timed New Wish before retrying the camera gesture."
 }
