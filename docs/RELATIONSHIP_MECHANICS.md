@@ -3,7 +3,8 @@
 The user confirms the delivered Hot Smooch fix worked and reports no subsequent
 crashes (2026-11-15, referring to 0.1.15 by conversation context). Preserve that
 working release. This investigation concerns romantic progression with **Luke,
-Jake, Jack, Walter and Ruth**. It does not publish or enable a new mechanic.
+Jake, Jack, Walter and Ruth**. The research below preceded the user-authorized implementation of the two
+missing transitions. See the implementation continuation at the end.
 
 ## Finding
 
@@ -136,3 +137,28 @@ The reproducible instruction-level analysis bundle is retained privately as
 `96d1ab49b9ad204a6b5cf25b48632f1afbe7a23a15f9464871bbe8ccee003390`).
 It contains the scripts, recovery commands and full receipts for the936/266/10
 experiments, without game binaries, assets, heap dumps, phone reports or saves.
+
+## Implementation continuation — 0.1.16
+
+The user explicitly authorizes the proposed change. `patches/relationship_tuning.py`
+adds exactly the two graph entries described above and increments their edge
+counts. Existing edges retain their original order and priority. Romantic actions
+must still succeed and accumulate the normal10-point romance threshold; reaching
+Good/Best Friend alone does not automatically make an NPC romantic.
+
+The resource grows from22,030 to22,038bytes, with no data outside the relationship
+graph changed. Its SHA256 is
+`e5826f94360264b722fc5364a382bec43d0b024a227d6a1938b8ed0c9d287b57`.
+The recompressed resource has the same7,977-byte payload length as the original;
+the archive entry's two uncompressed-size fields change, and all other677 entries
+remain byte-identical. Patched archive SHA256 is
+`82357d3082b520ebcc583ff2526fc6066c51d39922b3a53453501fd963ec7211`.
+Whole original/patched archive hashes guard the patch and its idempotence.
+The builder applies it, and packaging verification requires this exact expected
+archive rather than allowing a general asset exception.
+
+No native/Java gameplay, NPC identity/pairing, acceptance, jealousy, later romance,
+proposal/marriage or save-format change is included. The accepted0.1.15 crash,
+viewport, touch, object-action, audio and cleanup code remains in place.
+Candidate0.1.16-flip3-romance/code116 uses the existing key and application ID.
+Validation and delivery status are recorded in `RELATIONSHIP_RUNTIME_ACCEPTANCE.md`.

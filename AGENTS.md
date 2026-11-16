@@ -1,3 +1,14 @@
+# Current implementation — close-friend romance
+
+The user now authorizes implementing Good Friend6 and Best Friend7 → Budding
+Romance8 on flip3. Add only channel1/threshold10 transitions after existing
+rules; preserve action acceptance, friendship priorities, pairs/jealousy, normal
+setter/save format and the accepted0.1.15 social crash fix. Prepare0.1.16-flip3-romance
+/code116 with the same key/appID/ARM32/4KiB/target28 and centered16:9 viewport.
+No game-state or save edits to manufacture validation. Actual close-friend
+romance gameplay remains a scoped acceptance question, distinct from original
+ARM loader/resolver tests. Prior research below is historical authorization scope.
+
 # Current continuation — relationship mechanics research
 
 On 2026-11-15 the user confirms the delivered Hot Smooch fix worked and reports

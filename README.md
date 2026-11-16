@@ -13,10 +13,12 @@ that loader, so other event artwork receives the same correction. Only the
 reported Hot Smooch failure is observed; exact action-to-artwork mapping and
 other possible engine faults remain qualified in the analysis.
 
-The current [relationship-mechanics research](docs/RELATIONSHIP_MECHANICS.md)
-identifies missing Good/Best Friend romance transitions and a focused way to
-allow normal courtship to progress. This research adds no new gameplay mechanic
-to the published APK.
+The user-authorized [relationship mechanic](docs/RELATIONSHIP_MECHANICS.md)
+adds the missing Good/Best Friend → Budding Romance transitions to the next
+0.1.16-flip3-romance/code116 candidate. Successful romantic actions still need
+the normal10-point threshold. All other relationship rules and save formats
+remain unchanged. Candidate validation/publication is in progress; the public
+download below remains the accepted0.1.15 until the new delivery is verified.
 
 See [crash evidence and correction](docs/SOCIAL_IMAGES.md),
 [validation and limits](docs/SOCIAL_RUNTIME_ACCEPTANCE.md),
@@ -89,7 +91,8 @@ not a claim of successful gameplay on all four versions.
 - Screen wake uses the public window API instead of privileged `userActivity`.
 - A separate launcher can save, share, view and copy report files after a game
   crash. Reports include available Android exit/tombstone records and Java exceptions.
-- Original audio, textures and all other game assets remain byte-identical.
+- Original audio and textures remain byte-identical. The relationship tuning
+  changes only two intended graph edges; all other resource payloads remain identical.
   Guarded configuration changes enable the existing Android GL/stack path;
   a fingerprinted native instruction correction preserves UI projection depth.
   Assets stay uncompressed for the original `AssetManager.openFd` audio path.
