@@ -382,5 +382,12 @@
       "url": "https://chadaustin.me/2010/01/the-completionists-guide-to-sims-3-iphone/",
       "scope": "historical firsthand iPhone comments; mixed-platform page, not Android proof"
     }
-  ]
+  ],
+  "recovery_archive": {
+    "filename": "S3CE-relationship-research-2026-11-15.zip",
+    "bytes": 60891,
+    "sha256": "96d1ab49b9ad204a6b5cf25b48632f1afbe7a23a15f9464871bbe8ccee003390",
+    "storage": "retained privately",
+    "contents": "reproducible scripts and JSON receipts; no game binaries/assets/heap/phone reports/keys/saves"
+  }
 }

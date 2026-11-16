@@ -130,3 +130,9 @@ Historical [original iPhone player reports](https://chadaustin.me/2010/01/the-co
 describe the same friendship obstacle and successful romance with some named
 Sims. That mixed-platform page was an investigative lead; the Android data and
 native instruction experiments above establish this proposal's technical basis.
+
+The reproducible instruction-level analysis bundle is retained privately as
+`S3CE-relationship-research-2026-11-15.zip` (60,891bytes, SHA256
+`96d1ab49b9ad204a6b5cf25b48632f1afbe7a23a15f9464871bbe8ccee003390`).
+It contains the scripts, recovery commands and full receipts for the936/266/10
+experiments, without game binaries, assets, heap dumps, phone reports or saves.
