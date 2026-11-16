@@ -1,16 +1,15 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 23,
-  "frame_sha256": "70666778d4823cfd53706a8f2e806ddc63debc2af0c4b2698cfae0bb5e06cf03",
+  "seq": 24,
+  "frame_sha256": "cb1d5f2733b27895e156a8e7f0e7a744966d3b429aefce83742e9cb88b3802af",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1480,
-    "y": 733
+    "type": "wait",
+    "seconds": 10
   },
-  "note": "Confirm the visible save-progress-and-return-to-menu dialog."
+  "note": "Wait for the normal save/menu transition before restarting the process."
 }
