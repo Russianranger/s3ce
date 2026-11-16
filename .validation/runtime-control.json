@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 28,
-  "frame_sha256": "47141b6bbc4c54556c4707552f282317925cda255b4a015e6963e5830de2e75d",
+  "seq": 29,
+  "frame_sha256": "3af463bc684dd1896325bc327b5cc417c7c512b4937b6093b9a9cae54c4618f9",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 10
+    "type": "tap",
+    "x": 950,
+    "y": 730
   },
-  "note": "Wait for the selected post-action save to finish loading normally."
+  "note": "Tap unobstructed floor after the saved-game reload to check normal walking."
 }
