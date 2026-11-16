@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 1,
-  "frame_sha256": "16addfb3949e2f98f36b73d8ee0851065774db7fe9ed3919d7227231bf5b4354",
+  "seq": 2,
+  "frame_sha256": "774eec2217dd8335f8001b100c16dd9d3cfb85e09fc01549285138932223b29b",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 700,
-    "y": 250
+    "type": "swipe",
+    "x1": 2194,
+    "y1": 275,
+    "x2": 2194,
+    "y2": 700,
+    "duration_ms": 1200
   },
-  "note": "Close the visible Pause panel using its blue back arrow after Home return."
+  "note": "Zoom out through the visible camera ladder to inspect the chair and surrounding controls."
 }
