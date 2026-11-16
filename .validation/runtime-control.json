@@ -1,16 +1,14 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 35,
-  "frame_sha256": "c5f3332067d88636827123aa441b7c40f1bdacdf6a82900b0321d24f869fc5a4",
+  "seq": 36,
+  "frame_sha256": "fe156e90baeabecd5658aef601c756480a614031663c81911892223997e1c572",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 1480,
-    "y": 733
+    "type": "finish"
   },
-  "note": "Confirm normal native Quit through the visible green check."
+  "note": "Finish after Native Main returned and Compat116 resumed with Original rendering unchecked and zero fatal/ANR."
 }
