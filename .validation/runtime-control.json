@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 19,
-  "frame_sha256": "e5b0ff2c44addcf1c71fc5eb29cad55021d293b66296398053a61d2914946422",
+  "seq": 20,
+  "frame_sha256": "99dc9b26800a19460dc6d6728c163806f919085ea35d224f31451bb97457e967",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 473,
-    "y": 965
+    "x": 1480,
+    "y": 850
   },
-  "note": "Open Pause to save the normal post-action gameplay state."
+  "note": "Accept the visible Buy watering can wish before reopening Pause."
 }
