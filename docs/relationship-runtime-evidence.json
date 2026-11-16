@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "accepted-focused-physical-test-candidate",
+  "status": "published-verified-awaiting-physical-romance-test",
   "source_commit": "024355d3a6af9e6f45c2c0c663db284470444a32",
   "harness_commit": "4e87e69d22fd48d5f60a8015be976ff85f894fba",
   "candidate": {
@@ -229,6 +229,35 @@
       "filename": "independent-romance116-runtime-review.json",
       "sha256": "c4808cd7f78fa6e46cb0023b4c3a02409755068980b8f3a7d0944048f9d2776f",
       "decision": "accept exact candidate as focused physical test release; scoped limitations retained"
+    },
+    "publication_triggered_platform_repeat": {
+      "run_id": 43807354248,
+      "source": "566e1c03778e2111c5c86b535881a4be4c7f036a",
+      "status": "failed",
+      "artifact_id": 14199271196,
+      "archive_bytes": 1609389,
+      "archive_sha256": "45f42e291e4d2864a21ad2836676883e56e2f657a797984e3b4ee9c92cdabbbc",
+      "failed_boundary": "restore original no-cutout-overlay viewport",
+      "error": "TimeoutError: Activity content is outside its reported app-compatible display",
+      "attribution": "Same previously excluded post-overlay restoration path; candidate APK and GameViewport DEX unchanged. No original game executes on this ABI-limited fixture.",
+      "initial_scoped_acceptance_retained": true,
+      "crc_verified_members": 105,
+      "nine_earlier_scoped_checks_independently_pass": true,
+      "final_parent": [
+        100,
+        20,
+        2740,
+        1051
+      ],
+      "final_child": [
+        508,
+        22,
+        2332,
+        1048
+      ],
+      "final_fixture_visible": true,
+      "fatal_or_anr_matches": 0,
+      "review_filename": "independent-platform116-repeat-review.json"
     }
   },
   "unresolved": [
@@ -240,7 +269,25 @@
     "First signed internal rebuild used a different embedded source path; superseded before Android testing. Final build in original native path reproduces accepted0.1.15 native ELF exactly."
   ],
   "publication": {
-    "status": "pending",
-    "tag": "v0.1.16-flip3-romance"
+    "publication_run": 43807354251,
+    "publication_commit": "566e1c03778e2111c5c86b535881a4be4c7f036a",
+    "production_source": "024355d3a6af9e6f45c2c0c663db284470444a32",
+    "release_url": "https://github.com/Russianranger/s3ce/releases/tag/v0.1.16-flip3-romance",
+    "apk_url": "https://github.com/Russianranger/s3ce/releases/download/v0.1.16-flip3-romance/S3CE-0.1.16-flip3-romance-arm32.apk",
+    "apk_sha256": "f0258cf188b12208cbadaa97e0414feeab5b4fb1a2779bfc6a61452b22eaa6e2",
+    "bytes": 76774745,
+    "matches_exact_tested_bytes": true,
+    "checksum_asset_matches": true,
+    "signature_v2_v3_original_certificate": true,
+    "package_code_name_sdk_abi_verified": true,
+    "zip_crc_verified": true,
+    "rebuild_or_resign_for_publication": false
+  },
+  "private_recovery_archive": {
+    "filename": "S3CE-0.1.16-private-QA-evidence.zip",
+    "bytes": 219028366,
+    "sha256": "5f69cca088aa4712dccb56a5e40deff70e9c6180df548de0ff4115c5a99104bd",
+    "scope": "Complete original game runtime ZIP, both API35 attempts including failed repeat, independent/root reviews, original ARM receipts and host/build/publication verification; excludes APKs, raw assets/binaries, signing inputs and saves.",
+    "storage": "retained privately"
   }
 }

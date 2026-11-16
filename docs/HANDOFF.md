@@ -21,6 +21,11 @@ Rawgate=false is retained; root/independent visual acceptance is separate.
 API35 helper run43803017954 accepts nine scoped checks; no ARM32 game runs there.
 Cutout-removal geometry remains invalid and is not accepted. Keep all evidence.
 
+Publication auto-repeat43807354248 is red at the previously excluded simulated
+cutout-removal restoration wait: content outside app-compatible display. Same
+APK/helper; retain failed artifact14199271196 and do not accept that boundary.
+Initial nine scoped platform checks/full-game acceptance remain distinct.
+
 Actual Good/Best Friend→Budding Romance and changed-romance save persistence
 remain the focused physical test: no close-friend save was supplied here. No
 phone116, user115 migration, full-game reverse3 or universal startup claim.
@@ -28,11 +33,25 @@ The earlier04:46 post-action save was reloaded; the final04:51 save was not.
 See docs/RELATIONSHIP_RUNTIME_ACCEPTANCE.md and relationship-runtime-evidence.json
 for complete scope, original hashes, interrupted attempts and test boundaries.
 
-Publication of these exact signed bytes as v0.1.16-flip3-romance is in progress.
-Do not rebuild/resign. Next: verify public APK/hash/key, deliver direct download
-and install-over instructions, then user's existing-save Good/Best Friend test,
-SaveQuit/reload, available Hot Smooch and three cold starts. Export Home→app icon
-→Save report→Share report file, including NPC/status before/after and screenshots.
+Published v0.1.16-flip3-romance from566e1c03778e2111c5c86b535881a4be4c7f036a
+by green run43807354251. Independent public download verifies exactf0258c…aa6e2,
+76,774,745 bytes, original certificate/v2/v3, package/code116/min26/target28/ARMv7.
+No rebuild/resign for publication. Release and verification are complete.
+[Direct APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.16-flip3-romance/S3CE-0.1.16-flip3-romance-arm32.apk).
+[Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.16-flip3-romance).
+Next: user's existing-save Good/Best Friend→Budding Romance through successful
+romantic actions; SaveQuit/reload and confirm status persistence, available Hot
+Smooch, controls and three cold starts. Install over without uninstall/data clear;
+Original rendering unchecked. Export Home→app icon→Save report→Share report file,
+including NPC/status before/after and screenshots. No further development or
+additional permission is waiting; the remaining acceptance depends on that test.
+
+
+Complete QA evidence, including the failed publication platform repeat, is
+retained privately as `S3CE-0.1.16-private-QA-evidence.zip` (219,028,366 bytes),
+SHA256 `5f69cca088aa4712dccb56a5e40deff70e9c6180df548de0ff4115c5a99104bd`.
+It excludes APKs/raw game binaries/assets, signing inputs and save contents.
+
 
 # Implementation record — close-friend romance
 

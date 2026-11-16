@@ -10,7 +10,8 @@ jealousy and later progression remain the original game rules.
 [Release page](https://github.com/Russianranger/s3ce/releases/tag/v0.1.16-flip3-romance).
 Source `024355d3a6af9e6f45c2c0c663db284470444a32`; APK76,774,745 bytes, SHA256
 `f0258cf188b12208cbadaa97e0414feeab5b4fb1a2779bfc6a61452b22eaa6e2`.
-Publication is being verified; see the current handoff for its final status.
+Published signed test release; the public download/checksum/original certificate
+and exact tested bytes are independently verified.
 
 The user confirms0.1.15 fixed Hot Smooch and reports no subsequent crashes.
 This update retains that fix: both DEX files and the native compatibility ELF
@@ -21,7 +22,9 @@ Six integrity tests and764 original ARM loader/resolver/setter checks pass.
 Actual Android11/API30 ARMv7-translated gameplay validates two normal cold starts
 with zero failures, creation/save/load, Home, completed Bed Sit, camera/jewel,
 walking, post-action save/new-process reload and clean Quit. Nine scoped Android15
-viewport-helper checks pass; that64-bit-only image cannot run the ARM32 game.
+viewport-helper checks pass in the initial run; a publication repeat fails the
+previously excluded simulated cutout-removal restoration. That64-bit-only image
+cannot run the ARM32 game. See validation for retained evidence and scope.
 Actual Good/Best Friend romance progression/persistence remains the short phone
 test with your existing save. These are separate validation scopes.
 

@@ -98,5 +98,48 @@ crashes, without a new bounded startup count/version fingerprint. No new physica
 actual Good/Best Friend→Budding Romance and relationship save/reload remain a
 focused physical test after available checks and publication are complete.
 
-Next: publish only these exact accepted bytes and verify the public download,
-then hand off install-over instructions plus the short existing-save romance test. Keep Original rendering unchecked; never uninstall/clear data.
+## Publication verified — next action is the phone romance test
+
+Published [v0.1.16-flip3-romance](https://github.com/Russianranger/s3ce/releases/tag/v0.1.16-flip3-romance)
+from `566e1c03778e2111c5c86b535881a4be4c7f036a` by green
+[run43807354251](https://github.com/Russianranger/s3ce/actions/runs/43807354251).
+Root independently downloaded the public APK and SHA256SUMS. Exact76,774,745 bytes
+andf0258c…aa6e2 match the tested frozen candidate. Original-certificate v2/v3,
+package/code116, min26/target28, ARMv7 and ZIP CRC verify. No rebuild/resign.
+
+[Direct APK](https://github.com/Russianranger/s3ce/releases/download/v0.1.16-flip3-romance/S3CE-0.1.16-flip3-romance-arm32.apk).
+Install over without uninstalling or clearing data; Original rendering unchecked.
+Use the existing Good/Best Friend save, complete successful romantic interactions
+until Budding Romance appears, SaveQuit/reopen and verify status persistence.
+Repeat for the other close-friend stage when available. Then normal Hot Smooch,
+controls and three cold starts; Home→app icon→Save report→Share report file.
+Include NPC/status before/after and screenshots. This is the remaining focused
+physical acceptance step; release/public verification are complete.
+
+## Publication-triggered Android 15 repeat — failure retained
+
+[Run43807354248](https://github.com/Russianranger/s3ce/actions/runs/43807354248)
+uses the identical candidate after publication. Artifact14199271196 is1,609,389
+bytes, SHA256 `45f42e291e4d2864a21ad2836676883e56e2f657a797984e3b4ee9c92cdabbbc`.
+The whole repeat is red at `restore original no-cutout-overlay viewport`, with
+`TimeoutError: Activity content is outside its reported app-compatible display`
+(`flip3_platform.py:728`). This is the previously excluded simulated overlay-
+removal path described above, not an observed original-game/romance crash.
+The candidate APK/helper DEX are unchanged. Keep this failed run; do not weaken
+the strict geometry check or count post-overlay restoration as accepted. The
+initial nine scoped checks and independent actual-game acceptance remain the
+basis for this focused test release. Complete repeat review is retained privately.
+
+Independent repeat review verifies all105 ZIP members and the same nine earlier
+scoped checks, including samePID4338 actual3/input/visible1 and enabled96px cutout.
+Zero fatal/ANR. After overlay removal, final parent[100,20,2740,1051] and
+child[508,22,2332,1048] remain invalid while teal pixels are visible: identical
+bounds to the excluded final state in the initial green run. The later red wait
+makes that unaccepted boundary explicit; no validator/code was weakened.
+
+## Durable evidence recovery
+
+Complete QA evidence, including the failed publication platform repeat, is
+retained privately as `S3CE-0.1.16-private-QA-evidence.zip` (219,028,366 bytes),
+SHA256 `5f69cca088aa4712dccb56a5e40deff70e9c6180df548de0ff4115c5a99104bd`.
+It excludes APKs/raw game binaries/assets, signing inputs and save contents.
