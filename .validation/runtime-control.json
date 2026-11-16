@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 30,
-  "frame_sha256": "b599cd505f9144ae40d0f535f35081cbf4ee3cc31f5a1d91ece44b0c2b7eaabf",
+  "seq": 31,
+  "frame_sha256": "277ab4c3ed404d37920977e63f3003f14f464362ac20af7a8b1751d8aa3656d8",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 473,
-    "y": 965
+    "x": 1320,
+    "y": 797
   },
-  "note": "Open Pause after visibly walking across the room in the reloaded save."
+  "note": "Save and Quit once more after the reload and visible floor walking."
 }
