@@ -1,15 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 33,
-  "frame_sha256": "635ebfe35019d43c55c22e1ca9a9fb10af77946d71e12d923f9b7bd4438743eb",
+  "seq": 34,
+  "frame_sha256": "0e0e2a3bcf63104ea8fd89f7a8d946295536fbc050ed2ed8f82b9a0270fcc6ae",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "wait",
-    "seconds": 10
+    "type": "tap",
+    "x": 1080,
+    "y": 797
   },
-  "note": "Wait for the final normal SaveQuit transition to complete."
+  "note": "Choose the visible main-menu Quit control for a normal native shutdown."
 }
