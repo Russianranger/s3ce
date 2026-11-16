@@ -4,7 +4,7 @@
 def runtime_profile(branch):
     if branch == 'flip3':
         return {'name': 'flip3', 'candidate_staging': '.validation/flip3',
-                'baseline_staging': '.publish/v0.1.14-flip3',
+                'baseline_staging': '.publish/v0.1.15-flip3-socials',
                 'screen_width': 2640, 'screen_height': 1080,
                 'expected_game_bounds': (360, 0, 2280, 1080),
                 'verify_letterbox': True, 'verify_home_return': True, 'verify_rotations': True,

@@ -173,7 +173,7 @@ class DirectColdMainTests(unittest.TestCase):
 
     def test_flip3_only_enables_probe_and_uses_its_accepted_baseline(self):
         self.assertTrue(runtime_profile('flip3').get('verify_cold_main_entry', False))
-        self.assertEqual(runtime_profile('flip3')['baseline_staging'], '.publish/v0.1.14-flip3')
+        self.assertEqual(runtime_profile('flip3')['baseline_staging'], '.publish/v0.1.15-flip3-socials')
         self.assertFalse(runtime_profile('main').get('verify_cold_main_entry', False))
 
 
