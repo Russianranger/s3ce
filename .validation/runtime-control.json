@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 29,
-  "frame_sha256": "3af463bc684dd1896325bc327b5cc417c7c512b4937b6093b9a9cae54c4618f9",
+  "seq": 30,
+  "frame_sha256": "b599cd505f9144ae40d0f535f35081cbf4ee3cc31f5a1d91ece44b0c2b7eaabf",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 950,
-    "y": 730
+    "x": 473,
+    "y": 965
   },
-  "note": "Tap unobstructed floor after the saved-game reload to check normal walking."
+  "note": "Open Pause after visibly walking across the room in the reloaded save."
 }
