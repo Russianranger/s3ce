@@ -1,14 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 25,
-  "frame_sha256": "d32b11836b15d479b7bb773de9eee6a1840b46311e95275bd76a5467bdf8ca1e",
+  "seq": 26,
+  "frame_sha256": "cb5d79cab11efacf35d3049f121881b4a5d112022cffa72253bce39c6e2c36d3",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "relaunch"
+    "type": "tap",
+    "x": 1695,
+    "y": 530
   },
-  "note": "Restart the process after completed SaveQuit, keeping all app data."
+  "note": "Open saved games through the visible Start Game button in the fresh process."
 }
