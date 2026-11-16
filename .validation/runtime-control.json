@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 34,
-  "frame_sha256": "0e0e2a3bcf63104ea8fd89f7a8d946295536fbc050ed2ed8f82b9a0270fcc6ae",
+  "seq": 35,
+  "frame_sha256": "c5f3332067d88636827123aa441b7c40f1bdacdf6a82900b0321d24f869fc5a4",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1080,
-    "y": 797
+    "x": 1480,
+    "y": 733
   },
-  "note": "Choose the visible main-menu Quit control for a normal native shutdown."
+  "note": "Confirm normal native Quit through the visible green check."
 }
