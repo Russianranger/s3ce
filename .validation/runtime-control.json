@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 13,
-  "frame_sha256": "0d45a39d68c8e3ad35061770f04dd216462dd922e74ace84ad5e7140ab42ce3d",
+  "seq": 14,
+  "frame_sha256": "7d7d37791f2af36588975abc3fa4b54945f1762048f528055679f23de10aab67",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 635,
-    "y": 215
+    "x": 2045,
+    "y": 795
   },
-  "note": "Close Wishes and observe that the camera stays at its released position."
+  "note": "Disable camera mode before checking normal walking and the jewel again."
 }
