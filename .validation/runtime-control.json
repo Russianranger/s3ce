@@ -1,14 +1,16 @@
 {
   "schema": 1,
-  "run_id": "41338479517",
-  "seq": 24,
-  "frame_sha256": "4c20fcd4782fcb217683e4bece9a1b5755730932490ac5135adea625eebc3093",
+  "run_id": "43803018055",
+  "seq": 1,
+  "frame_sha256": "16addfb3949e2f98f36b73d8ee0851065774db7fe9ed3919d7227231bf5b4354",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "finish"
+    "type": "tap",
+    "x": 700,
+    "y": 250
   },
-  "note": "Finish after normal Quit: Native Main returned, Activity finish requested, Compat115 visible, Original rendering unchecked and zero fatal/ANR."
+  "note": "Close the visible Pause panel using its blue back arrow after Home return."
 }
