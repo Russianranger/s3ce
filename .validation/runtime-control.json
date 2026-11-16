@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 17,
-  "frame_sha256": "dd1825b769e0abcfcb37230f2a12159b7c312709485f88424c916ca1d3453cf4",
+  "seq": 18,
+  "frame_sha256": "de32a52c816c0ff444be25ad987f07b9f029039477eaf4f41b5239d3688b5f60",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 855,
-    "y": 300
+    "x": 1780,
+    "y": 735
   },
-  "note": "Close the timed Go to Town tip using its visible blue X."
+  "note": "Walk from the bed to the visible bedroom floor through normal touch input."
 }
