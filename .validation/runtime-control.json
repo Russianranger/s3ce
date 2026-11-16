@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 16,
-  "frame_sha256": "286206c5d0374608699e508f853be66e132efa00c94e617a2dc6c8a74440b2d1",
+  "seq": 17,
+  "frame_sha256": "dd1825b769e0abcfcb37230f2a12159b7c312709485f88424c916ca1d3453cf4",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 635,
-    "y": 215
+    "x": 855,
+    "y": 300
   },
-  "note": "Close the Wishes panel after confirming jewel selection with camera mode off."
+  "note": "Close the timed Go to Town tip using its visible blue X."
 }
