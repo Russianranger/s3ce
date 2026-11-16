@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 20,
-  "frame_sha256": "99dc9b26800a19460dc6d6728c163806f919085ea35d224f31451bb97457e967",
+  "seq": 21,
+  "frame_sha256": "05b43deadc73dc928ba94fd5ca8dace9920606221dc580a1a37980156869df19",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1480,
-    "y": 850
+    "x": 473,
+    "y": 965
   },
-  "note": "Accept the visible Buy watering can wish before reopening Pause."
+  "note": "Open Pause after acknowledging the timed wish."
 }
