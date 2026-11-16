@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 14,
-  "frame_sha256": "7d7d37791f2af36588975abc3fa4b54945f1762048f528055679f23de10aab67",
+  "seq": 15,
+  "frame_sha256": "eff68e2e23caabcb4d88e82a2e082a21266f6ec174a1ee401120a08c17086261",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 2045,
-    "y": 795
+    "x": 2150,
+    "y": 967
   },
-  "note": "Disable camera mode before checking normal walking and the jewel again."
+  "note": "Select the bottom-right jewel with camera mode disabled."
 }
