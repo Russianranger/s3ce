@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 26,
-  "frame_sha256": "cb5d79cab11efacf35d3049f121881b4a5d112022cffa72253bce39c6e2c36d3",
+  "seq": 27,
+  "frame_sha256": "caa00b0c99825a0e5a9fcaa5f0c6631a26207a9c1c6b8ce36c52a6d163f4c259",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1695,
-    "y": 530
+    "x": 960,
+    "y": 450
   },
-  "note": "Open saved games through the visible Start Game button in the fresh process."
+  "note": "Load the visible existing Alex save after the post-action process restart."
 }
