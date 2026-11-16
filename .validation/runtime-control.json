@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 7,
-  "frame_sha256": "0f8d609c0e37b35a5dcafcb7a65d3259a55b4f65ea64c4665dbb6707c09fad83",
+  "seq": 8,
+  "frame_sha256": "2388a540cb7e90babd299aa20862375eeb5ba7e8eba730139434ffabbc854948",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 2045,
-    "y": 795
+    "type": "swipe",
+    "x1": 1500,
+    "y1": 550,
+    "x2": 1250,
+    "y2": 650,
+    "duration_ms": 900
   },
-  "note": "Enable the visible camera control before changing the view of the bed action."
+  "note": "Pan the camera with its enabled mode while preserving the seated action."
 }
