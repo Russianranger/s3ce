@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 15,
-  "frame_sha256": "eff68e2e23caabcb4d88e82a2e082a21266f6ec174a1ee401120a08c17086261",
+  "seq": 16,
+  "frame_sha256": "286206c5d0374608699e508f853be66e132efa00c94e617a2dc6c8a74440b2d1",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 2150,
-    "y": 967
+    "x": 635,
+    "y": 215
   },
-  "note": "Select the bottom-right jewel with camera mode disabled."
+  "note": "Close the Wishes panel after confirming jewel selection with camera mode off."
 }
