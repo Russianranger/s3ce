@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 9,
-  "frame_sha256": "67026dc777531909b0475dffb1ced4dc795b5636dee48e68ba8832d2a3fccc7f",
+  "seq": 10,
+  "frame_sha256": "2db8aa61def96807a8efd538a9fe3441166c4e8193077e2d5b2a79ae381b7558",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1480,
-    "y": 850
+    "x": 855,
+    "y": 365
   },
-  "note": "Accept the visible timed New Wish before retrying the camera gesture."
+  "note": "Close the visible Recipes tip through its blue X."
 }
