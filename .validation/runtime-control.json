@@ -1,16 +1,19 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 10,
-  "frame_sha256": "2db8aa61def96807a8efd538a9fe3441166c4e8193077e2d5b2a79ae381b7558",
+  "seq": 11,
+  "frame_sha256": "b57f9f7040f5fe967b3c5fbce8c0448c443e92dd3a5c29589dbcff3a15b329d1",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
-    "type": "tap",
-    "x": 855,
-    "y": 365
+    "type": "swipe",
+    "x1": 1500,
+    "y1": 550,
+    "x2": 1250,
+    "y2": 650,
+    "duration_ms": 900
   },
-  "note": "Close the visible Recipes tip through its blue X."
+  "note": "Retry the camera pan after dismissing the ordinary wish and recipe overlays."
 }
