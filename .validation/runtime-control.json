@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 5,
-  "frame_sha256": "c65eb25e3b7fb70dd18f078f3e06f6119b36f2851a79b31e635dc0b008a185b0",
+  "seq": 6,
+  "frame_sha256": "b21cb14ffc782b484a9185efd1fb37ab5ff78941da2239eb24ef95d894f16d84",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1830,
-    "y": 325
+    "x": 1490,
+    "y": 792
   },
-  "note": "Select the visible bed to inspect its ordinary action menu."
+  "note": "Select the visible Cheap Bed / Sit action."
 }
