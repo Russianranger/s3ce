@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "run_id": "43803018055",
-  "seq": 3,
-  "frame_sha256": "35cf089128691b23cafb5ba52765ee5036d4245cedffcd3a4b10643c3030e641",
+  "seq": 4,
+  "frame_sha256": "eabba4165da10b6fb23ee43362d2625c1da6042a5285e9df00b6ff025cbf37aa",
   "coordinate_size": [
     2640,
     1080
   ],
   "command": {
     "type": "tap",
-    "x": 1415,
-    "y": 790
+    "x": 1390,
+    "y": 715
   },
-  "note": "Select the visible dining chair beside the table."
+  "note": "Tap the visible chair back; the previous seat tap produced no accepted action."
 }
