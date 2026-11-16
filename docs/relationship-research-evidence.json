@@ -1,0 +1,386 @@
+{
+  "schema": 1,
+  "scope": "Feasibility research, not a production mechanic or new APK",
+  "baseline": {
+    "branch": "flip3",
+    "head": "223056b381001d422bab459cd9a5cc5cd37e3cc1",
+    "apk_sha256": "a759fb156efb526149e3c0e3a9ca3bba4d5646aff4198ae8946dbc7947c7f5eb",
+    "version": "0.1.15-flip3-socials/code115",
+    "s3e_sha256": "8198558b93316a963c2106f172fde53015063955af16d2aa13ee51a89a1e114a",
+    "simsdata_sha256": "778c385d6ee62e48bacfea06d5a61b71d1caced5a68b45edaf3cfdb1801511f4"
+  },
+  "physical_feedback": {
+    "date_client": "2026-11-15",
+    "reported": "Hot Smooch fix worked; no further crashes since fix",
+    "limits": "version inferred from last delivered fix; no new report, test duration or bounded startup count"
+  },
+  "npc_rows": [
+    {
+      "npc_id": 1,
+      "name": "Ruth",
+      "static_pair_reference": -1
+    },
+    {
+      "npc_id": 2,
+      "name": "Jack",
+      "static_pair_reference": 3
+    },
+    {
+      "npc_id": 6,
+      "name": "Jake",
+      "static_pair_reference": 5
+    },
+    {
+      "npc_id": 9,
+      "name": "Walter",
+      "static_pair_reference": -1
+    },
+    {
+      "npc_id": 11,
+      "name": "Luke",
+      "static_pair_reference": -1
+    }
+  ],
+  "graph": [
+    {
+      "state": 0,
+      "name": "Stranger",
+      "record_offset": "0x57f",
+      "flags": 0,
+      "edges": []
+    },
+    {
+      "state": 1,
+      "name": "Acquaintance",
+      "record_offset": "0x587",
+      "flags": 0,
+      "edges": [
+        {
+          "target": 5,
+          "target_name": "Friend",
+          "channel": 0,
+          "threshold": 5
+        },
+        {
+          "target": 8,
+          "target_name": "Budding Romance",
+          "channel": 1,
+          "threshold": 5
+        },
+        {
+          "target": 2,
+          "target_name": "Disliked",
+          "channel": 0,
+          "threshold": -5
+        }
+      ]
+    },
+    {
+      "state": 2,
+      "name": "Disliked",
+      "record_offset": "0x59b",
+      "flags": 2,
+      "edges": [
+        {
+          "target": 3,
+          "target_name": "Enemy",
+          "channel": 0,
+          "threshold": -15
+        },
+        {
+          "target": 5,
+          "target_name": "Friend",
+          "channel": 0,
+          "threshold": 10
+        },
+        {
+          "target": 8,
+          "target_name": "Budding Romance",
+          "channel": 1,
+          "threshold": 15
+        }
+      ]
+    },
+    {
+      "state": 3,
+      "name": "Enemy",
+      "record_offset": "0x5af",
+      "flags": 10,
+      "edges": [
+        {
+          "target": 2,
+          "target_name": "Disliked",
+          "channel": 0,
+          "threshold": 10
+        },
+        {
+          "target": 4,
+          "target_name": "Nemesis",
+          "channel": 0,
+          "threshold": -25
+        }
+      ]
+    },
+    {
+      "state": 4,
+      "name": "Nemesis",
+      "record_offset": "0x5bf",
+      "flags": 10,
+      "edges": [
+        {
+          "target": 3,
+          "target_name": "Enemy",
+          "channel": 0,
+          "threshold": 15
+        }
+      ]
+    },
+    {
+      "state": 5,
+      "name": "Friend",
+      "record_offset": "0x5cb",
+      "flags": 17,
+      "edges": [
+        {
+          "target": 6,
+          "target_name": "Good Friend",
+          "channel": 0,
+          "threshold": 15
+        },
+        {
+          "target": 2,
+          "target_name": "Disliked",
+          "channel": 0,
+          "threshold": -10
+        },
+        {
+          "target": 8,
+          "target_name": "Budding Romance",
+          "channel": 1,
+          "threshold": 10
+        }
+      ]
+    },
+    {
+      "state": 6,
+      "name": "Good Friend",
+      "record_offset": "0x5df",
+      "flags": 17,
+      "edges": [
+        {
+          "target": 5,
+          "target_name": "Friend",
+          "channel": 0,
+          "threshold": -10
+        },
+        {
+          "target": 7,
+          "target_name": "Best Friend",
+          "channel": 0,
+          "threshold": 25
+        }
+      ]
+    },
+    {
+      "state": 7,
+      "name": "Best Friend",
+      "record_offset": "0x5ef",
+      "flags": 49,
+      "edges": [
+        {
+          "target": 6,
+          "target_name": "Good Friend",
+          "channel": 0,
+          "threshold": -15
+        }
+      ]
+    },
+    {
+      "state": 8,
+      "name": "Budding Romance",
+      "record_offset": "0x5fb",
+      "flags": 21,
+      "edges": [
+        {
+          "target": 9,
+          "target_name": "Date",
+          "channel": 1,
+          "threshold": 15
+        },
+        {
+          "target": 2,
+          "target_name": "Disliked",
+          "channel": 0,
+          "threshold": -10
+        },
+        {
+          "target": 5,
+          "target_name": "Friend",
+          "channel": 0,
+          "threshold": 10
+        }
+      ]
+    },
+    {
+      "state": 9,
+      "name": "Date",
+      "record_offset": "0x60f",
+      "flags": 21,
+      "edges": [
+        {
+          "target": 8,
+          "target_name": "Budding Romance",
+          "channel": 1,
+          "threshold": -10
+        },
+        {
+          "target": 10,
+          "target_name": "Partner",
+          "channel": 1,
+          "threshold": 25
+        }
+      ]
+    },
+    {
+      "state": 10,
+      "name": "Partner",
+      "record_offset": "0x61f",
+      "flags": 53,
+      "edges": []
+    },
+    {
+      "state": 11,
+      "name": "Fiancee",
+      "record_offset": "0x627",
+      "flags": 53,
+      "edges": []
+    },
+    {
+      "state": 12,
+      "name": "Spouse",
+      "record_offset": "0x62f",
+      "flags": 53,
+      "edges": []
+    },
+    {
+      "state": 13,
+      "name": "Ex-Spouse",
+      "record_offset": "0x637",
+      "flags": 17,
+      "edges": [
+        {
+          "target": 5,
+          "target_name": "Friend",
+          "channel": 0,
+          "threshold": 15
+        },
+        {
+          "target": 2,
+          "target_name": "Disliked",
+          "channel": 0,
+          "threshold": -15
+        },
+        {
+          "target": 9,
+          "target_name": "Date",
+          "channel": 1,
+          "threshold": 15
+        }
+      ]
+    },
+    {
+      "state": 14,
+      "name": "Ex",
+      "record_offset": "0x64b",
+      "flags": 17,
+      "edges": [
+        {
+          "target": 5,
+          "target_name": "Friend",
+          "channel": 0,
+          "threshold": 15
+        },
+        {
+          "target": 2,
+          "target_name": "Disliked",
+          "channel": 0,
+          "threshold": -15
+        },
+        {
+          "target": 9,
+          "target_name": "Date",
+          "channel": 1,
+          "threshold": 15
+        }
+      ]
+    }
+  ],
+  "proposed_edges": [
+    {
+      "from": 6,
+      "to": 8,
+      "channel": 1,
+      "threshold": 10
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "channel": 1,
+      "threshold": 10
+    }
+  ],
+  "priority": "append after existing branches; keep their original first-match priority",
+  "native_functions": {
+    "constant_loader": "game+0xcf0bc",
+    "action_selector": "game+0xc8a34",
+    "acceptance_gate": "game+0xc5cc4",
+    "score_updates": "game+0xc7370",
+    "transition_resolver": "game+0xce014",
+    "state_setter": "game+0xce330"
+  },
+  "validation": {
+    "raw_parser": "15 states match original ARM loader graph",
+    "selector_executions": 936,
+    "explicit_friendly_nonreject_assertions": 78,
+    "selector_boundary": "Original ARM social-row selection; synthetic conversation/state, unchanged tuning.\nNo Android execution, live game memory, personal save or APK is modified.\n",
+    "transition_summary": {
+      "per_graph": 133,
+      "total": 266,
+      "failures": 0,
+      "changed_cases": 38,
+      "all_other_states_unchanged": true,
+      "both_relocations": true,
+      "npc_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ]
+    },
+    "transition_boundary": "Original game+ce014 instructions; actual extracted graph vs synthetic additive graph. Vector copy/destruction and final setter/UI endpoint modeled. No Android execution, asset/save modification, progression or romance acceptance proof.",
+    "setter_cases": 10,
+    "setter_failures": 0,
+    "setter_boundary": "Original ARM setter mutations on isolated synthetic relationships, not a game save.\nThe original state write, score reset, vector mechanics and goal predicates run.\nGoal awards, Android/game UI notifications and scene lookup are observed endpoints.\n",
+    "android_gameplay_for_new_mechanic": false
+  },
+  "uncertainty": [
+    "No current save/report shows these five NPCs actual relationship stages",
+    "No proof of a permanent named-NPC, age or orientation ban",
+    "Complete UI/animation/save-reload acceptance for proposed mechanic still required"
+  ],
+  "web_context": [
+    {
+      "url": "https://chadaustin.me/2010/01/the-completionists-guide-to-sims-3-iphone/",
+      "scope": "historical firsthand iPhone comments; mixed-platform page, not Android proof"
+    }
+  ]
+}

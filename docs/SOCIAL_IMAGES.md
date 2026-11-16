@@ -1,5 +1,12 @@
 # Flip3 social-event image crash
 
+## Subsequent physical result
+
+The user reports on2026-11-15 that the delivered Hot Smooch fix worked and no
+further crashes occurred since that fix. Version115 is inferred from the last
+delivery; no fresh diagnostic fingerprint or testing duration/count was supplied.
+The analysis below records the original failure and implementation evidence.
+
 ## Physical evidence
 
 The user's private diagnostic export identifies S3CE 0.1.14-flip3/code 114,

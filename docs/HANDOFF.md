@@ -1,3 +1,32 @@
+# Current continuation — relationship mechanics research
+
+On 2026-11-15 the user confirms the delivered Hot Smooch fix worked and reports
+no further crashes since that fix. The referenced release is 0.1.15-flip3-socials
+by conversation context; no new diagnostic/version fingerprint, test duration or
+cold-start count was supplied. Preserve this accepted working baseline.
+
+Current request is research into allowing romantic relationships with Luke,
+Jake, Jack, Walter and Ruth. Distinguish NPC-specific restrictions from shared
+relationship-state rules. Inspect the exact Android CE data/native paths before
+proposing a mechanic; web reports from iPhone/J2ME/other Sims editions are leads,
+not Android execution evidence. No new APK or save migration is implied by this
+research. Keep normal courtship/progression separate from automatic acceptance.
+
+## Current research result
+
+Exact Android CE data/native analysis finds Good Friend6 and Best Friend7 lack
+any Budding Romance8 transition, while Friend5 has romance-channel threshold10.
+A research-only additive graph6/7→8 passes266 original ARM resolver cases and10
+normal setter cases;936 selector executions include78 explicit non-rejection
+checks at friendly stages for all13 NPCs. Named IDs:Ruth1,Jack2,Jake6,Walter9,Luke11.
+No individual name ban established. See RELATIONSHIP_MECHANICS.md and its evidence index.
+
+Research is complete; production gameplay/APK remains the accepted0.1.15.
+Recommended implementation keeps existing graph-rule priority, action acceptance,
+pairing/jealousy and normal progression. Actual gameplay/save acceptance is still
+required before releasing such a mechanic. No user save/current-status report was
+provided for those five, so their exact observed blockage is conditional.
+
 # Current release — Flip3 social crash candidate accepted
 
 Physical0.1.14 feedback confirms good UI on SM-F711U1/Android15/API35/ARM32/4KiB;
@@ -37,8 +66,8 @@ cbd1e87dd53b595b89b1a1cfa9ef697b20aa2952bf35e6d26d597b2b80d11895.
 Delivery is complete through publication/public verification. Next is the user's
 physical test: install over without uninstall/data clear, Original rendering
 unchecked, load existing save/complete Hot Smooch and available socials, save/load/
-Home/three force-stop starts, export Save report then Share report file. Candidate
-physical social completion remains open; continue from actual feedback.
+Home/three force-stop starts, export Save report then Share report file. The user subsequently confirms the Hot Smooch fix worked and reports no further
+crashes; see the current relationship research above.
 
 # Historical handoff — 0.1.14 Flip3 release
 

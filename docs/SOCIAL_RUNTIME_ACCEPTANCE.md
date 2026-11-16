@@ -11,6 +11,14 @@ exact reconstruction, without rebuild/resign. See [evidence index](social-runtim
 [game review](social-game-review.json), [startup review](social-startup-review.json)
 and [mechanism](SOCIAL_IMAGES.md).
 
+## Subsequent physical feedback
+
+On 2026-11-15 the user reports that the Hot Smooch fix worked and no further
+crashes have occurred since that fix. This refers to delivered 0.1.15 by context;
+there is no new report/version fingerprint or bounded testing count/duration.
+This adds positive physical-device evidence to the earlier emulator/fixture
+results. It does not establish universal startup or every-social coverage.
+
 ## Actual full game
 
 Green [run 41338479517](https://github.com/Russianranger/s3ce/actions/runs/41338479517),

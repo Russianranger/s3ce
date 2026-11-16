@@ -1,9 +1,10 @@
 # S3CE — Galaxy Z Flip3 branch
 
 The user confirms that the centered 16:9 landscape UI works well on the physical
-Galaxy Z Flip3 / Android 15. The next test candidate is **0.1.15-flip3-socials /
+Galaxy Z Flip3 / Android 15. The published build is **0.1.15-flip3-socials /
 code 115**, addressing the reported Hot Smooch crash and separate activity
-restoration failures found in the diagnostic report. Existing proportional touch
+restoration failures. The user subsequently confirms that the fix worked and
+reports no further crashes since the update. Existing proportional touch
 controls, object actions, saves and rendering compatibility are preserved.
 
 The image loader now uses the pixels it already owns, avoiding an extra buffer
@@ -11,6 +12,11 @@ whose failed allocation matches the native crash. All nine event images share
 that loader, so other event artwork receives the same correction. Only the
 reported Hot Smooch failure is observed; exact action-to-artwork mapping and
 other possible engine faults remain qualified in the analysis.
+
+The current [relationship-mechanics research](docs/RELATIONSHIP_MECHANICS.md)
+identifies missing Good/Best Friend romance transitions and a focused way to
+allow normal courtship to progress. This research adds no new gameplay mechanic
+to the published APK.
 
 See [crash evidence and correction](docs/SOCIAL_IMAGES.md),
 [validation and limits](docs/SOCIAL_RUNTIME_ACCEPTANCE.md),
